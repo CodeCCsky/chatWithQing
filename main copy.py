@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 import deepseek_api
 import tts
 import json
 import yaml
+
+
 
 class User :
     def __init__(self,
@@ -24,17 +27,14 @@ class User :
                                  user_location=self.user_location)
 
 llm_api_key: str = None
-system_prompt_main: str = None
-system_prompt_thinking:str = None
 user: User = None
 
 def read_yaml(file : str)-> None:
-    global llm_api_key, system_prompt_main, system_prompt_thinking, user
+    global llm_api_key, system_prompt_main, user
     with open(file, 'r', encoding='utf-8') as f:
         res = yaml.load(f.read(), Loader=yaml.FullLoader)
         llm_api_key = res['api_key']
-        system_prompt_main = res['system_prompt_main_chat']
-        system_prompt_thinking = res['system_prompt_thinking']
+        system_prompt_main = res['system_prompt_main']
         user = User(user_name=res['user_name'],
                     user_sex=res['user_sex'],
                     favourite_food=res['favourite_food'],
@@ -47,11 +47,9 @@ except FileNotFoundError:
     read_yaml(r"private_setting")
 
 system_prompt_main = user.get_fulled_system_prompt(system_prompt_main)
-system_prompt_thinking = user.get_fulled_system_prompt(system_prompt_thinking)
 
 tts_inference = tts.TTSAudio(cache_path=r'\cache')
 llm_main_chat = deepseek_api.deepseek_model(api_key=llm_api_key, system_prompt=system_prompt_main)
-llm_thinking = deepseek_api.deepseek_model_thinking(api_key=llm_api_key,system_prompt=system_prompt_thinking)
 import threading
 class DeepSeekThread(threading.Thread):
     def __init__(self, model: deepseek_api.deepseek_model):
@@ -70,38 +68,26 @@ class DeepSeekThread(threading.Thread):
         return self.model.get_response()
 
 import copy
+import json
+history = deepseek_api.historyManager(user.user_name)
 while True:
+    sys_input = ''
     usr_input = input("user> ")
-    sys_input = None
-    if usr_input == '/history':
-        print('thinking:\n',llm_thinking.get_history()[1:])
-        print('---')
-        print('main:\n',llm_main_chat.get_history()[1:])
-    else:
-        if usr_input.startswith('/system '):
-            sys_input = usr_input.removeprefix('/system ')
-            usr_input = input("系统提示已设置\n你要对晴小姐说的话 > ")
-        thinking_history = llm_main_chat.get_history()
-        if thinking_history is None:
-            thinking_history = []
-        llm_thinking.load_history(thinking_history)
-        current_chat = {f'{user.user_name}':usr_input}
-        if sys_input:
-            current_chat['sys'] = sys_input
-        llm_thinking.add_msg(json.dumps(current_chat,ensure_ascii=False))
-        print("==> send to thinking module...")
-        thread = DeepSeekThread(llm_thinking)
-        thread.start()
-        thread.join()
-        response = thread.get_full_response()[0]
-        print("think:\n",response)
-
-        thinking_history[-1]['role_thoughts'] = response
-        send_str = json.dumps(thinking_history[-1],ensure_ascii=False)
-        print("==> send to main chat module...")
-        llm_main_chat.add_msg(send_str)
-        thread = DeepSeekThread(llm_main_chat)
-        thread.start()
-        thread.join()
-        response = thread.get_full_response()[0]
-        print("main:\n",response)
+    history.add_user_message(usr_input)
+    llm_main_chat.load_history(history.get_history())
+    print(history.get_history())
+    thread = DeepSeekThread(llm_main_chat)
+    thread.start()
+    #while thread.is_alive() :
+        #print(thread.get_response())
+    thread.join()
+    response,_ = thread.get_full_response()
+    print(_)
+    try:
+        content = json.loads(response)
+        thought = content['role_thoughts']
+        resp = content['role_response']
+        print("thought:\n",thought,"\nresonse:\n",resp)
+    except Exception as e:
+        print("JSONDecodeError, origin str:\n",response,'\nerror:')
+    history.add_assistant_message(response)

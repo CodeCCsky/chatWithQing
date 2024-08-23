@@ -163,3 +163,4 @@ cython_debug/
 
 cache/
 private_setting.yaml
+history/*

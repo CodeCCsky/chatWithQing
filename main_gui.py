@@ -1,40 +1,44 @@
 import os
+import time
+from typing import Union
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-import time
 from asset.GUI.setting_gui import SettingWidget
 from asset.GUI.PetView import PetGraphicsView
 from asset.GUI.talk_bubble import talkBubble
 from asset.GUI.input_label import inputLabel
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model
+from deepseek_api import deepseek_model, deepseek_model_thinking
 from deepseek_api.deepseek_tools import ds_tool
 
 class PyQt_deepseek_request_thread(QThread):
     text_update = pyqtSignal(str)
     finish_signal = pyqtSignal(str)
 
-    def __init__(self, model: deepseek_model, update_time: int = 50):
+    def __init__(self, model: Union[deepseek_model, deepseek_model_thinking]) -> None:
         super().__init__()
         self.model = model
         self.total_time = 0.0
         self.response = None
         self.finish_reason = None
 
-    def run(self):
-        self.model = deepseek_model(api_key=self.api_key, system_prompt=self.system_prompt)
+    def run(self) -> None:
         self.total_time = time.time()
         self.response, self.finish_reason, _ = self.model.send_message()
+        while self.model.is_done() is None:
+            #有新字符时更新
+            new_response = self.model.get_response()
+            if new_response != self.response:
+                self.response = new_response
+                self.text_update.emit(self.response)
         self.total_time = time.time() - self.total_time
 
-    def update_response(self):
-        new_response = self.model.get_response()
-        self.text_update.emit(new_response)
-
+    def get_status(self) -> Union[str, None]:
+        return self.model.is_done()
 
 class DesktopPet(QWidget):
     S_NORMAL = 0
@@ -60,11 +64,7 @@ class DesktopPet(QWidget):
         self.init_setting()
         self.init_pet_image()
         self.init_mouse_click()
-        self.init_paint_randnum()
         self.init_talk()
-
-    def init_paint_randnum(self):
-        self.randnum_timer = QTimer()
 
     def init_mouse_click(self):
         self.is_follow_mouse = False
@@ -160,15 +160,17 @@ class DesktopPet(QWidget):
         self.layout().addWidget(self.portraitView)
         screen = QDesktopWidget().screenGeometry()
         self.adjustSize()
-        self.move(QPoint(int(screen.width()-self.width()/2), int(screen.height()-self.height()/2)))
+        self.move(QPoint(int(screen.width()*0.95-self.width()), int(screen.height()*0.95-self.height())))
 
     def init_talk(self):#TODO
         self.talk_bubble = talkBubble()
         self.input_label = inputLabel()
+        self.input_label.requestSend.connect(self.progress_thinking)
         # 链接信号和槽
         self.text_update_timer = QTimer()
         #self.text_update_timer.timeout.connect(self.talk_bubble.update_text)
         self.talk_bubble.show()
+        self.input_label.show()
 
     def show_setting_window_event(self):
         #TODO
@@ -179,6 +181,9 @@ class DesktopPet(QWidget):
     def show_talk_bubble_event(self):
         self.talk_bubble.setWindowOpacity(0.99)
 
+    def progress_thinking(self,input_text: str):
+        print(input_text)
+        pass #TODO
 
     def show_portrait_event(self):
         self.setWindowOpacity(0.99)

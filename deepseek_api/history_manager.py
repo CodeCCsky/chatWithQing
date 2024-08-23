@@ -1,0 +1,100 @@
+import os
+import json
+import copy
+import datetime
+import logging
+
+DEFAULT_PATH = r"./history/"
+logger = logging.getLogger("history_manager")
+
+class historyManager:
+    def __init__(self, user_name: str,history_path : str = None) -> None:
+        self.history = []
+        self.history_path = history_path
+        self.user_name = user_name
+        self.error_index = []
+        self.summary = None
+        self.create_time = None
+        if history_path:
+            content = None
+            try:
+                with open(file=history_path, encoding='utf-8') as f:
+                    json.dump(content,f,ensure_ascii=False)
+            except FileNotFoundError as fe:
+                logger.error(f"指定的对话历史文件未找到创建新的对话。Error Traceback:{fe}")
+                self.create_new_history_file()
+            except PermissionError as pe:
+                logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error Traceback:{pe}")
+                self.create_new_history_file()
+            except Exception as e:
+                logger.error(f"发生了意料之外的错误。Error Traceback:{e}")
+                self.create_new_history_file()
+        else:
+            self.create_new_history_file()
+
+    def create_new_history_file(self) -> None:
+        current_time = datetime.datetime.now()
+        self.create_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"history_{self.create_time}.txt"
+        self.history_path = os.path.join(DEFAULT_PATH,filename)
+        self.save_history()
+        logger.info(f"创建了新的历史对话文件在{self.history_path}")
+
+    def add_user_message(self, user_input: str, sys_input: str = None) -> None:
+        self.history.append({"role":"user", "content":{self.user_name:user_input}})
+        if sys_input is not None:
+            self.history[-1]['sys'] = sys_input
+
+    def add_assistant_message(self, assistant_response: str) -> None:
+        try:
+            content = json.loads(assistant_response)
+            self.history.append({"role":"assistant","content":content})
+        except ValueError as ve:
+            logger.error(f"模型返回格式有误，历史文件将直接存储原始字符串")
+            self.error_index.append(len(self.history))
+            self.history.append({"role":"assistant","content":assistant_response})
+
+    def add_tool_message(self) -> None:
+        pass
+
+    def get_history(self) -> str:
+        processed_history = copy.deepcopy(self.history)
+        for i in range(len(processed_history)):
+            if isinstance(processed_history[i]['content'],dict):
+                processed_history[i]['content'] = json.dumps(self.history[i]['content'],ensure_ascii=False)
+        return processed_history
+
+    def set_summary(self, summary: str) -> None:
+        self.summary = summary
+
+    def save_history(self) -> None:
+        with open(self.history_path,'w',encoding='utf-8') as f:
+            json.dump({"create_time":self.create_time,"summary":self.summary,'history':self.history}, f, indent=4, ensure_ascii=False)
+
+
+'''格式
+{
+    "create_time" : "..." ,
+    "summary" : "..."(简要，可没有) ,
+    "history":
+    [
+        {
+            "role" : "user",
+            "content' :
+            {
+                "sys" : "..."(程序提示) ,
+                "{user}" : "..."(用户输入) ,
+            }
+        }
+        {
+            "role" : "assistant",
+            "content" :
+            {
+                "your_thoughts" : "..."(思考模块) ,
+                "your_response" : "..."(回复) ,
+            }
+        }
+    ]
+    "error_index" : [...](解析错误的字符串位置)
+}
+'''

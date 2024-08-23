@@ -1,17 +1,14 @@
 import yaml
 
 prt = None
-prt2 = None
-name = None
-your_sex = None
-favourite_food = None
-liked_style = None
-user_location = None
+name = '***REMOVED***'
+your_sex = '***REMOVED***'
+favourite_food = '***REMOVED***'
+liked_style = '***REMOVED***'
+user_location = '***REMOVED***'
 
-with open(r"system_prompt_main_chat.txt",'r',encoding='utf-8') as f:
+with open(r"system_prompt_main.txt",'r',encoding='utf-8') as f:
     prt = f.read()
-with open(r"system_prompt_action.txt",'r',encoding='utf-8') as f:
-    prt2 = f.read()
 data = {
     'api_key' : "***REMOVED***",
     'user_name' : name,
@@ -19,8 +16,7 @@ data = {
     'favourite_food' : favourite_food,
     'liked_style' : liked_style,
     'user_location' : user_location,
-    'system_prompt_main_chat' : prt,
-    'system_prompt_action' : prt2,
+    'system_prompt_main' : prt,
 }
 
 with open(r"private_setting.yaml",'w',encoding='utf-8') as f:

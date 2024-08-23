@@ -24,7 +24,7 @@ class inputLabel(QWidget):
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(':/font/荆南波波黑.ttf')
         screen = QDesktopWidget().screenGeometry()
-        self.setGeometry(int(screen.width()*0.8-400/2),int(screen.height()*0.5),400,300)
+        self.setGeometry(int(screen.width()*0.95-400),int(screen.height()*0.3),400,300)
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
