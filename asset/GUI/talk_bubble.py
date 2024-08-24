@@ -125,20 +125,50 @@ class talkBubble(QWidget):
         self.path_start_index = int((np.random.rand())*2*self.points_num) % self.points_num
         self.update()
 
-    def update_text(self, text):
-        self._setTextLabel('晴', text)
+    def update_text(self, text, is_thinking: bool = False):
+        self._setTextLabel('晴', text, is_thinking)
 
     def clear_text(self):
         self._setTextLabel('晴', '')
 
-    def _setTextLabel(self, name, text) -> None:
-        processed_text = '<p style=\"color: white;\">'
-        #emph_flag = False # TODO 标记强调
-        for char in text:
-            if char == '\n':
-                processed_text += '</p><p style=\"color: white;\">'
+    def _setTextLabel(self, name: str, text: str, is_thinking: bool = False) -> None:
+        default_start = '<p style=\"color: white;\">'
+        default_end = '</p>'
+        grey_start = '<p style=\"color: grey;\">'
+        purple_start = '<p style=\"color: #ff0084;\"'
+        processed_text = ''
+        emph_flag = False # TODO 标记强调
+        grey_flag = is_thinking
+        skip_char_num = 0
+        if text.startswith('**'):
+            emph_flag = True
+            processed_text = purple_start
+        elif grey_flag:
+            processed_text = grey_start
+        else:
+            processed_text = default_start
+        for i in range(0,len(text)):
+            if skip_char_num > 0:
+                skip_char_num = skip_char_num - 1
+                continue
+            if text[i:i+1] == '**' :
+                emph_flag = not emph_flag
+                skip_char_num = 1
+                if emph_flag:
+                    processed_text = processed_text + default_end + purple_start
+                elif grey_flag:
+                    processed_text = processed_text + default_end + grey_start
+                else:
+                    processed_text = processed_text + default_end + default_start
+            elif text[i] == '\n':
+                if emph_flag:
+                    processed_text = processed_text + default_end + purple_start
+                elif grey_flag:
+                    processed_text = processed_text + default_end + grey_start
+                else:
+                    processed_text = processed_text + default_end + default_start
             else:
-                processed_text += char
+                processed_text += text[i]
         processed_text += "</p>"
         self.name_str = name
         self.text_str = processed_text

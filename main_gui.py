@@ -204,15 +204,21 @@ class DesktopPet(QWidget):
         response = self.llm_thread.get_response()
         try:
             content = json.loads(response)
-            self.talk_bubble.update_text(content['role_thoughts'])
+            self.talk_bubble.update_text(content['role_thoughts'], True)
+            wait_until_start_talking = QTimer()
+            wait_until_start_talking.timeout.connect(self.start_update_text)
+            wait_until_start_talking.start(2000) # BUG
         except ValueError:
             self.talk_bubble.update_text(response)
         except KeyError:
             self.talk_bubble.update_text(response)
         #TODO
+
+    def start_update_text(self):
         self.text_update_timer.start()
 
     def process_typing_effect(self):
+        
         pass
 
     def finish_this_round_of_talk(self, status):

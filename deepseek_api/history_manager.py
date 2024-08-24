@@ -33,6 +33,8 @@ class historyManager:
             self.create_new_history_file()
 
     def create_new_history_file(self) -> None:
+        if os.path.exists(DEFAULT_PATH) is False:
+            os.makedirs(DEFAULT_PATH)
         current_time = datetime.datetime.now()
         self.create_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"history_{self.create_time}.txt"
