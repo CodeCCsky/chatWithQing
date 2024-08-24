@@ -12,14 +12,14 @@ from asset.GUI.talk_bubble import talkBubble
 from asset.GUI.input_label import inputLabel
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model, deepseek_model_thinking
+from deepseek_api import deepseek_model
 from deepseek_api.deepseek_tools import ds_tool
 
 class PyQt_deepseek_request_thread(QThread):
     text_update = pyqtSignal(str)
     finish_signal = pyqtSignal(str)
 
-    def __init__(self, model: Union[deepseek_model, deepseek_model_thinking]) -> None:
+    def __init__(self, model: deepseek_model) -> None:
         super().__init__()
         self.model = model
         self.total_time = 0.0

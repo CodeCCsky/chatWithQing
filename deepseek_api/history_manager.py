@@ -44,6 +44,7 @@ class historyManager:
         self.history.append({"role":"user", "content":{self.user_name:user_input}})
         if sys_input is not None:
             self.history[-1]['sys'] = sys_input
+        self.save_history()
 
     def add_assistant_message(self, assistant_response: str) -> None:
         try:
@@ -53,6 +54,8 @@ class historyManager:
             logger.error(f"模型返回格式有误，历史文件将直接存储原始字符串")
             self.error_index.append(len(self.history))
             self.history.append({"role":"assistant","content":assistant_response})
+        finally:
+            self.save_history()
 
     def add_tool_message(self) -> None:
         pass
@@ -66,6 +69,7 @@ class historyManager:
 
     def set_summary(self, summary: str) -> None:
         self.summary = summary
+        self.save_history()
 
     def save_history(self) -> None:
         with open(self.history_path,'w',encoding='utf-8') as f:
