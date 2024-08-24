@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 import sys
 import PyQt5.QtWidgets as QtWidgets
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMenu
-from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPen, QFont, QFontMetrics, QFontDatabase, QPolygon, QBrush
+from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPen, QFont, QFontMetrics, QFontDatabase, QPolygon, QBrush, QTextDocument
 from PyQt5.QtCore import Qt, QPoint, QTimer
 import numpy as np
 import asset.GUI.res_rc
@@ -22,6 +23,7 @@ class talkBubble(QWidget):
 
         self.initUI()
         self.init_rand()
+        self.init_window_opacity_control()
 
     def initUI(self) -> None:
         fontDb = QFontDatabase()
@@ -98,6 +100,14 @@ class talkBubble(QWidget):
         self.text_area.contextMenuEvent = self.contextMenuEvent
         self.text_area.textChanged.connect(self.adjustSize)
         self.name_area.setText("晴")
+        self.is_hide = False
+
+    def init_window_opacity_control(self):
+        self.is_mouse_over = True
+        self.window_opacity_timer = QTimer()
+        self.window_opacity_timer.timeout.connect(self.window_opacity_control)
+        self.window_opacity_timer.start(25) # 25 毫秒更新一次窗口透明度
+        self.set_mouse_over_timer = QTimer() # 鼠标离开/进入窗口后多久更新 is_mouse_over
 
     def init_rand(self) -> None:
         self.update_rand()
@@ -137,11 +147,44 @@ class talkBubble(QWidget):
 
     def adjustSize(self) -> None:
         document = self.text_area.document()
+        document.setTextWidth(self.text_area.width())
         document_height = document.size().height()
         window_width = self.width()
-        window_height = max(200,int(document_height*3/2))# TODO 自动调整高度
+        self.text_area.setFixedHeight(document_height)
+        window_height = max(200,int(document_height*4/3))
         self.setFixedSize(window_width, window_height)
         self.update()
+
+    def hide_window(self):
+        self.is_hide = True
+        self.setWindowOpacity(0)
+
+    def show_window(self):
+        self.is_hide = False
+        self.setWindowOpacity(0.99)
+
+    def set_mouse_over(self, status: bool):
+        self.set_mouse_over_timer.stop()
+        self.is_mouse_over = status
+
+    def window_opacity_control(self):
+        if self.is_hide is False:
+            if self.is_mouse_over:
+                opacity_value = min(0.99, self.windowOpacity()+0.1)
+                self.setWindowOpacity(opacity_value)
+            else :
+                opacity_value = max(0.3, self.windowOpacity()-0.1)
+                self.setWindowOpacity(opacity_value)
+
+    def enterEvent(self, event):
+        self.set_mouse_over_timer.stop()
+        self.set_mouse_over_timer.timeout.connect(lambda p=True: self.set_mouse_over(p))
+        self.set_mouse_over_timer.start(10)
+
+    def leaveEvent(self, event):
+        self.set_mouse_over_timer.stop()
+        self.set_mouse_over_timer.timeout.connect(lambda p=False: self.set_mouse_over(p))
+        self.set_mouse_over_timer.start(1000)
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
@@ -203,10 +246,12 @@ class talkBubble(QWidget):
     def change_name_size(self, size: int) -> None:
         self.name_size = size
         self.name_font = QFont("荆南波波黑",self.name_size, QFont.Bold)
+
     def change_text_size(self, size: int) -> None:
         self.text_size = size
         self.text_font = QFont("荆南波波黑",self.text_size)
         self.text_fm = QFontMetrics(self.text_font)
+
     def change_row_spacing(self, height: int) -> None:
         self.row_spacing = height
 
@@ -226,7 +271,15 @@ class talkBubble(QWidget):
         hide = talk_bubble_menu.addAction('隐藏')
         action = talk_bubble_menu.exec_(self.mapToGlobal(event.pos()))
         if action == hide:
-            self.setWindowOpacity(0)
+            self.hide_window()
+
+    def hide_window(self):
+        self.is_hide = True
+        self.setWindowOpacity(0)
+
+    def show_window(self):
+        self.is_hide = False
+        self.setWindowOpacity(0.99)
 
 
 def font_size_in_pixels(font_size_pt: int) -> int:

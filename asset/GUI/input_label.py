@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import sys
 import PyQt5.QtWidgets as QtWidgets
 import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QStatusBar
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 import asset.GUI.res_rc
 #import res_rc
 
@@ -17,9 +18,10 @@ class inputLabel(QWidget):
         self.input_font = QFont('SimHei',self.input_font_size)
         self.button_font = QFont('SimHei',self.button_font_size)
         self.initUI()
-    
+        self.init_window_opacity_control()
+
     def initUI(self):
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
 
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(':/font/荆南波波黑.ttf')
@@ -73,7 +75,8 @@ class inputLabel(QWidget):
         self.verticalLayout.addWidget(self.statusBar)
 
         self.input_edit.setFont(self.input_font)
-        self.input_edit.textChanged.connect(self.show_token)
+        #TODO 实时更新token
+        #self.input_edit.textChanged.connect(self.show_token)
         #self.input_edit.setStyleSheet("background: transparent;color: white;border: 4px solid lightgreen;padding: 1px;")
         self.clearButton.setFont(self.button_font)
         self.sendButton.setFont(self.button_font)
@@ -82,15 +85,22 @@ class inputLabel(QWidget):
         self.clearButton.clicked.connect(self.clear_text)
         self.sendButton.setText("发送")
         self.sendButton.clicked.connect(self.send_text)
-        
 
         self.pushButton.setIcon(QIcon(":/Icon/minimize.png"))
         self.pushButton.setIconSize(self.pushButton.size())
+        self.pushButton.clicked.connect(self.hide_window)
         self.pushButton.setStyleSheet("background: none; border: none;")
+        self.is_hide = False
 
-    def show_token(self):
-        if len(self.input_edit.toPlainText()) != 0:
-            self.statusBar.showMessage(f'预计输入的token数(不准确，仅供参考): {int(len(self.input_edit.toPlainText())*0.6)} Tokens')
+    def init_window_opacity_control(self):
+        self.is_mouse_over = True
+        self.window_opacity_timer = QTimer()
+        self.window_opacity_timer.timeout.connect(self.window_opacity_control)
+        self.window_opacity_timer.start(25) # 25 毫秒更新一次窗口透明度
+        self.set_mouse_over_timer = QTimer() # 鼠标离开/进入窗口后多久更新 is_mouse_over
+
+    def show_token(self, token_num: int):
+        self.statusBar.showMessage(f'预计输入的token数: {token_num} Tokens')
 
     def clear_text(self):
         self.input_edit.setPlainText('')
@@ -103,9 +113,40 @@ class inputLabel(QWidget):
             self.requestSend.emit(self.input_edit.toPlainText())
             self.clear_text()
 
+    def hide_window(self):
+        self.is_hide = True
+        self.setWindowOpacity(0)
+
+    def show_window(self):
+        self.is_hide = False
+        self.setWindowOpacity(0.99)
+
+    def set_mouse_over(self, status: bool):
+        self.set_mouse_over_timer.stop()
+        self.is_mouse_over = status
+
+    def window_opacity_control(self):
+        if self.is_hide is False:
+            if self.is_mouse_over:
+                opacity_value = min(0.99, self.windowOpacity()+0.1)
+                self.setWindowOpacity(opacity_value)
+            else :
+                opacity_value = max(0.3, self.windowOpacity()-0.1)
+                self.setWindowOpacity(opacity_value)
+
     def enabled_send_text(self):
         self.sendButton.setEnabled(True)
         self.input_edit.setEnabled(True)
+
+    def enterEvent(self, event):
+        self.set_mouse_over_timer.stop()
+        self.set_mouse_over_timer.timeout.connect(lambda p=True: self.set_mouse_over(p))
+        self.set_mouse_over_timer.start(10)
+
+    def leaveEvent(self, event):
+        self.set_mouse_over_timer.stop()
+        self.set_mouse_over_timer.timeout.connect(lambda p=False: self.set_mouse_over(p))
+        self.set_mouse_over_timer.start(1000)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:

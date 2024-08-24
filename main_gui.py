@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import os
 import time
+import json
 from typing import Union
 import sys
 from PyQt5.QtGui import *
@@ -12,33 +14,36 @@ from asset.GUI.talk_bubble import talkBubble
 from asset.GUI.input_label import inputLabel
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model
+from deepseek_api import deepseek_model, historyManager
 from deepseek_api.deepseek_tools import ds_tool
+
+from setting_reader import settingReader
+
+setting = settingReader()
+history_path = None
+
 
 class PyQt_deepseek_request_thread(QThread):
     text_update = pyqtSignal(str)
     finish_signal = pyqtSignal(str)
 
-    def __init__(self, model: deepseek_model) -> None:
+    def __init__(self, model: deepseek_model, history_namager: historyManager) -> None:
         super().__init__()
         self.model = model
-        self.total_time = 0.0
+        self.history_manager = history_namager
         self.response = None
         self.finish_reason = None
 
     def run(self) -> None:
-        self.total_time = time.time()
         self.response, self.finish_reason, _ = self.model.send_message()
-        while self.model.is_done() is None:
-            #有新字符时更新
-            new_response = self.model.get_response()
-            if new_response != self.response:
-                self.response = new_response
-                self.text_update.emit(self.response)
-        self.total_time = time.time() - self.total_time
+        self.history_manager.add_assistant_message(self.response)
+        self.finish_signal.emit(self.finish_reason)
 
     def get_status(self) -> Union[str, None]:
         return self.model.is_done()
+
+    def get_response(self) -> str:
+        return self.response
 
 class DesktopPet(QWidget):
     S_NORMAL = 0
@@ -65,6 +70,7 @@ class DesktopPet(QWidget):
         self.init_pet_image()
         self.init_mouse_click()
         self.init_talk()
+        self.init_llm()
 
     def init_mouse_click(self):
         self.is_follow_mouse = False
@@ -165,12 +171,17 @@ class DesktopPet(QWidget):
     def init_talk(self):#TODO
         self.talk_bubble = talkBubble()
         self.input_label = inputLabel()
-        self.input_label.requestSend.connect(self.progress_thinking)
+        self.input_label.requestSend.connect(self.start_talk)
         # 链接信号和槽
         self.text_update_timer = QTimer()
-        #self.text_update_timer.timeout.connect(self.talk_bubble.update_text)
+        self.text_update_timer.timeout.connect(self.process_typing_effect)
         self.talk_bubble.show()
         self.input_label.show()
+
+    def init_llm(self):
+        self.history_manager = historyManager(setting.get_user_name(), history_path)
+        self.llm_inferance = deepseek_model(setting.get_api_key(), setting.get_system_prompt())
+        self.llm_thread = None
 
     def show_setting_window_event(self):
         #TODO
@@ -179,25 +190,49 @@ class DesktopPet(QWidget):
         QApplication.setQuitOnLastWindowClosed(True)
 
     def show_talk_bubble_event(self):
-        self.talk_bubble.setWindowOpacity(0.99)
+        self.talk_bubble.show_window()
 
-    def progress_thinking(self,input_text: str):
-        print(input_text)
-        pass #TODO
+    def start_talk(self,input_text: str):
+        #TODO
+        self.history_manager.add_user_message(input_text)
+        self.llm_inferance.load_history(self.history_manager.get_history())
+        self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
+        self.llm_thread.start()
+        self.llm_thread.finish_signal.connect(self.progress_thinking)
+
+    def progress_thinking(self, finish_state: str):
+        response = self.llm_thread.get_response()
+        try:
+            content = json.loads(response)
+            self.talk_bubble.update_text(content['role_thoughts'])
+        except ValueError:
+            self.talk_bubble.update_text(response)
+        except KeyError:
+            self.talk_bubble.update_text(response)
+        #TODO
+        self.text_update_timer.start()
+
+    def process_typing_effect(self):
+        pass
+
+    def finish_this_round_of_talk(self, status):
+        #TODO
+        self.input_label.enabled_send_text()
+        pass 
 
     def show_portrait_event(self):
         self.setWindowOpacity(0.99)
 
+    def hide_portrait_event(self):
+        self.setWindowOpacity(0)
+
     def show_input_event(self):
-        self.input_label.setWindowOpacity(0.99)
+        self.input_label.show_window()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if hasattr(self, 'portraitView'):
             self.portraitView.setGeometry(self.rect())
-
-    def hide_event(self):
-        self.setWindowOpacity(0)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写closeEvent，添加确认框
@@ -227,8 +262,8 @@ class DesktopPet(QWidget):
             self.user_try_to_quit()
 
     def say_goodbye(self):
-        self.portraitView.change_emo(self.S_INTENSE, True)
         pass
+
     def user_try_to_quit(self):
         pass
 
@@ -289,6 +324,7 @@ class DesktopPet(QWidget):
         self.check_mouse_press_time.stop()
 
 if __name__ == '__main__' :
+    
     app = QApplication(sys.argv)
     pet = DesktopPet()
     pet.show()
