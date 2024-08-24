@@ -2,7 +2,8 @@
 # python3 deepseek_v2_tokenizer.py
 import transformers
 
-chat_tokenizer_dir = r"deepseek_api\deepseek_tokenizer\deepseek_v2_tokenizer"
+chat_tokenizer_dir = r"deepseek_api\deepseek_tokenizer"
+
 
 class offline_tokenizer:
     def __init__(self) -> None:
@@ -13,3 +14,6 @@ class offline_tokenizer:
     def count_tokens(self, text: str) -> int:
         result = self.tokenizer.encode(text)
         return len(result)
+
+a = offline_tokenizer()
+print(a.count_tokens('this is a text.'))
