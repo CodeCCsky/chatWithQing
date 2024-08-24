@@ -14,6 +14,3 @@ class offline_tokenizer:
     def count_tokens(self, text: str) -> int:
         result = self.tokenizer.encode(text)
         return len(result)
-
-a = offline_tokenizer()
-print(a.count_tokens('this is a text.'))
