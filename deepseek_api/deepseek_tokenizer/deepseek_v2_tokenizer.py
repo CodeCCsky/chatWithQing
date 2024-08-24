@@ -2,7 +2,7 @@
 # python3 deepseek_v2_tokenizer.py
 import transformers
 
-chat_tokenizer_dir = r"deepseek_api\deepseek_v2_tokenizer\deepseek_v2_tokenizer"
+chat_tokenizer_dir = r"deepseek_api\deepseek_tokenizer\deepseek_v2_tokenizer"
 
 class offline_tokenizer:
     def __init__(self) -> None:

@@ -1,4 +1,4 @@
 #from deepseek_api.deepseek_tools import tool_template
 from deepseek_api.model import deepseek_model
 from deepseek_api.history_manager import historyManager
-from deepseek_api.deepseek_v2_tokenizer.deepseek_v2_tokenizer import offline_tokenizer
+from deepseek_api.deepseek_tokenizer.deepseek_v2_tokenizer import offline_tokenizer
