@@ -1,5 +1,6 @@
 import yaml
 
+api_key = '***REMOVED***'
 prt = None
 name = '***REMOVED***'
 your_sex = '***REMOVED***'
@@ -10,7 +11,7 @@ user_location = '***REMOVED***'
 with open(r"system_prompt_main.txt",'r',encoding='utf-8') as f:
     prt = f.read()
 data = {
-    'api_key' : "***REMOVED***",
+    'api_key' : api_key,
     'user_name' : name,
     'user_sex' : your_sex,
     'favourite_food' : favourite_food,
