@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+from collections import deque
 import json
 import re
 from typing import Union
@@ -8,10 +9,10 @@ import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimedia import QSoundEffect
 
 from asset.GUI.setting_gui import SettingWidget
-from asset.GUI.PetView import PetGraphicsView
+from asset.GUI.desktop_pet import DesktopPet
 from asset.GUI.talk_bubble import talkBubble
 from asset.GUI.input_label import inputLabel
 import asset.GUI.res_rc
@@ -59,30 +60,16 @@ class tts_thread(QThread):# TODO test
     def run(self) -> None:
         self.tts_model.tts_request(self.tts_text)
 
-class noTTSAudioPlayer:
-    def __init__(self, max_players=5):
-        self.max_players = max_players
-        self.media_players = [QMediaPlayer() for _ in range(max_players)]
-        self.audio_file = no_tts_sound_path
-        self.audio_queue = []
+class no_tts_sound_thread(QThread):
+    def __init__(self):
+        super().__init__()
+        self.sound = QSoundEffect()
+        self.sound.setSource(QUrl.fromLocalFile(no_tts_sound_path))
+    def run(self):
+        self.sound.play()
 
-    def play_audio(self):
-        self.audio_queue.append(self.audio_file)
-        self._play_next_audio()
 
-    def _play_next_audio(self):
-        if self.audio_queue:
-            for player in self.media_players:
-                if player.state() == QMediaPlayer.StoppedState:
-                    next_audio = self.audio_queue.pop(0)
-                    player.setMedia(QMediaContent(QUrl.fromLocalFile(next_audio)))
-                    player.play()
-                    break
-
-    def _check_queue(self):
-        self._play_next_audio()
-
-class DesktopPet(QWidget):
+class mainWidget(QWidget):
     S_NORMAL = 0
     S_INTENSE = 1
     S_SURPRISE = 2
@@ -93,31 +80,17 @@ class DesktopPet(QWidget):
     def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None:
         super().__init__(parent)
         self.init_resource()
-        self.init_subWindow()
         self.use_tts = use_tts
-
-        # 垂直布局
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
 
         self.is_speaking = False
         self.facial_expr_state = self.S_NORMAL
         self.init_tray()
         self.init_setting()
-        self.init_pet_image()
-        self.init_mouse_click()
+        self.init_desktop_pet()
         self.init_talk()
         self.init_llm()
 
-    def init_mouse_click(self):
-        self.is_follow_mouse = False
-        self.check_mouse_press_time = QTimer()
-        self.check_mouse_press_time.timeout.connect(self.start_following_mouse)
-        self.portraitView.mousePressEvent = self.onMousePress
-        self.portraitView.mouseReleaseEvent = self.onMouseRelease
-        self.portraitView.mouseMoveEvent = self.onMouseMove
-
+### 初始化部分
     def init_resource(self):
         """加载资源"""
         # icon
@@ -130,24 +103,11 @@ class DesktopPet(QWidget):
         fontDb = QFontDatabase()
         fontDb.addApplicationFont(':/font/荆南波波黑.ttf')
 
-    def init_subWindow(self) -> None:
-        """初始化窗体
-        窗口属性：无标题栏、保持在最上层、透明背景
-        """
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setStyleSheet("background:transparent; border: none;")
-        self.setAutoFillBackground(False)
-        self.setAttribute(Qt.WA_NoSystemBackground)
-        self.repaint()
-
     def init_tray(self) -> None:
         """初始化托盘栏设置"""
-
         quit_action = QAction('退出', self)
         quit_action.setIcon(self.QUIT_ICON)
         quit_action.triggered.connect(lambda p=QCloseEvent(): self.closeEvent(p))
-        
 
         setting_action = QAction('设置', self)
         setting_action.setIcon(self.SETTING_ICON)
@@ -155,7 +115,7 @@ class DesktopPet(QWidget):
 
         show_portrait_action = QAction('显示立绘', self)
         show_portrait_action.setIcon(self.BASE_ICON)
-        show_portrait_action.triggered.connect(self.show_portrait_event)
+        show_portrait_action.triggered.connect(self.show_desktop_pet)
 
         show_talk_bubble_action = QAction('显示气泡框', self)
         show_talk_bubble_action.setIcon(self.BASE_ICON)
@@ -190,25 +150,22 @@ class DesktopPet(QWidget):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(self.BASE_ICON)
         self.tray_icon.setContextMenu(self.tray_menu)
-
         self.tray_icon.show()
+
+    def init_desktop_pet(self):
+        self.desktop_pet = DesktopPet(use_tts=self.use_tts)
+        self.desktop_pet.closeEvent = self.closeEvent
+        self.desktop_pet.show()
 
     def init_setting(self):
         # TODO
         self.setting_widget = SettingWidget()
 
-    def init_pet_image(self):
-        # 立绘的显示组件
-        self.portraitView = PetGraphicsView(self)
-        self.portraitView.setMinimumSize(300, 400)
-        self.layout().addWidget(self.portraitView)
-        screen = QDesktopWidget().screenGeometry()
-        self.adjustSize()
-        self.move(QPoint(int(screen.width()*0.95-self.width()), int(screen.height()*0.95-self.height())))
-
     def init_talk(self):#TODO
         self.talk_bubble = talkBubble()
+        self.talk_bubble.closeEvent = self.closeEvent
         self.input_label = inputLabel()
+        self.input_label.closeEvent = self.closeEvent
         self.input_label.requestSend.connect(self.start_talk)
         # 链接信号和槽
         self.text_update_timer = QTimer()
@@ -221,15 +178,15 @@ class DesktopPet(QWidget):
         if self.use_tts:
             self.tts_model = TTSAudio(tts_cache_path,is_play=True) # TODO EMOTION
             self.tts_thread:tts_thread = None
-        else:
-            self.no_tts_sound = noTTSAudioPlayer()
 
     def init_llm(self):
         self.history_manager = historyManager(setting.get_user_name(), history_path)
         self.llm_inferance = deepseek_model(setting.get_api_key(), setting.get_system_prompt())
         self.response_content = {}
         self.llm_thread = None
+### 初始化部分
 
+### '显示组件'选项部分
     def show_setting_window_event(self):
         #TODO
         QApplication.setQuitOnLastWindowClosed(False)
@@ -239,8 +196,15 @@ class DesktopPet(QWidget):
     def show_talk_bubble_event(self):
         self.talk_bubble.show_window()
 
+    def show_input_event(self):
+        self.input_label.show_window()
+
+    def show_desktop_pet(self):
+        self.desktop_pet.show_window()
+### '显示组件'选项部分
+
+### 实现对话部分
     def start_talk(self,input_text: str):
-        #TODO
         self.history_manager.add_user_message(input_text)
         self.llm_inferance.load_history(self.history_manager.get_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
@@ -260,41 +224,29 @@ class DesktopPet(QWidget):
 
     def start_typing(self):
         self.wait_until_start_talking.stop()
-        self.portraitView.set_speak()
+        self.desktop_pet.set_speak()
         if self.use_tts:
             self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
+        else:
+            self.no_tts_list = []
         self.on_read_text = 0
         self.text_update_timer.start(150)
 
-    def process_typing_effect(self):        #TODO
+    def process_typing_effect(self):
         try:
             if check_pattern.match(self.response_content['role_response'][self.on_read_text]) and self.use_tts is False:
-                self.no_tts_sound.play_audio()
+                self.no_tts_list.append(no_tts_sound_thread())
+                self.no_tts_list[-1].start()
             self.on_read_text += 1
             self.talk_bubble.update_text(self.response_content['role_response'][:self.on_read_text])
         except IndexError:
             self.finish_this_round_of_talk()
 
     def finish_this_round_of_talk(self):
-        #TODO
-        self.portraitView.stop_speak()
+        self.desktop_pet.stop_speak()
         self.text_update_timer.stop()
         self.input_label.enabled_send_text()
-        pass 
-
-    def show_portrait_event(self):
-        self.setWindowOpacity(0.99)
-
-    def hide_portrait_event(self):
-        self.setWindowOpacity(0)
-
-    def show_input_event(self):
-        self.input_label.show_window()
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        if hasattr(self, 'portraitView'):
-            self.portraitView.setGeometry(self.rect())
+### 实现对话部分
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写closeEvent，添加确认框
@@ -329,65 +281,8 @@ class DesktopPet(QWidget):
     def user_try_to_quit(self):
         pass
 
-    def contextMenuEvent(self, event):
-        """右键菜单"""
-        pet_menu = QMenu()
-        pet_menu.setStyleSheet("""
-            QMenu {
-                background-color: black;
-                color: white;
-                border: 1px solid #ff0084;
-            }
-            QMenu::item:selected {
-                background-color: gray;
-            }
-        """)
-        quit_action = pet_menu.addAction('退出')
-        hide = pet_menu.addAction('隐藏')
-        action = pet_menu.exec_(self.mapToGlobal(event.pos()))
-        if action == quit_action:
-            self.closeEvent(QCloseEvent())
-        if action == hide:
-            # 设置透明度方式来隐藏宠物
-            self.setWindowOpacity(0)
-
-    ### 根据鼠标拖动方法（需手动重写组件的方法）
-    def onMousePress(self, event: QMouseEvent):
-        if event.button() == Qt.LeftButton:
-            self.mouse_press_pos = event.globalPos()
-            self.window_pos = self.pos()
-            self.check_mouse_press_time.start(500)
-
-    def onMouseRelease(self, event: QMouseEvent):
-        # 释放时停止计时器、鼠标样式
-        self.check_mouse_press_time.stop()
-        self.setCursor(QCursor(Qt.ArrowCursor))
-        self.portraitView.unlock_facial_expr()
-        self.portraitView.change_emo(self.facial_expr_state)
-        if self.is_follow_mouse:
-            self.is_follow_mouse = False
-
-    def onMouseMove(self, event: QMouseEvent):
-        # 更新移动时鼠标样式
-        self.setCursor(QCursor(Qt.ClosedHandCursor))
-        if self.is_follow_mouse:
-            new_pos = self.window_pos + (event.globalPos() - self.mouse_press_pos)
-            self.move(new_pos)
-
-    def start_following_mouse(self):
-        # 更新鼠标样式
-        self.setCursor(QCursor(Qt.OpenHandCursor))
-        #更新面部表情
-        #self.facial_expr_state = self.S_EYE_CLOSE_DEPRESSED
-        self.portraitView.change_emo(self.S_EYE_CLOSE_DEPRESSED, True)
-        # 更新跟随鼠标状态
-        self.is_follow_mouse = True
-        # 停止计时器防止重复调用此函数
-        self.check_mouse_press_time.stop()
-
 if __name__ == '__main__' :
     
     app = QApplication(sys.argv)
-    pet = DesktopPet()
-    pet.show()
+    pet = mainWidget()
     sys.exit(app.exec_())
