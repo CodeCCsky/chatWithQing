@@ -2,11 +2,13 @@
 import os
 import time
 import json
+import re
 from typing import Union
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
 from asset.GUI.setting_gui import SettingWidget
 from asset.GUI.PetView import PetGraphicsView
@@ -16,12 +18,16 @@ import asset.GUI.res_rc
 
 from deepseek_api import deepseek_model, historyManager
 from deepseek_api.deepseek_tools import ds_tool
-
 from setting_reader import settingReader
+from tts import TTSAudio
 
 setting = settingReader()
 history_path = None
+tts_cache_path = r"cache/"
+no_tts_sound_path = r"asset\sound\speak.wav"
+check_pattern = re.compile(r'[\d\u4e00-\u9fa5\u3040-\u309F\u30A0-\u30FF\u0041-\u005A\u0061-\u007A]')
 
+SPEAK_GAP = 50
 
 class PyQt_deepseek_request_thread(QThread):
     text_update = pyqtSignal(str)
@@ -45,6 +51,37 @@ class PyQt_deepseek_request_thread(QThread):
     def get_response(self) -> str:
         return self.response
 
+class tts_thread(QThread):# TODO test
+    def __init__(self, tts_model: TTSAudio, tts_text: str) -> None:
+        super().__init__()
+        self.tts_model = tts_model
+        self.tts_text = tts_text
+    def run(self) -> None:
+        self.tts_model.tts_request(self.tts_text)
+
+class noTTSAudioPlayer:
+    def __init__(self, max_players=5):
+        self.max_players = max_players
+        self.media_players = [QMediaPlayer() for _ in range(max_players)]
+        self.audio_file = no_tts_sound_path
+        self.audio_queue = []
+
+    def play_audio(self):
+        self.audio_queue.append(self.audio_file)
+        self._play_next_audio()
+
+    def _play_next_audio(self):
+        if self.audio_queue:
+            for player in self.media_players:
+                if player.state() == QMediaPlayer.StoppedState:
+                    next_audio = self.audio_queue.pop(0)
+                    player.setMedia(QMediaContent(QUrl.fromLocalFile(next_audio)))
+                    player.play()
+                    break
+
+    def _check_queue(self):
+        self._play_next_audio()
+
 class DesktopPet(QWidget):
     S_NORMAL = 0
     S_INTENSE = 1
@@ -53,10 +90,11 @@ class DesktopPet(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None:
         super().__init__(parent)
         self.init_resource()
         self.init_subWindow()
+        self.use_tts = use_tts
 
         # 垂直布局
         layout = QVBoxLayout(self)
@@ -175,12 +213,21 @@ class DesktopPet(QWidget):
         # 链接信号和槽
         self.text_update_timer = QTimer()
         self.text_update_timer.timeout.connect(self.process_typing_effect)
+        self.wait_until_start_talking = QTimer()
+        self.wait_until_start_talking.timeout.connect(self.start_typing)
+        self.on_read_text = 0
         self.talk_bubble.show()
         self.input_label.show()
+        if self.use_tts:
+            self.tts_model = TTSAudio(tts_cache_path,is_play=True) # TODO EMOTION
+            self.tts_thread:tts_thread = None
+        else:
+            self.no_tts_sound = noTTSAudioPlayer()
 
     def init_llm(self):
         self.history_manager = historyManager(setting.get_user_name(), history_path)
         self.llm_inferance = deepseek_model(setting.get_api_key(), setting.get_system_prompt())
+        self.response_content = {}
         self.llm_thread = None
 
     def show_setting_window_event(self):
@@ -203,26 +250,35 @@ class DesktopPet(QWidget):
     def progress_thinking(self, finish_state: str):
         response = self.llm_thread.get_response()
         try:
-            content = json.loads(response)
-            self.talk_bubble.update_text(content['role_thoughts'], True)
-            wait_until_start_talking = QTimer()
-            wait_until_start_talking.timeout.connect(self.start_update_text)
-            wait_until_start_talking.start(2000) # BUG
+            self.response_content = json.loads(response)
+            self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
+            self.wait_until_start_talking.start(2000)
         except ValueError:
             self.talk_bubble.update_text(response)
         except KeyError:
             self.talk_bubble.update_text(response)
+
+    def start_typing(self):
+        self.wait_until_start_talking.stop()
+        self.portraitView.set_speak()
+        if self.use_tts:
+            self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
+        self.on_read_text = 0
+        self.text_update_timer.start(150)
+
+    def process_typing_effect(self):        #TODO
+        try:
+            if check_pattern.match(self.response_content['role_response'][self.on_read_text]) and self.use_tts is False:
+                self.no_tts_sound.play_audio()
+            self.on_read_text += 1
+            self.talk_bubble.update_text(self.response_content['role_response'][:self.on_read_text])
+        except IndexError:
+            self.finish_this_round_of_talk()
+
+    def finish_this_round_of_talk(self):
         #TODO
-
-    def start_update_text(self):
-        self.text_update_timer.start()
-
-    def process_typing_effect(self):
-        
-        pass
-
-    def finish_this_round_of_talk(self, status):
-        #TODO
+        self.portraitView.stop_speak()
+        self.text_update_timer.stop()
         self.input_label.enabled_send_text()
         pass 
 

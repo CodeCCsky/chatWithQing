@@ -103,6 +103,9 @@ class talkBubble(QWidget):
         self.is_hide = False
 
     def init_window_opacity_control(self):
+        self.keep_opacity = False
+        self.keep_opacity_timer = QTimer()
+        self.keep_opacity_timer.timeout.connect(self.reset_keep_opacity)
         self.is_mouse_over = True
         self.window_opacity_timer = QTimer()
         self.window_opacity_timer.timeout.connect(self.window_opacity_control)
@@ -126,10 +129,19 @@ class talkBubble(QWidget):
         self.update()
 
     def update_text(self, text, is_thinking: bool = False):
+        self.set_keep_opacity()
         self._setTextLabel('晴', text, is_thinking)
 
     def clear_text(self):
         self._setTextLabel('晴', '')
+
+    def set_keep_opacity(self, keep_time:int = 5000):
+        self.keep_opacity = True
+        self.keep_opacity_timer.start(keep_time)
+
+    def reset_keep_opacity(self):
+        self.keep_opacity = False
+        self.keep_opacity_timer.stop()
 
     def _setTextLabel(self, name: str, text: str, is_thinking: bool = False) -> None:
         default_start = '<p style=\"color: white;\">'
@@ -198,13 +210,17 @@ class talkBubble(QWidget):
         self.is_mouse_over = status
 
     def window_opacity_control(self):
-        if self.is_hide is False:
+        if self.is_hide is False and self.keep_opacity is False:
             if self.is_mouse_over:
                 opacity_value = min(0.99, self.windowOpacity()+0.1)
                 self.setWindowOpacity(opacity_value)
             else :
                 opacity_value = max(0.3, self.windowOpacity()-0.1)
                 self.setWindowOpacity(opacity_value)
+        elif self.is_hide:
+            self.setWindowOpacity(0)
+        elif self.keep_opacity:
+            self.setWindowOpacity(0.99)
 
     def enterEvent(self, event):
         self.set_mouse_over_timer.stop()
@@ -302,14 +318,6 @@ class talkBubble(QWidget):
         action = talk_bubble_menu.exec_(self.mapToGlobal(event.pos()))
         if action == hide:
             self.hide_window()
-
-    def hide_window(self):
-        self.is_hide = True
-        self.setWindowOpacity(0)
-
-    def show_window(self):
-        self.is_hide = False
-        self.setWindowOpacity(0.99)
 
 
 def font_size_in_pixels(font_size_pt: int) -> int:

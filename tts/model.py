@@ -22,7 +22,7 @@ class TTSAudio :
             tts_endpoint : str = params.DEFAULT_TTS_ENDPOINT,
             character_endpoint : str = params.DEFAULT_CHARACTER_ENDPOINT,
             character : str = params.DEFAULT_CHARACTER_NAME,
-            text_language : Literal["中文","英文","日文","中英混合","日英混合","多语种混合"] = "日英混合",
+            text_language : Literal["中文","英文","日文","中英混合","日英混合","多语种混合"] = "中文",
             emotion : str = params.DEFAULT_EMOTION,
             ) -> None:
         # wav file folder

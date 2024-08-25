@@ -14,8 +14,8 @@ class deepseek_model:
                  api_key: str,
                  system_prompt: str,
                  tools: ds_tool = ds_tool(),
-                 temperature: float = 1.0,
-                 frequency_penalty: float = 0.4,
+                 temperature: float = 1.1,
+                 frequency_penalty: float = 0.2,
                  presence_penalty: float = 0.2,
                  output_json: bool = False) -> None:
         """deepseek api接口. 每次发送前需要调用load_history加载历史.

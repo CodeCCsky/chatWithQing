@@ -1,11 +1,13 @@
 import sys
+import random
 from typing import Literal
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QTimer
 import asset.GUI.res_rc
+#import res_rc
 
-
+blink_time_list = [7000,100,200,100]
 
 class PetGraphicsView(QGraphicsView):
     EYE_NORMAL = 0
@@ -89,6 +91,11 @@ class PetGraphicsView(QGraphicsView):
         self.speak_time = QTimer()
         self.speak_time.timeout.connect(self.stop_speak)
 
+        self.blink_timer = QTimer()
+        self.blink_timer.timeout.connect(self.progress_blink)
+        self.blink_index = 0
+        self.blink_timer.start(blink_time_list[self.blink_index])
+
         self.set_image_change_timer()
 
         self.resizeEvent(None)
@@ -111,6 +118,21 @@ class PetGraphicsView(QGraphicsView):
         for part, timer in self.timers.items():
             if part != 'mouth':
                 timer.stop()
+
+    def progress_blink(self):
+        self.blink_index = (self.blink_index + 1) % 4
+        if self.blink_index == 0:
+            blink_time_list[self.blink_index] = random.randint(6000,10000)
+            self.change_emo(self.EYE_NORMAL)
+        elif self.blink_index == 1:
+            self.change_emo(self.EYE_HALF_CLOSED)
+        elif self.blink_index == 2:
+            self.change_emo(self.EYE_CLOSE_NORMAL)
+        else:
+            self.change_emo(self.EYE_HALF_CLOSED)
+        self.blink_timer.start(blink_time_list[self.blink_index])
+            
+
     ###
 
     def update_animation(self, part: str) -> None:

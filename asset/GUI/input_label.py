@@ -76,7 +76,7 @@ class inputLabel(QWidget):
 
         self.input_edit.setFont(self.input_font)
         #TODO 实时更新token
-        #self.input_edit.textChanged.connect(self.show_token)
+        self.input_edit.textChanged.connect(self.set_keep_opacity)
         #self.input_edit.setStyleSheet("background: transparent;color: white;border: 4px solid lightgreen;padding: 1px;")
         self.clearButton.setFont(self.button_font)
         self.sendButton.setFont(self.button_font)
@@ -93,13 +93,24 @@ class inputLabel(QWidget):
         self.is_hide = False
 
     def init_window_opacity_control(self):
+        self.keep_opacity = False
+        self.keep_opacity_timer = QTimer()
+        self.keep_opacity_timer.timeout.connect(self.reset_keep_opacity)
         self.is_mouse_over = True
         self.window_opacity_timer = QTimer()
         self.window_opacity_timer.timeout.connect(self.window_opacity_control)
         self.window_opacity_timer.start(25) # 25 毫秒更新一次窗口透明度
         self.set_mouse_over_timer = QTimer() # 鼠标离开/进入窗口后多久更新 is_mouse_over
 
-    def show_token(self, token_num: int):
+    def set_keep_opacity(self, keep_time:int = 3000):
+        self.keep_opacity = True
+        self.keep_opacity_timer.start(keep_time)
+
+    def reset_keep_opacity(self):
+        self.keep_opacity = False
+        self.keep_opacity_timer.stop()
+
+    def show_token(self, token_num: int):#TODO token计算对接deepseek_api模块
         self.statusBar.showMessage(f'预计输入的token数: {token_num} Tokens')
 
     def clear_text(self):
@@ -109,7 +120,7 @@ class inputLabel(QWidget):
         self.sendButton.setEnabled(False)
         self.input_edit.setEnabled(False)
         if self.input_edit.toPlainText():
-            self.statusBar.showMessage(f'发送中...')
+            self.statusBar.showMessage('发送中...')
             self.requestSend.emit(self.input_edit.toPlainText())
             self.clear_text()
 
@@ -126,17 +137,22 @@ class inputLabel(QWidget):
         self.is_mouse_over = status
 
     def window_opacity_control(self):
-        if self.is_hide is False:
+        if self.is_hide is False and self.keep_opacity is False:
             if self.is_mouse_over:
                 opacity_value = min(0.99, self.windowOpacity()+0.1)
                 self.setWindowOpacity(opacity_value)
             else :
                 opacity_value = max(0.3, self.windowOpacity()-0.1)
                 self.setWindowOpacity(opacity_value)
+        elif self.is_hide:
+            self.setWindowOpacity(0)
+        elif self.keep_opacity:
+            self.setWindowOpacity(0.99)
 
     def enabled_send_text(self):
         self.sendButton.setEnabled(True)
         self.input_edit.setEnabled(True)
+        self.statusBar.showMessage('')
 
     def enterEvent(self, event):
         self.set_mouse_over_timer.stop()
