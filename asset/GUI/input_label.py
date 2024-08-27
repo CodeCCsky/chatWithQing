@@ -119,10 +119,9 @@ class inputLabel(QWidget):
     def send_text(self):
         self.sendButton.setEnabled(False)
         self.input_edit.setEnabled(False)
-        if self.input_edit.toPlainText():
-            self.statusBar.showMessage('发送中...')
-            self.requestSend.emit(self.input_edit.toPlainText())
-            self.clear_text()
+        self.statusBar.showMessage('发送中...',1000)
+        self.requestSend.emit(self.input_edit.toPlainText())
+        self.clear_text()
 
     def hide_window(self):
         self.is_hide = True

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
-from collections import deque
+import queue
 import json
 import re
 from typing import Union
@@ -26,7 +26,7 @@ setting = settingReader()
 history_path = None
 tts_cache_path = r"cache/"
 no_tts_sound_path = r"asset\sound\speak.wav"
-check_pattern = re.compile(r'[\d\u4e00-\u9fa5\u3040-\u309F\u30A0-\u30FF\u0041-\u005A\u0061-\u007A]')
+check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
 SPEAK_GAP = 50
 
@@ -60,13 +60,23 @@ class tts_thread(QThread):# TODO test
     def run(self) -> None:
         self.tts_model.tts_request(self.tts_text)
 
-class no_tts_sound_thread(QThread):
-    def __init__(self):
+class no_tts_sound_manager(QObject):
+    def __init__(self, path, max_list_len = 5):
         super().__init__()
-        self.sound = QSoundEffect()
-        self.sound.setSource(QUrl.fromLocalFile(no_tts_sound_path))
-    def run(self):
-        self.sound.play()
+        self.file_path = path
+        self.max_list_len = max_list_len
+        self.sounds = []
+        for _ in range(self.max_list_len):
+            _player = QSoundEffect()
+            _player.setSource(QUrl.fromLocalFile(self.file_path))
+            self.sounds.append(_player)
+
+    def play_audio(self):
+        for i in range(self.max_list_len):
+            if not self.sounds[i].isPlaying():
+                self.sounds[i].play()
+                break
+            
 
 
 class mainWidget(QWidget):
@@ -89,6 +99,7 @@ class mainWidget(QWidget):
         self.init_desktop_pet()
         self.init_talk()
         self.init_llm()
+        self.init_stroke()
 
 ### 初始化部分
     def init_resource(self):
@@ -178,6 +189,14 @@ class mainWidget(QWidget):
         if self.use_tts:
             self.tts_model = TTSAudio(tts_cache_path,is_play=True) # TODO EMOTION
             self.tts_thread:tts_thread = None
+        else:
+            self.no_tts_sound_path = no_tts_sound_path
+            self.no_tts_sound_manager = no_tts_sound_manager(self.no_tts_sound_path)
+
+
+    def init_stroke(self):
+        self.pet_part = None
+        self.desktop_pet.stroke_area.stroked_area_signal.connect(self.progress_stroke)
 
     def init_llm(self):
         self.history_manager = historyManager(setting.get_user_name(), history_path)
@@ -203,9 +222,29 @@ class mainWidget(QWidget):
         self.desktop_pet.show_window()
 ### '显示组件'选项部分
 
+### 处理摸摸部分
+    def progress_stroke(self, max_index: int):
+        matching_dict = {
+            0 : '头',
+            1 : '胡萝卜发卡',
+            2 : '头发',
+            3 : '头发',
+            4 : '脸'
+        }
+        if self.pet_part is None:
+            self.pet_part = matching_dict[max_index]
+            self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+###
 ### 实现对话部分
     def start_talk(self,input_text: str):
-        self.history_manager.add_user_message(input_text)
+        # TODO 更多系统提示
+        _time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        sys_input = f'|当前时间:{_time}(24时制)|'
+        #status_bar_hint = ''
+        if self.pet_part is not None:
+            sys_input += f'| {setting.get_user_name()}摸了摸你的{self.pet_part} |'
+            self.pet_part = None
+        self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
         self.llm_inferance.load_history(self.history_manager.get_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
         self.llm_thread.start()
@@ -227,18 +266,17 @@ class mainWidget(QWidget):
         self.desktop_pet.set_speak()
         if self.use_tts:
             self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
-        else:
-            self.no_tts_list = []
         self.on_read_text = 0
         self.text_update_timer.start(150)
 
     def process_typing_effect(self):
         try:
-            if check_pattern.match(self.response_content['role_response'][self.on_read_text]) and self.use_tts is False:
-                self.no_tts_list.append(no_tts_sound_thread())
-                self.no_tts_list[-1].start()
+            if not self.use_tts and re.match(r'[\d\u4e00-\u9fff]',self.response_content['role_response'][self.on_read_text]):
+                self.no_tts_sound_manager.play_audio()
             self.on_read_text += 1
             self.talk_bubble.update_text(self.response_content['role_response'][:self.on_read_text])
+            if self.on_read_text > len(self.response_content['role_response']):
+                self.finish_this_round_of_talk()
         except IndexError:
             self.finish_this_round_of_talk()
 

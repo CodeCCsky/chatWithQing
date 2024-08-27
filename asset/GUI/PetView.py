@@ -17,8 +17,9 @@ class PetGraphicsView(QGraphicsView):
     EYE_CLOSE_NORMAL = 4
     EYE_CLOSE_DEPRESSED = 5
     EYE_CLOSE_SMILE = 6
-    REFRESH_TIME = 400 # 400毫秒
-    speak_gap = 120 # 100毫秒
+    REFRESH_TIME = 400 # 刷新时间
+    speak_gap = 150 # 说话状态嘴部切换时间
+    stroke_upd_time = 600 # 摸头表情重置时间
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -88,8 +89,12 @@ class PetGraphicsView(QGraphicsView):
             'mouth' : QTimer(),
             'hand' : QTimer()
         }
+        # 说话时长倒计时
         self.speak_time = QTimer()
         self.speak_time.timeout.connect(self.stop_speak)
+        # 退出摸头表情倒计时
+        self.stroke_timer = QTimer()
+        self.stroke_timer.timeout.connect(self.stop_stroke)
 
         self.blink_timer = QTimer()
         self.blink_timer.timeout.connect(self.progress_blink)
@@ -99,48 +104,6 @@ class PetGraphicsView(QGraphicsView):
         self.set_image_change_timer()
 
         self.resizeEvent(None)
-
-    ###
-    # 以下三个方法控制除嘴部之外的部件的更新状态
-    def set_image_change_timer(self) -> None:
-        for part, timer in self.timers.items():
-            if part != 'mouth':
-                timer.timeout.connect(lambda p=part: self.update_animation(p))
-                timer.start(self.REFRESH_TIME)
-        self.timers['mouth'].timeout.connect(lambda p='mouth': self.update_animation(p))
-
-    def restart_image_change_timer(self) -> None:
-        for part, timer in self.timers.items():
-            if part != 'mouth':
-                timer.start(self.REFRESH_TIME)
-
-    def stop_image_change_timer(self) -> None:
-        for part, timer in self.timers.items():
-            if part != 'mouth':
-                timer.stop()
-
-    def progress_blink(self):
-        self.blink_index = (self.blink_index + 1) % 4
-        if self.blink_index == 0:
-            blink_time_list[self.blink_index] = random.randint(6000,10000)
-            self.change_emo(self.EYE_NORMAL)
-        elif self.blink_index == 1:
-            self.change_emo(self.EYE_HALF_CLOSED)
-        elif self.blink_index == 2:
-            self.change_emo(self.EYE_CLOSE_NORMAL)
-        else:
-            self.change_emo(self.EYE_HALF_CLOSED)
-        self.blink_timer.start(blink_time_list[self.blink_index])
-            
-
-    ###
-
-    def update_animation(self, part: str) -> None:
-        """更新组件"""
-        current_index = self.current_indices[part]
-        next_index = (current_index + 1) % len(self.parts[part][self.show_state[part]])
-        self.img_items[part].setPixmap(self.parts[part][self.show_state[part]][next_index])
-        self.current_indices[part] = next_index
 
     def init_resources(self) -> None:
         self.eyes = (
@@ -186,6 +149,58 @@ class PetGraphicsView(QGraphicsView):
             QPixmap(':/image/body-b.png')
         ),)
 
+    ### 以下三个方法控制除嘴部之外的部件的更新状态
+    def set_image_change_timer(self) -> None:
+        for part, timer in self.timers.items():
+            if part != 'mouth':
+                timer.timeout.connect(lambda p=part: self.update_animation(p))
+                timer.start(self.REFRESH_TIME)
+        self.timers['mouth'].timeout.connect(lambda p='mouth': self.update_animation(p))
+
+    def restart_image_change_timer(self) -> None:
+        for part, timer in self.timers.items():
+            if part != 'mouth':
+                timer.start(self.REFRESH_TIME)
+
+    def stop_image_change_timer(self) -> None:
+        for part, timer in self.timers.items():
+            if part != 'mouth':
+                timer.stop()
+    ###
+    def progress_stroke(self):
+        self.blink_index = -1
+        self.change_emo(self.EYE_CLOSE_SMILE)
+        self.stroke_timer.start(self.stroke_upd_time)
+
+    def stop_stroke(self):
+        self.stroke_timer.stop()
+        self.blink_index = 3
+        self.progress_blink()
+
+    def progress_blink(self):
+        if self.blink_index == -1:
+            return None
+        self.blink_index = (self.blink_index + 1) % 4
+        if self.blink_index == 0:
+            blink_time_list[self.blink_index] = random.randint(6000,10000)
+            self.change_emo(self.EYE_NORMAL)
+        elif self.blink_index == 1:
+            self.change_emo(self.EYE_HALF_CLOSED)
+        elif self.blink_index == 2:
+            self.change_emo(self.EYE_CLOSE_NORMAL)
+        else:
+            self.change_emo(self.EYE_HALF_CLOSED)
+        self.blink_timer.start(blink_time_list[self.blink_index])
+
+
+    ###
+    def update_animation(self, part: str) -> None:
+        """更新组件"""
+        current_index = self.current_indices[part]
+        next_index = (current_index + 1) % len(self.parts[part][self.show_state[part]])
+        self.img_items[part].setPixmap(self.parts[part][self.show_state[part]][next_index])
+        self.current_indices[part] = next_index
+
     def change_emo(self, index: int, add_lock: bool = False) -> bool:
         """切换眼部（面部表情？），只有在未上锁时才能生效
 
@@ -197,12 +212,12 @@ class PetGraphicsView(QGraphicsView):
             bool: 返回是否成功切换表情
         """
         if self.facial_lock is False:
-            self.stop_image_change_timer()
+            #self.stop_image_change_timer()
             self.show_state['eyes'] = index
             self.current_indices['eyes'] = 0
             self.img_items['eyes'].setPixmap(
                 self.parts['eyes'][self.show_state['eyes']][self.current_indices['eyes']])
-            self.restart_image_change_timer()
+            #self.restart_image_change_timer()
         else :
             return False
         self.facial_lock = add_lock

@@ -1,12 +1,12 @@
 import yaml
 
-api_key = '***REMOVED***'
+api_key = None
 prt = None
-name = '***REMOVED***'
-your_sex = '***REMOVED***'
-favourite_food = '***REMOVED***'
-liked_style = '***REMOVED***'
-user_location = '***REMOVED***'
+name = None
+your_sex = None
+favourite_food = None
+liked_style = None
+user_location = None
 
 with open(r"system_prompt_main.txt",'r',encoding='utf-8') as f:
     prt = f.read()

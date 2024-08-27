@@ -165,3 +165,5 @@ cache/*.wav
 cache/*.mp3
 private_setting.yaml
 history/*
+.VSCodeCounter/
+write_system_prompt_private.py

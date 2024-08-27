@@ -45,7 +45,7 @@ class historyManager:
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.history.append({"role":"user", "content":{self.user_name:user_input}})
         if sys_input is not None:
-            self.history[-1]['sys'] = sys_input
+            self.history[-1]['content']['sys'] = sys_input
         self.save_history()
 
     def add_assistant_message(self, assistant_response: str) -> None:
@@ -53,7 +53,7 @@ class historyManager:
             content = json.loads(assistant_response)
             self.history.append({"role":"assistant","content":content})
         except ValueError as ve:
-            logger.error(f"模型返回格式有误，历史文件将直接存储原始字符串")
+            logger.error(f"模型返回格式有误，历史对话文件将直接存储原始字符串")
             self.error_index.append(len(self.history))
             self.history.append({"role":"assistant","content":assistant_response})
         finally:
