@@ -1,4 +1,4 @@
-<R***REMOVED***>
+<RCC>
   <qresource prefix="/">
     <file>font/荆南波波黑.ttf</file>
     <file>Icon/icon.png</file>
@@ -31,4 +31,4 @@
     <file>image/say-4.png</file>
     <file>image/shadow.png</file>
   </qresource>
-</R***REMOVED***>
+</RCC>
