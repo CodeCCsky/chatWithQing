@@ -20,7 +20,7 @@ chatWithQing 是一个基于人工智能的二创桌宠项目。
 - 许可证文件：`licenses/MEDIA_LICENSE`
 - 完整文本：https://creativecommons.org/licenses/by-nc/4.0/deed.zh
 - 注意：这些内容不得用于任何商业用途。
-- 特别说明：这些图片和音频的作者(莲花池池)[https://space.bilibili.com/760048]要求不能将本项目内的这些资源用于商业目的。在使用这些资源时，请遵守作者的意愿和CC BY-NC 4.0许可证的条款。
+- 特别说明：这些图片和音频的作者[莲花池池](https://space.bilibili.com/760048)要求不能将本项目内的这些资源用于商业目的。在使用这些资源时，请遵守作者的意愿和CC BY-NC 4.0许可证的条款。
 
 3.**OFL 授权字体**：字体文件 `asset/GUI/font/荆南波波黑.ttf` 采用 SIL 开放字体许可证（OFL）授权。
 
@@ -36,6 +36,6 @@ chatWithQing 是一个基于人工智能的二创桌宠项目。
 
 有关完整的许可详情，请参阅本仓库根目录中的 `LICENSE` 文件。
 
-## 贡献
+## 贡献 & 感谢
 
-- 特别感谢(池池)[https://space.bilibili.com/760048]对图片的授权
+- 特别感谢[池池](https://space.bilibili.com/760048)对图片的授权
