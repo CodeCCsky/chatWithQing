@@ -1,0 +1,24 @@
+# Icon Licenses
+
+This file provides specific license information for each icon in the project.
+
+## OFL (SIL Open Font License)
+The following icons are licensed under the SIL Open Font License:
+- exit.png
+- exit_black.png
+
+Full text of the OFL can be found in the `licenses/FONT_LICENSE` file or at https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+
+## Apache License 2.0
+The following icons are licensed under the Apache License 2.0:
+- setting.png
+- setting_black.png
+
+Full text of the Apache License 2.0 can be found at https://www.apache.org/licenses/LICENSE-2.0
+
+## CC BY-NC 4.0 (Creative Commons Attribution-NonCommercial 4.0 International)
+The following icons are licensed under the CC BY-NC 4.0 license:
+- icon.png
+- minimize.png
+
+Full text of the CC BY-NC 4.0 license can be found in the `licenses/MEDIA_LICENSE` file or at https://creativecommons.org/licenses/by-nc/4.0/

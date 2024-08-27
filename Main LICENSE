@@ -1,0 +1,24 @@
+# License Information
+
+This repository contains various types of content, each governed by its own license terms:
+
+1. Software:
+   All software (including Python code and XML files) in this repository is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+   License file: `SOFTWARE_LICENSE`
+   Full text: https://www.gnu.org/licenses/agpl-3.0.en.html
+
+2. Images and Audio:
+   All images (except icons) and audio files in the `asset/GUI/image` and `asset/sound` directories are licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+   License file: `licenses/MEDIA_LICENSE`
+   Full text: https://creativecommons.org/licenses/by-nc/4.0/
+   IMPORTANT NOTICE: The author of these images and audio files, known as "莲花池池" (LianHua ChiChi) on bilibili, has explicitly requested that these resources must not be used for any commercial purposes. When using these resources, please ensure that you comply with both the author's wishes and the terms of the CC BY-NC 4.0 license.
+
+3. OFL-licensed Font:
+   The font file `asset/GUI/font/荆南波波黑.ttf` is licensed under the SIL Open Font License (OFL).
+   License file: `licenses/FONT_LICENSE`
+   Full text: https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+
+4. Icons:
+   Icons in this repository are licensed under various terms. Please refer to the `licenses/ICON_LICENSES` file for specific details on each icon's license.
+
+Please ensure you comply with the terms of each license when using or distributing content from this repository.
