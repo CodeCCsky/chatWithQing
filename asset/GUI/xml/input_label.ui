@@ -113,7 +113,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="sendButton">
         <property name="text">
          <string>发送</string>
         </property>

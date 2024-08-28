@@ -5,19 +5,16 @@ class User :
                  user_name : str,
                  user_sex : str,
                  favourite_food : str,
-                 liked_style : str,
                  user_location : str) -> None:
         self.user_sex = user_sex
         self.user_name = user_name
         self.favourite_food = favourite_food
-        self.liked_style = liked_style
         self.user_location = user_location
 
     def get_fulled_system_prompt(self, sys_prompt : str):
         return sys_prompt.format(user=self.user_name,
                                  user_sex=self.user_sex,
                                  favourite_food=self.favourite_food,
-                                 liked_style=self.liked_style,
                                  user_location=self.user_location)
 
 class settingReader:
@@ -36,7 +33,6 @@ class settingReader:
             self.user = User(user_name=res['user_name'],
                              user_sex=res['user_sex'],
                              favourite_food=res['favourite_food'],
-                             liked_style=res['liked_style'],
                              user_location=res['user_location'])
             self.system_prompt_main = self.user.get_fulled_system_prompt(self.system_prompt_main)
 
