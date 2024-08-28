@@ -1,5 +1,3 @@
-# pip3 install transformers
-# python3 deepseek_v2_tokenizer.py
 import transformers
 
 chat_tokenizer_dir = r"deepseek_api\deepseek_tokenizer"

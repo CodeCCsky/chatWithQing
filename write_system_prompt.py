@@ -38,5 +38,5 @@ try:
     with open(r"private_setting.yaml",'w',encoding='utf-8') as f:
         yaml.dump(data=data,stream=f,allow_unicode=True)
     print("已成功写入")
-except:
-    
+except Exception as e:
+    print(e)
