@@ -72,7 +72,7 @@ sampwidth:{wf.getsampwidth()} channels:{wf.getnchannels()} framerate:{wf.getfram
         self.stop()
 
 from requests import Response
-
+import audioop
 class responseStreamAudio:
     def __init__(self, output_device_index : int = None) -> None:
         self.output_device_index = output_device_index
@@ -80,6 +80,7 @@ class responseStreamAudio:
         self.rate = None
         self.channels = None
         self.width_format = None
+        self.start_speak = False
         self.p = pyaudio.PyAudio()
 
         # Thread
@@ -124,12 +125,18 @@ sampwidth:{self.width_format} channels:{self.channels} framerate:{self.rate}")
                 if self.stop_event.is_set():
                     break
                 stream.write(audio_chunk)
+                rms = audioop.rms(audio_chunk, 2)
+                if rms > 100 and rms < 10000:
+                    self.start_speak = True
 
             stream.stop_stream()
             stream.close()
         except Exception as e:
             logger.error(e)
             raise e
+
+    def get_speak_state(self) -> bool:
+        return self.start_speak
 
     def stop(self) -> None:
         logger.debug("Stop signal set")

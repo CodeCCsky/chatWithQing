@@ -84,6 +84,8 @@ class TTSAudio :
             logger.info("Successfully get response. code:200")
             if self.is_stream is True :
                 self.audio.play_stream(response)
+                while self.audio.thread.is_alive():
+                    yield self.audio.start_speak
             else :
                 file_path = os.path.join(self.cache_path,self.get_cache_file_name)
                 with wave.open(file_path, 'wb') as wf:

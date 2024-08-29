@@ -8,8 +8,8 @@ from PyQt5.QtCore import Qt, QPoint, QTimer
 import numpy as np
 import asset.GUI.res_rc
 #import res_rc
-
-TEXT_UPDATE_TIME = 100 # 毫秒
+#TODO 由设置面板控制
+TEXT_UPDATE_TIME = 200 # 毫秒
 
 class talkBubble(QWidget):
     def __init__(self, parent=None) -> None:

@@ -38,7 +38,7 @@ class mainWidget(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None:
+    def __init__(self, parent: QWidget = None, use_tts:bool = True) -> None: #TODO use_tts 由设置面板控制
         super().__init__(parent)
         self.init_resource()
         self.use_tts = use_tts
@@ -139,7 +139,7 @@ class mainWidget(QWidget):
         self.talk_bubble.show()
         self.input_label.show()
         if self.use_tts:
-            self.tts_model = TTSAudio(tts_cache_path,is_play=True) # TODO EMOTION
+            self.tts_model = TTSAudio(cache_path=tts_cache_path,is_play=True) # TODO EMOTION
             self.tts_thread:tts_thread = None
         else:
             self.no_tts_sound_path = no_tts_sound_path
@@ -225,17 +225,23 @@ class mainWidget(QWidget):
         try:
             self.response_content = json.loads(response)
             self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
-            self.wait_until_start_talking.start(2000)
+            
+            if self.use_tts:
+                self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
+                self.tts_thread.start()
+                self.tts_thread.startSpeak.connect(self.start_typing)
+            else:
+                self.wait_until_start_talking.start(2000)
         except ValueError:
             self.talk_bubble.update_text(response)
         except KeyError:
             self.talk_bubble.update_text(response)
 
     def start_typing(self):
+        if self.use_tts:
+            self.tts_thread.disconnect()
         self.wait_until_start_talking.stop()
         self.desktop_pet.set_speak()
-        if self.use_tts:
-            self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
         self.on_read_text = 0
         self.text_update_timer.start(150)
 
