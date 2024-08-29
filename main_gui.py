@@ -193,19 +193,27 @@ class mainWidget(QWidget):
 ### </处理摸摸部分>
 ### <处理预计token数部分>
     def progress_text2token(self, text: str):
-        self.text2token_thread = get_token_num_thread(text=text, tokenizer=self.tokenizer)
+        sys_msg = self.progress_sys_msg(False)
+        tpl_text = self.history_manager.get_user_message_template(setting.get_user_name(), text, sys_msg)
+        self.text2token_thread = get_token_num_thread(text=tpl_text, tokenizer=self.tokenizer)
         self.text2token_thread.responseTokenNum.connect(self.input_label.show_token)
         self.text2token_thread.run()
 ### </处理预计token数部分>
+
 ### <实现对话部分>
-    def start_talk(self,input_text: str):
-        # TODO 更多系统提示
+    def progress_sys_msg(self, clear_pet_state: bool = True) -> str:
         _time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         sys_input = f'|当前时间:{_time}(24时制)|'
         #status_bar_hint = ''
         if self.pet_part is not None:
             sys_input += f'| {setting.get_user_name()}摸了摸你的{self.pet_part} |'
-            self.pet_part = None
+            if clear_pet_state:
+                self.pet_part = None
+        return sys_input
+
+    def start_talk(self,input_text: str):
+        # TODO 更多系统提示
+        sys_input = self.progress_sys_msg()
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
         self.llm_inferance.load_history(self.history_manager.get_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
