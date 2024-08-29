@@ -3,12 +3,11 @@ from deepseek_api import offline_tokenizer
 
 class get_token_num_thread(QThread):
     responseTokenNum = pyqtSignal(int)
-    def __init__(self, text: str, parent=None) -> None:
+    def __init__(self, text: str, tokenizer: offline_tokenizer, parent=None) -> None:
         super().__init__(parent)
-        self.ofl_tokenizer = offline_tokenizer()
+        self.tokenizer = tokenizer
         self.text = text
 
     def run(self):
-        print('run')
-        num_of_tokens = self.ofl_tokenizer.count_tokens(self.text)
+        num_of_tokens = self.tokenizer.count_tokens(self.text)
         self.responseTokenNum.emit(num_of_tokens)

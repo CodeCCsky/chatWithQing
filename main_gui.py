@@ -51,6 +51,7 @@ class mainWidget(QWidget):
         self.init_talk()
         self.init_llm()
         self.init_stroke()
+        self.init_text2token()
 
 ### <初始化部分>
     def init_resource(self):
@@ -155,6 +156,7 @@ class mainWidget(QWidget):
         self.llm_thread = None
 
     def init_text2token(self):
+        self.tokenizer = offline_tokenizer()
         self.input_label.getTokens.connect(self.progress_text2token)
         self.text2token_thread = None
 ### </初始化部分>
@@ -191,9 +193,9 @@ class mainWidget(QWidget):
 ### </处理摸摸部分>
 ### <处理预计token数部分>
     def progress_text2token(self, text: str):
-        self.text2token_thread = get_token_num_thread(text=text)
-        self.text2token_thread.run()
+        self.text2token_thread = get_token_num_thread(text=text, tokenizer=self.tokenizer)
         self.text2token_thread.responseTokenNum.connect(self.input_label.show_token)
+        self.text2token_thread.run()
 ### </处理预计token数部分>
 ### <实现对话部分>
     def start_talk(self,input_text: str):

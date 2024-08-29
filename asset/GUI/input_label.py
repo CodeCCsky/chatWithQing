@@ -11,15 +11,15 @@ import asset.GUI.res_rc
 class inputLabel(QWidget):
     requestSend = pyqtSignal(str)
     getTokens = pyqtSignal(str)
-    def __init__(self,parent = None, is_calc_token = False, update_token_time = 5000):
+    def __init__(self,parent = None, is_calc_token = True, update_token_time = 1000):
         super().__init__(parent)
         self.input_font_size = 16
         self.button_font_size = 16
         self.input_font = QFont('SimHei',self.input_font_size)
         self.button_font = QFont('SimHei',self.button_font_size)
-        self.initUI()
+        self.init_token_calc(update_token_time, is_calc_token)
         self.init_window_opacity_control()
-        self.init_token_calc(update_token_time)
+        self.initUI()
 
     def initUI(self):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
@@ -95,21 +95,20 @@ class inputLabel(QWidget):
 
     def init_window_opacity_control(self) -> None:
         self.keep_opacity = False
+        self.is_mouse_over = True
         self.keep_opacity_timer = QTimer()
         self.keep_opacity_timer.timeout.connect(self.reset_keep_opacity)
-        self.is_mouse_over = True
         self.window_opacity_timer = QTimer()
         self.window_opacity_timer.timeout.connect(self.window_opacity_control)
         self.window_opacity_timer.start(25) # 25 毫秒更新一次窗口透明度
         self.set_mouse_over_timer = QTimer() # 鼠标离开/进入窗口后多久更新 is_mouse_over
 
-    def init_token_calc(self, update_token_time: int) -> None:
+    def init_token_calc(self, update_token_time: int, is_calc_token: bool) -> None:
         self.wait_to_send_text = ''
-        self.is_sending = False
+        self.is_calc_token = is_calc_token
         self.update_token_time = update_token_time
         self.text2token_timer = QTimer()
-        self.text2token_timer.timeout.connect(lambda :self.update_text2token(self.input_edit.toPlainText()))
-        self.text2token_timer.start(self.update_token_time)
+        self.text2token_timer.timeout.connect(self.send_text2token)
 
     def set_keep_opacity(self, keep_time:int = 3000):
         self.keep_opacity = True
@@ -120,16 +119,21 @@ class inputLabel(QWidget):
         self.keep_opacity_timer.stop()
 
     def update_text2token(self, text: str):
-        if not self.is_sending:
+        self.text2token_timer.start(self.update_token_time)
+        self.wait_to_send_text = text
+
+    def send_text2token(self):
+        if self.is_calc_token:
             self.getTokens.emit(self.wait_to_send_text)
-            self.is_sending = True
+            self.text2token_timer.stop()
 
     def show_token(self, token_num: int):#TODO token计算对接deepseek_api模块
         self.statusBar.showMessage(f'预计输入的token数: {token_num} Tokens')
-        self.is_sending = False
+        self.text2token_timer.start(self.update_token_time)
 
     def clear_text(self):
         self.input_edit.setPlainText('')
+        self.text2token_timer.stop()
 
     def send_text(self):
         self.sendButton.setEnabled(False)
