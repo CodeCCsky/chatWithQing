@@ -127,8 +127,8 @@ class inputLabel(QWidget):
             self.getTokens.emit(self.wait_to_send_text)
             self.text2token_timer.stop()
 
-    def show_token(self, token_num: int):#TODO token计算对接deepseek_api模块
-        self.statusBar.showMessage(f'预计输入的token数: {token_num} Tokens')
+    def show_token(self, token_num: int):
+        self.statusBar.showMessage(f'输入预计消耗的token数量(包含后台提示): {token_num} Tokens')
         self.text2token_timer.start(self.update_token_time)
 
     def clear_text(self):
