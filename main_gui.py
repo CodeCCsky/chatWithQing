@@ -38,7 +38,7 @@ class mainWidget(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None:
+    def __init__(self, parent: QWidget = None, use_tts:bool = True) -> None:
         super().__init__(parent)
         self.init_resource()
         self.use_tts = use_tts
@@ -139,7 +139,7 @@ class mainWidget(QWidget):
         self.talk_bubble.show()
         self.input_label.show()
         if self.use_tts:
-            self.tts_model = TTSAudio(tts_cache_path,is_play=True) # TODO EMOTION
+            self.tts_model = TTSAudio(cache_path=tts_cache_path,is_play=True) # TODO EMOTION
             self.tts_thread:tts_thread = None
         else:
             self.no_tts_sound_path = no_tts_sound_path
@@ -236,6 +236,7 @@ class mainWidget(QWidget):
         self.desktop_pet.set_speak()
         if self.use_tts:
             self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
+            self.tts_thread.start()
         self.on_read_text = 0
         self.text_update_timer.start(150)
 
