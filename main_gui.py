@@ -38,7 +38,7 @@ class mainWidget(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None, use_tts:bool = True) -> None:
+    def __init__(self, parent: QWidget = None, use_tts:bool = True) -> None: #TODO use_tts 由设置面板控制
         super().__init__(parent)
         self.init_resource()
         self.use_tts = use_tts
