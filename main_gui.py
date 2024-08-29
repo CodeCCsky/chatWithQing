@@ -9,16 +9,16 @@ import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import QSoundEffect
 
 from asset.GUI.setting_gui import SettingWidget
 from asset.GUI.desktop_pet import DesktopPet
 from asset.GUI.talk_bubble import talkBubble
 from asset.GUI.input_label import inputLabel
+from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget
+from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model, historyManager
-from deepseek_api.deepseek_tools import ds_tool
+from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting_reader import settingReader
 from tts import TTSAudio
 
@@ -29,55 +29,6 @@ no_tts_sound_path = r"asset\sound\speak.wav"
 check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
 SPEAK_GAP = 50
-
-class PyQt_deepseek_request_thread(QThread):
-    text_update = pyqtSignal(str)
-    finish_signal = pyqtSignal(str)
-
-    def __init__(self, model: deepseek_model, history_namager: historyManager) -> None:
-        super().__init__()
-        self.model = model
-        self.history_manager = history_namager
-        self.response = None
-        self.finish_reason = None
-
-    def run(self) -> None:
-        self.response, self.finish_reason, _ = self.model.send_message()
-        self.history_manager.add_assistant_message(self.response)
-        self.finish_signal.emit(self.finish_reason)
-
-    def get_status(self) -> Union[str, None]:
-        return self.model.is_done()
-
-    def get_response(self) -> str:
-        return self.response
-
-class tts_thread(QThread):# TODO test
-    def __init__(self, tts_model: TTSAudio, tts_text: str) -> None:
-        super().__init__()
-        self.tts_model = tts_model
-        self.tts_text = tts_text
-    def run(self) -> None:
-        self.tts_model.tts_request(self.tts_text)
-
-class no_tts_sound_manager(QObject):
-    def __init__(self, path, max_list_len = 5):
-        super().__init__()
-        self.file_path = path
-        self.max_list_len = max_list_len
-        self.sounds = []
-        for _ in range(self.max_list_len):
-            _player = QSoundEffect()
-            _player.setSource(QUrl.fromLocalFile(self.file_path))
-            self.sounds.append(_player)
-
-    def play_audio(self):
-        for i in range(self.max_list_len):
-            if not self.sounds[i].isPlaying():
-                self.sounds[i].play()
-                break
-            
-
 
 class mainWidget(QWidget):
     S_NORMAL = 0
@@ -100,8 +51,9 @@ class mainWidget(QWidget):
         self.init_talk()
         self.init_llm()
         self.init_stroke()
+        self.init_text2token()
 
-### 初始化部分
+### <初始化部分>
     def init_resource(self):
         """加载资源"""
         # icon
@@ -193,7 +145,6 @@ class mainWidget(QWidget):
             self.no_tts_sound_path = no_tts_sound_path
             self.no_tts_sound_manager = no_tts_sound_manager(self.no_tts_sound_path)
 
-
     def init_stroke(self):
         self.pet_part = None
         self.desktop_pet.stroke_area.stroked_area_signal.connect(self.progress_stroke)
@@ -203,9 +154,14 @@ class mainWidget(QWidget):
         self.llm_inferance = deepseek_model(setting.get_api_key(), setting.get_system_prompt())
         self.response_content = {}
         self.llm_thread = None
-### 初始化部分
 
-### '显示组件'选项部分
+    def init_text2token(self):
+        self.tokenizer = offline_tokenizer()
+        self.input_label.getTokens.connect(self.progress_text2token)
+        self.text2token_thread = None
+### </初始化部分>
+
+### <'显示组件'选项部分>
     def show_setting_window_event(self):
         #TODO
         QApplication.setQuitOnLastWindowClosed(False)
@@ -220,9 +176,9 @@ class mainWidget(QWidget):
 
     def show_desktop_pet(self):
         self.desktop_pet.show_window()
-### '显示组件'选项部分
+### </'显示组件'选项部分>
 
-### 处理摸摸部分
+### <处理摸摸部分>
     def progress_stroke(self, max_index: int):
         matching_dict = {
             0 : '头',
@@ -234,16 +190,30 @@ class mainWidget(QWidget):
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
             self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
-###
-### 实现对话部分
-    def start_talk(self,input_text: str):
-        # TODO 更多系统提示
+### </处理摸摸部分>
+### <处理预计token数部分>
+    def progress_text2token(self, text: str):
+        sys_msg = self.progress_sys_msg(False)
+        tpl_text = self.history_manager.get_user_message_template(setting.get_user_name(), text, sys_msg)
+        self.text2token_thread = get_token_num_thread(text=tpl_text, tokenizer=self.tokenizer)
+        self.text2token_thread.responseTokenNum.connect(self.input_label.show_token)
+        self.text2token_thread.run()
+### </处理预计token数部分>
+
+### <实现对话部分>
+    def progress_sys_msg(self, clear_pet_state: bool = True) -> str:
         _time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         sys_input = f'|当前时间:{_time}(24时制)|'
         #status_bar_hint = ''
         if self.pet_part is not None:
             sys_input += f'| {setting.get_user_name()}摸了摸你的{self.pet_part} |'
-            self.pet_part = None
+            if clear_pet_state:
+                self.pet_part = None
+        return sys_input
+
+    def start_talk(self,input_text: str):
+        # TODO 更多系统提示
+        sys_input = self.progress_sys_msg()
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
         self.llm_inferance.load_history(self.history_manager.get_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
@@ -284,7 +254,7 @@ class mainWidget(QWidget):
         self.desktop_pet.stop_speak()
         self.text_update_timer.stop()
         self.input_label.enabled_send_text()
-### 实现对话部分
+### <实现对话部分>
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写closeEvent，添加确认框

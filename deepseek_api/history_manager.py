@@ -44,9 +44,16 @@ class historyManager:
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.history.append({"role":"user", "content":{self.user_name:user_input}})
-        if sys_input is not None:
+        if sys_input:
             self.history[-1]['content']['sys'] = sys_input
         self.save_history()
+
+    @staticmethod
+    def get_user_message_template(user_name: str, user_input: str, sys_input: str = None) -> str:
+        msg = {user_name : user_input}
+        if sys_input:
+            msg['sys'] = sys_input
+        return json.dumps(msg)
 
     def add_assistant_message(self, assistant_response: str) -> None:
         try:
@@ -76,31 +83,3 @@ class historyManager:
     def save_history(self) -> None:
         with open(self.history_path,'w',encoding='utf-8') as f:
             json.dump({"create_time":self.create_time,"summary":self.summary,'history':self.history}, f, indent=4, ensure_ascii=False)
-
-
-'''格式
-{
-    "create_time" : "..." ,
-    "summary" : "..."(简要，可没有) ,
-    "history":
-    [
-        {
-            "role" : "user",
-            "content' :
-            {
-                "sys" : "..."(程序提示) ,
-                "{user}" : "..."(用户输入) ,
-            }
-        }
-        {
-            "role" : "assistant",
-            "content" :
-            {
-                "your_thoughts" : "..."(思考模块) ,
-                "your_response" : "..."(回复) ,
-            }
-        }
-    ]
-    "error_index" : [...](解析错误的字符串位置)
-}
-'''
