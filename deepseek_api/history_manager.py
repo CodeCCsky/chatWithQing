@@ -48,6 +48,13 @@ class historyManager:
             self.history[-1]['content']['sys'] = sys_input
         self.save_history()
 
+    @staticmethod
+    def get_user_message_template(user_name: str, user_input: str, sys_input: str = None) -> str:
+        msg = {user_name : user_input}
+        if sys_input:
+            msg['sys'] = sys_input
+        return json.dumps(msg)
+
     def add_assistant_message(self, assistant_response: str) -> None:
         try:
             content = json.loads(assistant_response)
