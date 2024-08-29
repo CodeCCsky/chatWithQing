@@ -225,18 +225,23 @@ class mainWidget(QWidget):
         try:
             self.response_content = json.loads(response)
             self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
-            self.wait_until_start_talking.start(2000)
+            
+            if self.use_tts:
+                self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
+                self.tts_thread.start()
+                self.tts_thread.startSpeak.connect(self.start_typing)
+            else:
+                self.wait_until_start_talking.start(2000)
         except ValueError:
             self.talk_bubble.update_text(response)
         except KeyError:
             self.talk_bubble.update_text(response)
 
     def start_typing(self):
+        if self.use_tts:
+            self.tts_thread.disconnect()
         self.wait_until_start_talking.stop()
         self.desktop_pet.set_speak()
-        if self.use_tts:
-            self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
-            self.tts_thread.start()
         self.on_read_text = 0
         self.text_update_timer.start(150)
 
