@@ -30,8 +30,8 @@ class inputLabel(QWidget):
         self.setGeometry(int(screen.width()*0.95-400),int(screen.height()*0.3),400,300)
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout.setContentsMargins(2, 0, 2, 0)
-        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setContentsMargins(5, 0, 5, 0)
+        self.verticalLayout.setSpacing(2)
         self.verticalLayout.setObjectName("verticalLayout")
         self.widget_2 = QtWidgets.QWidget(self)
         self.widget_2.setObjectName("widget_2")
