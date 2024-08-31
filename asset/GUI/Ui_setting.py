@@ -488,7 +488,7 @@ class Ui_MainWindow(object):
         self.checkTTSButton.setText(_translate("MainWindow", "测试 TTS 是否可用（点击后会发送一个测试文本并自动播放）"))
         self.APIAddressLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">API 地址设置</span></p></body></html>"))
         self.TTSUrlShow.setText(_translate("MainWindow", "地址"))
-        self.TTSUrlEdit.setText(_translate("MainWindow", "http://127.0.0.1:5000"))
+        self.TTSUrlEdit.setText(_translate("MainWindow", "http://127.0.0.1:5000/tts"))
         self.TTSSettingLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">TTS 设置</span></p></body></html>"))
         self.TTSCharacterLabel.setText(_translate("MainWindow", "TTS 角色名称"))
         self.TTSCharacterEdit.setText(_translate("MainWindow", "晴"))

@@ -622,7 +622,7 @@
                   <item>
                    <widget class="QLineEdit" name="TTSUrlEdit">
                     <property name="text">
-                     <string>http://127.0.0.1:5000</string>
+                     <string>http://127.0.0.1:5000/tts</string>
                     </property>
                    </widget>
                   </item>

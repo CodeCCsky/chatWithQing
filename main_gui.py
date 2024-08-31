@@ -48,6 +48,7 @@ class mainWidget(QWidget):
         self.init_llm()
         self.init_stroke()
         self.init_text2token()
+        self.change_setting(self.setting_widget.setting_manager)
 
 ### <初始化部分>
     def init_resource(self):
@@ -135,12 +136,12 @@ class mainWidget(QWidget):
         self.on_read_text = 0
         self.talk_bubble.show()
         self.input_label.show()
-        if self.use_tts:
-            self.tts_model = TTSAudio(cache_path=tts_cache_path,is_play=True) # TODO EMOTION
-            self.tts_thread:tts_thread = None
-        else:
-            self.no_tts_sound_path = no_tts_sound_path
-            self.no_tts_sound_manager = no_tts_sound_manager(self.no_tts_sound_path)
+        # TTS
+        self.tts_model = TTSAudio(cache_path=tts_cache_path,is_play=True) # TODO EMOTION
+        self.tts_thread:tts_thread = None
+        # no TTS
+        self.no_tts_sound_path = no_tts_sound_path
+        self.no_tts_sound_manager = no_tts_sound_manager(self.no_tts_sound_path)
 
     def init_stroke(self):
         self.pet_part = None
@@ -175,6 +176,10 @@ class mainWidget(QWidget):
     def change_setting(self, setting_manager: settingManager):
         global setting
         setting = setting_manager
+        setting.tts_setting.use_setting(self.tts_model)
+        setting.deepseek_model.use_setting(self.llm_inferance)
+        self.llm_inferance.system_prompt = setting.get_system_prompt()
+        self.use_tts = setting.tts_setting.use_tts
         if self.history_manager.history_path != setting.histoy_path:
             self.history_manager = historyManager(setting.user.user_name, setting.histoy_path)
             print(f"加载 {setting.histoy_path}") #TODO logger
@@ -227,7 +232,6 @@ class mainWidget(QWidget):
         try:
             self.response_content = json.loads(response)
             self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
-            
             if self.use_tts:
                 self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
                 self.tts_thread.start()

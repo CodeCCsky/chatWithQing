@@ -74,7 +74,7 @@ class TTSAudio :
 
         request_data = json.loads(filled_endpoint_data)
         body = request_data["body"]
-        
+
         response = requests.post(
             self.tts_url,
             json=body,
@@ -98,18 +98,21 @@ class TTSAudio :
             logger.error(f"Failed to get response. code:{response.status_code} content:{response.content}")
 
     def set_request_url(self, url: str) -> None:
+        print(self.tts_url, url)
         self.tts_url = url
 
     def get_request_url(self) -> str:
         return self.tts_url
 
     def get_tts_character(self, character: str) -> str:
+        print(self.character, character)
         return self.character
 
     def set_tts_character(self, character : str) -> None:
         self.character = character
 
     def set_emotion(self, emotion: str) -> None:
+        print(self.emotion, emotion)
         self.emotion = emotion
 
     def get_emotion(self) -> str:

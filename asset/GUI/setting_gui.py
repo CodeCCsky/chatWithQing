@@ -102,7 +102,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.chooseHistoryComboBox.clear()
         self.chooseHistoryComboBox.addItems(file_lists)
         self.chooseHistoryComboBox.setCurrentIndex(self.chooseHistoryComboBox.count()-1)
-        if not self.setting_manager.histoy_path:
+        if self.setting_manager.histoy_path is None:
             self.setting_manager.histoy_path = os.path.join('./history',self.chooseHistoryComboBox.itemText(self.chooseHistoryComboBox.count()-1))
 
     def progress_text_gap(self, gap: int):

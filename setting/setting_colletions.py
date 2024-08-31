@@ -39,7 +39,7 @@ class deepseek_api_setting:
 class TTS_setting:
     def __init__(self,
                  use_tts: bool,
-                 url: str = 'http://127.0.0.1:5000',
+                 url: str = 'http://127.0.0.1:5000/tts',
                  character_name: str = '晴',
                  emotion: str = 'default') -> None:
         self.use_tts = use_tts
