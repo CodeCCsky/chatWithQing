@@ -19,10 +19,10 @@ from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_reques
 import asset.GUI.res_rc
 
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer
-from setting_reader import settingReader
+from setting.setting_reader import settingManager
 from tts import TTSAudio
 
-setting = settingReader()
+setting = settingManager()
 history_path = None
 tts_cache_path = r"cache/"
 no_tts_sound_path = r"asset\sound\speak.wav"

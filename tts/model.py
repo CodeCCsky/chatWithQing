@@ -97,6 +97,23 @@ class TTSAudio :
         else:
             logger.error(f"Failed to get response. code:{response.status_code} content:{response.content}")
 
+    def set_request_url(self, url: str) -> None:
+        self.tts_url = url
+
+    def get_request_url(self) -> str:
+        return self.tts_url
+
+    def set_character(self, character: str) -> None:
+        self.character = character
+
+    def get_character(self, character: str) -> str:
+        return self.character
+
+    def set_emotion(self, emotion: str) -> None:
+        self.emotion = emotion
+
+    def get_emotion(self) -> str:
+        return self.emotion
 
     @staticmethod
     def get_cache_file_name() -> str :

@@ -20,6 +20,7 @@ class talkBubble(QWidget):
         self.row_spacing = 2
         self.name_str = '晴'
         self.text_str = ''
+        self.keep_opacity_time = 5000
 
         self.initUI()
         self.init_rand()
@@ -135,9 +136,12 @@ class talkBubble(QWidget):
     def clear_text(self):
         self._setTextLabel('晴', '')
 
-    def set_keep_opacity(self, keep_time:int = 5000):
+    def set_keep_opacity_time(self, keep_time: int):
+        self.keep_opacity_time = keep_time
+
+    def set_keep_opacity(self):
         self.keep_opacity = True
-        self.keep_opacity_timer.start(keep_time)
+        self.keep_opacity_timer.start(self.keep_opacity_time)
 
     def reset_keep_opacity(self):
         self.keep_opacity = False

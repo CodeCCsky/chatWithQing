@@ -35,7 +35,7 @@ data = {
     'system_prompt_main' : prt,
 }
 try:
-    with open(r"private_setting.yaml",'w',encoding='utf-8') as f:
+    with open(r"setting/private_setting.yaml",'w',encoding='utf-8') as f:
         yaml.dump(data=data,stream=f,allow_unicode=True)
     print("已成功写入")
 except Exception as e:

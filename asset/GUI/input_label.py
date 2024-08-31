@@ -17,6 +17,7 @@ class inputLabel(QWidget):
         self.button_font_size = 16
         self.input_font = QFont('SimHei',self.input_font_size)
         self.button_font = QFont('SimHei',self.button_font_size)
+        self.keep_opacity_time = 5000
         self.init_token_calc(update_token_time, is_calc_token)
         self.init_window_opacity_control()
         self.initUI()
@@ -110,9 +111,12 @@ class inputLabel(QWidget):
         self.text2token_timer = QTimer()
         self.text2token_timer.timeout.connect(self.send_text2token)
 
-    def set_keep_opacity(self, keep_time:int = 3000):
+    def set_keep_opacity_time(self, keep_time: int):
+        self.keep_opacity_time = keep_time
+
+    def set_keep_opacity(self):
         self.keep_opacity = True
-        self.keep_opacity_timer.start(keep_time)
+        self.keep_opacity_timer.start(self.keep_opacity_time)
 
     def reset_keep_opacity(self):
         self.keep_opacity = False

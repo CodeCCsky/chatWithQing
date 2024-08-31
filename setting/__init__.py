@@ -1,0 +1,1 @@
+from setting.setting_reader import settingManager
