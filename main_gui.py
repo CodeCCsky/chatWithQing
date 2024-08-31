@@ -10,16 +10,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from asset.GUI.setting_gui import SettingWidget
-from asset.GUI.desktop_pet import DesktopPet
-from asset.GUI.talk_bubble import talkBubble
-from asset.GUI.input_label import inputLabel
 from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget
 from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread
 import asset.GUI.res_rc
 
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer
-from setting.setting_reader import settingManager
+from setting.setting_colletions import settingManager
 from tts import TTSAudio
 
 setting = settingManager()
@@ -123,6 +119,7 @@ class mainWidget(QWidget):
     def init_setting(self):
         # TODO
         self.setting_widget = SettingWidget()
+        self.setting_widget.changeSetting.connect(self.change_setting)
 
     def init_talk(self):#TODO
         self.talk_bubble = talkBubble()
@@ -163,10 +160,7 @@ class mainWidget(QWidget):
 
 ### <'显示组件'选项部分>
     def show_setting_window_event(self):
-        #TODO
-        QApplication.setQuitOnLastWindowClosed(False)
-        reply = QMessageBox.information(None,'施工中','该功能暂未完成')
-        QApplication.setQuitOnLastWindowClosed(True)
+        self.setting_widget.setVisible(True)
 
     def show_talk_bubble_event(self):
         self.talk_bubble.show_window()
@@ -177,7 +171,15 @@ class mainWidget(QWidget):
     def show_desktop_pet(self):
         self.desktop_pet.show_window()
 ### </'显示组件'选项部分>
+### <更换设置>
+    def change_setting(self, setting_manager: settingManager):
+        global setting
+        setting = setting_manager
+        if self.history_manager.history_path != setting.histoy_path:
+            self.history_manager = historyManager(setting.user.user_name, setting.histoy_path)
+            print(f"加载 {setting.histoy_path}") #TODO logger
 
+### </更换设置>
 ### <处理摸摸部分>
     def progress_stroke(self, max_index: int):
         matching_dict = {
@@ -295,8 +297,9 @@ class mainWidget(QWidget):
     def user_try_to_quit(self):
         pass
 
+
 if __name__ == '__main__' :
-    
     app = QApplication(sys.argv)
+    setting.load_from_file()
     pet = mainWidget()
     sys.exit(app.exec_())

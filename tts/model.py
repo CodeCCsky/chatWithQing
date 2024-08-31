@@ -103,11 +103,11 @@ class TTSAudio :
     def get_request_url(self) -> str:
         return self.tts_url
 
-    def set_character(self, character: str) -> None:
-        self.character = character
-
-    def get_character(self, character: str) -> str:
+    def get_tts_character(self, character: str) -> str:
         return self.character
+
+    def set_tts_character(self, character : str) -> None:
+        self.character = character
 
     def set_emotion(self, emotion: str) -> None:
         self.emotion = emotion
@@ -123,13 +123,5 @@ class TTSAudio :
         """
         return f"/{datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')}.wav"
 
-    def stop_play(self):
+    def stop_play(self) -> None:
         self.audio.stop()
-
-    def get_tts_character(self) :
-        response = requests.get(url=self.character_url)
-        character_list = json.loads(response.content)
-        return character_list
-
-    def set_tts_character(self, character : str) :
-        self.character = character

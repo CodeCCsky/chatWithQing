@@ -16,18 +16,21 @@ class historyManager:
         self.summary = None
         self.create_time = None
         if history_path:
-            content = None
             try:
-                with open(file=history_path, encoding='utf-8') as f:
-                    json.dump(content,f,ensure_ascii=False)
+                with open(history_path, 'r', encoding='utf-8') as f:
+                    content = json.load(f)
+                    self.history = content['history']
+                    #self.error_index = content['error_index']
+                    self.summary = content['summary']
+                    self.create_time = content['create_time']
             except FileNotFoundError as fe:
-                logger.error(f"指定的对话历史文件未找到创建新的对话。Error Traceback:{fe}")
+                logger.error(f"指定的对话历史文件未找到创建新的对话。Error:{fe}")
                 self.create_new_history_file()
             except PermissionError as pe:
-                logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error Traceback:{pe}")
+                logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
                 self.create_new_history_file()
             except Exception as e:
-                logger.error(f"发生了意料之外的错误。Error Traceback:{e}")
+                logger.error(f"发生了意料之外的错误。Error:{e}")
                 self.create_new_history_file()
         else:
             self.create_new_history_file()

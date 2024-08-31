@@ -98,9 +98,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-70</y>
+                <y>0</y>
                 <width>531</width>
-                <height>385</height>
+                <height>403</height>
                </rect>
               </property>
               <property name="maximumSize">
@@ -187,6 +187,13 @@
                </item>
                <item>
                 <widget class="QLineEdit" name="yourSexEdit"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>tips: 当性别选择为‘其他’且不在上方输入框填入任何值的话，默认性别为‘其他’</string>
+                 </property>
+                </widget>
                </item>
                <item>
                 <spacer name="verticalSpacer_16">
@@ -338,7 +345,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>357</width>
+                <width>531</width>
                 <height>550</height>
                </rect>
               </property>
@@ -531,9 +538,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>524</width>
-                <height>575</height>
+                <y>-216</y>
+                <width>531</width>
+                <height>531</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -603,39 +610,19 @@
                 </widget>
                </item>
                <item>
-                <widget class="QWidget" name="TTSHostWidget" native="true">
+                <widget class="QWidget" name="TTSUrlWidget" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_20">
                   <item>
-                   <widget class="QLabel" name="TTShostShow">
+                   <widget class="QLabel" name="TTSUrlShow">
                     <property name="text">
-                     <string>host地址</string>
+                     <string>地址</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="TTShostEdit">
+                   <widget class="QLineEdit" name="TTSUrlEdit">
                     <property name="text">
-                     <string>http://127.0.0.1</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QWidget" name="TTSAPIPortWidget" native="true">
-                 <layout class="QHBoxLayout" name="horizontalLayout_21">
-                  <item>
-                   <widget class="QLabel" name="TTSAPIPortLabel">
-                    <property name="text">
-                     <string>端口</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="TTSAPIPortEdit">
-                    <property name="text">
-                     <string>5000</string>
+                     <string>http://127.0.0.1:5000</string>
                     </property>
                    </widget>
                   </item>
@@ -766,8 +753,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>198</width>
-                <height>131</height>
+                <width>548</width>
+                <height>315</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -858,8 +845,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>248</width>
-                <height>217</height>
+                <width>548</width>
+                <height>315</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -962,7 +949,7 @@
     <item>
      <widget class="QDialogButtonBox" name="SaveButtonBox">
       <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
       </property>
      </widget>
     </item>
