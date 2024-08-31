@@ -3,9 +3,9 @@ import deepseek_api
 import tts
 import json
 import yaml
-import setting_reader
+from setting import settingManager
 
-setting = setting_reader.settingReader()
+setting = settingManager()
 
 system_prompt_main = setting.get_system_prompt()
 

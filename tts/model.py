@@ -74,7 +74,7 @@ class TTSAudio :
 
         request_data = json.loads(filled_endpoint_data)
         body = request_data["body"]
-        
+
         response = requests.post(
             self.tts_url,
             json=body,
@@ -97,6 +97,26 @@ class TTSAudio :
         else:
             logger.error(f"Failed to get response. code:{response.status_code} content:{response.content}")
 
+    def set_request_url(self, url: str) -> None:
+        print(self.tts_url, url)
+        self.tts_url = url
+
+    def get_request_url(self) -> str:
+        return self.tts_url
+
+    def get_tts_character(self, character: str) -> str:
+        print(self.character, character)
+        return self.character
+
+    def set_tts_character(self, character : str) -> None:
+        self.character = character
+
+    def set_emotion(self, emotion: str) -> None:
+        print(self.emotion, emotion)
+        self.emotion = emotion
+
+    def get_emotion(self) -> str:
+        return self.emotion
 
     @staticmethod
     def get_cache_file_name() -> str :
@@ -106,13 +126,5 @@ class TTSAudio :
         """
         return f"/{datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')}.wav"
 
-    def stop_play(self):
+    def stop_play(self) -> None:
         self.audio.stop()
-
-    def get_tts_character(self) :
-        response = requests.get(url=self.character_url)
-        character_list = json.loads(response.content)
-        return character_list
-
-    def set_tts_character(self, character : str) :
-        self.character = character

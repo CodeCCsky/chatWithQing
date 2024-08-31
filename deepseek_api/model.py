@@ -44,6 +44,30 @@ class deepseek_model:
 
         self.client = OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com")
 
+    def set_temperature(self, temperature: float) -> None:
+        self.temperature = temperature
+
+    def get_temperature(self) -> float:
+        return self.temperature
+
+    def set_frequency_penalty(self, frequency_penalty: float) -> None:
+        self.frequency_penalty = frequency_penalty
+
+    def get_frequency_penalty(self) -> float:
+        return self.frequency_penalty
+
+    def set_presence_penalty(self, presence_penalty: float) -> None:
+        self.presence_penalty = presence_penalty
+
+    def get_presence_penalty(self) -> float:
+        return self.presence_penalty
+
+    def set_api_key(self, api_key: str) -> None:
+        self.api_key = api_key
+
+    def get_api_key(self) -> str:
+        return self.api_key
+
     def load_history(self, history: List[Dict]) -> None:
         if not isinstance(history, list):
             raise ValueError("History must be a list of dictionaries")
