@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
+import copy
 from PyQt5.QtCore import Qt, QEvent, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QCloseEvent
@@ -125,12 +126,12 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
             self.setting_manager.user.user_sex = sex
 
     def save_setting(self):
-        self.setting_manager_backup = self.setting_manager
+        self.setting_manager_backup = copy.deepcopy(self.setting_manager)
         self.changeSetting.emit(self.setting_manager)
         self.closeEvent(QCloseEvent())
 
     def cancel_save(self):
-        self.setting_manager = self.setting_manager_backup
+        self.setting_manager = copy.deepcopy(self.setting_manager_backup)
         self.closeEvent(QCloseEvent())
 
     def sideListWidgetClicked(self, item):
