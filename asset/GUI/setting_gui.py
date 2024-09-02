@@ -30,10 +30,13 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.yourFavouriteFood.setText(self.setting_manager.user.favourite_food)
         if self.setting_manager.user.user_sex == '男':
             self.yourSexComboBox.setCurrentIndex(0)
+            self.yourSexEdit.setEnabled(False)
         elif self.setting_manager.user.user_sex == '女':
             self.yourSexComboBox.setCurrentIndex(1)
+            self.yourSexEdit.setEnabled(False)
         else:
             self.yourSexComboBox.setCurrentIndex(2)
+            self.yourSexEdit.setEnabled(True)
             self.yourSexEdit.setText(self.setting_manager.user.user_sex)
 
         # deepseek
@@ -115,10 +118,13 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
 
     def progress_user_sex(self, index: int):
         if index == 0:
+            self.yourSexEdit.setEnabled(False)
             self.setting_manager.user.user_sex = '男'
         elif index == 1:
+            self.yourSexEdit.setEnabled(False)
             self.setting_manager.user.user_sex = '女'
         else:
+            self.yourSexEdit.setEnabled(True)
             sex = self.yourSexEdit.text()
             if not sex:
                 sex = '其他'
