@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
 import time
-import queue
 import json
 import re
-from typing import Union
+import copy
+import logging
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget
+from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget
 from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread
 import asset.GUI.res_rc
 
@@ -25,6 +25,8 @@ no_tts_sound_path = r"asset\sound\speak.wav"
 check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
 SPEAK_GAP = 50
+
+logger = logging.getLogger('main_gui')
 
 class mainWidget(QWidget):
     S_NORMAL = 0
@@ -301,9 +303,29 @@ class mainWidget(QWidget):
     def user_try_to_quit(self):
         pass
 
+def main():
+    pet = mainWidget()
+    sys.exit(app.exec_())
+
+def set_setting(_setting: settingManager):
+    global setting
+    setting = copy.deepcopy(_setting)
+
+def initize():
+    init = initialzationWidget()
+    init.show()
+    app.exec_()
+    if setting.check():
+        main()
+    else:
+        sys.exit()
 
 if __name__ == '__main__' :
     app = QApplication(sys.argv)
-    setting.load_from_file()
-    pet = mainWidget()
-    sys.exit(app.exec_())
+    state_num = setting.load_from_file()
+    if state_num[0] == 0:
+        logger.info('成功加载设置')
+        main()
+    else:
+        logger.warning(f'err: {state_num[1]}。启动初始化。')
+        initize()
