@@ -2,6 +2,8 @@ from deepseek_api.model import deepseek_model
 from tts import TTSAudio
 import yaml
 
+SYS_PROMPT_MAIN_PATH = r"system_prompt\system_prompt_main.txt"
+
 class user_setting:
     def __init__(self,
                  user_name: str,
@@ -13,7 +15,7 @@ class user_setting:
         self.favourite_food = favourite_food
         self.user_location = user_location
 
-    def get_fulled_system_prompt(self, sys_prompt: str):
+    def get_full_system_prompt(self, sys_prompt: str):
         return sys_prompt.format(user=self.user_name,
                                  user_sex=self.user_sex,
                                  favourite_food=self.favourite_food,
@@ -82,18 +84,21 @@ class settingManager:
                             User: user_setting,
                             Deepseek_setting: deepseek_api_setting,
                             Show_setting: show_setting,
-                            Tts_setting: TTS_setting,
-                            system_prompt_main: str = None) -> None:
+                            Tts_setting: TTS_setting) -> None:
         self.user = User
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
-        if system_prompt_main:
-            self.system_prompt_main = system_prompt_main
+        self.load_system_prompt_main()
 
     def load_from_file(self, path = "setting/private_setting.yaml") -> None:
         self.load_path = path
         self._read_yaml()
+
+    def load_system_prompt_main(self) -> None:
+        with open(SYS_PROMPT_MAIN_PATH, 'r', encoding='utf-8') as f:
+            prompt = f.read()
+            self.system_prompt_main = self.user.get_full_system_prompt(prompt)
 
     def _read_yaml(self) -> None:
         with open(self.load_path, 'r', encoding='utf-8') as f:
@@ -102,7 +107,6 @@ class settingManager:
             deepseek = res['deepseek']
             tts = res['TTS']
             show_s = res['show']
-            self.system_prompt_main = res['system_prompt_main']
             self.user = user_setting(user_name=user['name'],
                              user_sex=user['sex'],
                              favourite_food=user['favourite_food'],
@@ -116,7 +120,7 @@ class settingManager:
                                            character_name=tts['character'],
                                            emotion=tts['emotion'])
             self.show_setting = show_setting(show_s['text_show_gap'])
-            self.system_prompt_main = self.user.get_fulled_system_prompt(self.system_prompt_main)
+            self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
         if not self.check():
