@@ -184,7 +184,8 @@ class mainWidget(QWidget):
         self.use_tts = setting.tts_setting.use_tts
         if self.history_manager.history_path != setting.histoy_path:
             self.history_manager = historyManager(setting.user.user_name, setting.histoy_path)
-            print(f"加载 {setting.histoy_path}") #TODO logger
+            logger.info(f"加载 {setting.histoy_path}")
+        setting.write_yaml()
 
 ### </更换设置>
 ### <处理摸摸部分>
@@ -310,6 +311,7 @@ def main():
 def set_setting(_setting: settingManager):
     global setting
     setting = copy.deepcopy(_setting)
+    setting.write_yaml()
 
 def initize():
     init = initialzationWidget()
