@@ -113,9 +113,15 @@ class settingManager:
         self.tts_setting = Tts_setting
         self.load_system_prompt_main()
 
-    def load_from_file(self, path = "setting/private_setting.yaml") -> None:
+    def load_from_file(self, path = "setting/private_setting.yaml") -> tuple:
         self.load_path = path
-        self._read_yaml()
+        try:
+            self._read_yaml()
+            return 0, None
+        except IOError as fe:
+            return 1, fe
+        except yaml.YAMLError as ye:
+            return 2, ye
 
     def load_system_prompt_main(self) -> None:
         with open(SYS_PROMPT_MAIN_PATH, 'r', encoding='utf-8') as f:
