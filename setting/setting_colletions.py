@@ -21,8 +21,17 @@ class user_setting:
                                  favourite_food=self.favourite_food,
                                  user_location=self.user_location)
 
-    def check(self) -> bool:
-        return bool(self.user_sex and self.user_name and self.favourite_food and self.user_location)
+    def check(self) -> list:
+        unfilled_list = []
+        if not self.user_sex:
+            unfilled_list.append('你的性别')
+        if not self.user_name:
+            unfilled_list.append('你的名字')
+        if not self.favourite_food:
+            unfilled_list.append('你喜欢的食物')
+        if not self.user_location:
+            unfilled_list.append('你的地址')
+        return unfilled_list
 
 class deepseek_api_setting:
     def __init__(self,
@@ -41,8 +50,11 @@ class deepseek_api_setting:
         _deepseek_model.set_frequency_penalty(self.frequency_penalty)
         _deepseek_model.set_presence_penalty(self.presence_penalty)
 
-    def check(self) -> bool:
-        return bool(self.api_key)
+    def check(self) -> list:
+        unfilled_list = []
+        if not self.api_key:
+            unfilled_list.append('api key')
+        return unfilled_list
 
 class TTS_setting:
     def __init__(self,
@@ -60,15 +72,25 @@ class TTS_setting:
         _TTSAudio.set_emotion(self.emotion)
         _TTSAudio.set_request_url(self.url)
 
-    def check(self) -> bool:
-        return bool(self.url and self.character_name and self.emotion)
+    def check(self) -> list:
+        unfilled_list = []
+        if not self.url:
+            unfilled_list.append('tts网址')
+        if not self.character_name:
+            unfilled_list.append('tts角色名字')
+        if not self.emotion:
+            unfilled_list.append('角色情感')
+        return unfilled_list
 
 class show_setting:
     def __init__(self, text_show_gap: int) -> None:
         self.text_show_gap = text_show_gap
 
-    def check(self) -> bool:
-        return bool(self.text_show_gap)
+    def check(self) -> list:
+        unfilled_list = []
+        if not self.text_show_gap:
+            unfilled_list.append('字符显示速度')
+        return unfilled_list
 
 class settingManager:
     def __init__(self) -> None:
@@ -163,10 +185,4 @@ class settingManager:
         return self.deepseek_model.api_key
 
     def check(self) -> bool:
-        return bool(self.user.check() and
-                    self.deepseek_model.check() and
-                    self.show_setting.check() and
-                    self.tts_setting.check() and
-                    self.histoy_path and
-                    self.system_prompt_main and
-                    self.load_path)
+        return self.user.check() + self.deepseek_model.check() + self.show_setting.check() + self.tts_setting.check()
