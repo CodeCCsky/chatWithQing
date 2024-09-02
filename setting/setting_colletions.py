@@ -19,6 +19,9 @@ class user_setting:
                                  favourite_food=self.favourite_food,
                                  user_location=self.user_location)
 
+    def check(self) -> bool:
+        return bool(self.user_sex and self.user_name and self.favourite_food and self.user_location)
+
 class deepseek_api_setting:
     def __init__(self,
                  api_key: str,
@@ -36,9 +39,12 @@ class deepseek_api_setting:
         _deepseek_model.set_frequency_penalty(self.frequency_penalty)
         _deepseek_model.set_presence_penalty(self.presence_penalty)
 
+    def check(self) -> bool:
+        return bool(self.api_key and self.temperature and self.frequency_penalty and self.presence_penalty)
+
 class TTS_setting:
     def __init__(self,
-                 use_tts: bool,
+                 use_tts: bool = False,
                  url: str = 'http://127.0.0.1:5000/tts',
                  character_name: str = '晴',
                  emotion: str = 'default') -> None:
@@ -52,9 +58,15 @@ class TTS_setting:
         _TTSAudio.set_emotion(self.emotion)
         _TTSAudio.set_request_url(self.url)
 
+    def check(self) -> bool:
+        return bool(self.url and self.character_name and self.emotion)
+
 class show_setting:
     def __init__(self, text_show_gap: int) -> None:
         self.text_show_gap = text_show_gap
+
+    def check(self) -> bool:
+        return bool(self.text_show_gap)
 
 class settingManager:
     def __init__(self) -> None:
@@ -79,7 +91,7 @@ class settingManager:
         if system_prompt_main:
             self.system_prompt_main = system_prompt_main
 
-    def load_from_file(self, path = "setting/private_setting.yaml"):
+    def load_from_file(self, path = "setting/private_setting.yaml") -> None:
         self.load_path = path
         self._read_yaml()
 
@@ -106,7 +118,9 @@ class settingManager:
             self.show_setting = show_setting(show_s['text_show_gap'])
             self.system_prompt_main = self.user.get_fulled_system_prompt(self.system_prompt_main)
 
-    def write_yaml(self):
+    def write_yaml(self) -> bool:
+        if not self.check():
+            return False
         with open(self.load_path, 'w', encoding='utf-8') as f:
             write_dict = {
                 'user' : {
@@ -133,12 +147,22 @@ class settingManager:
                 'system_prompt_main' : self.system_prompt_main,
             }
             yaml.dump(data=write_dict, stream=f, allow_unicode=True)
+        return True
 
-    def get_system_prompt(self):
+    def get_system_prompt(self) -> str:
         return self.system_prompt_main
 
-    def get_user_name(self):
+    def get_user_name(self) -> str:
         return self.user.user_name
 
-    def get_api_key(self):
+    def get_api_key(self) -> str:
         return self.deepseek_model.api_key
+
+    def check(self) -> bool:
+        return bool(self.user.check() and
+                    self.deepseek_model.check() and
+                    self.show_setting.check() and
+                    self.tts_setting.check() and
+                    self.histoy_path and
+                    self.system_prompt_main and
+                    self.load_path)
