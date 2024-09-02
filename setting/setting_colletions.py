@@ -42,7 +42,7 @@ class deepseek_api_setting:
         _deepseek_model.set_presence_penalty(self.presence_penalty)
 
     def check(self) -> bool:
-        return bool(self.api_key and self.temperature and self.frequency_penalty and self.presence_penalty)
+        return bool(self.api_key)
 
 class TTS_setting:
     def __init__(self,
