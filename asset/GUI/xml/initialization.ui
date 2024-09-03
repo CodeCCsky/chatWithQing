@@ -71,7 +71,7 @@
          </item>
          <item>
           <property name="text">
-           <string>历史记录</string>
+           <string>历史记录与对话设置</string>
           </property>
          </item>
         </widget>
@@ -85,7 +85,7 @@
           <set>Qt::ImhNone</set>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="stackedWidgetUser">
           <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -98,7 +98,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-84</y>
+                <y>0</y>
                 <width>531</width>
                 <height>403</height>
                </rect>
@@ -297,6 +297,16 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_15">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;需要自行前往 Deepseek 官网获取 api key&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;官网地址：&lt;/span&gt;&lt;a href=&quot;https://www.deepseek.com/zh&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.deepseek.com/zh&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <widget class="Line" name="line_20">
                  <property name="orientation">
@@ -538,7 +548,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-216</y>
+                <y>0</y>
                 <width>531</width>
                 <height>531</height>
                </rect>
@@ -555,6 +565,9 @@
                 <widget class="QLabel" name="TTSIntroducing">
                  <property name="text">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;启用 TTS 需要同时运行 GPT-SoVITS-Inference&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;若未部署，查看部署教程：&lt;/span&gt;&lt;a href=&quot;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;在未启动 GPT-SoVITS-Inference 的情况下启用此功能会报错！&lt;/span&gt;&lt;/p&gt;&lt;p&gt;(暂时没时间去做检测了..等以后吧)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;项目地址：&lt;/span&gt;&lt;a href=&quot;https://github.com/X-T-E-R/GPT-SoVITS-Inference&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/X-T-E-R/GPT-SoVITS-Inference&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -575,7 +588,7 @@
                <item>
                 <widget class="QPushButton" name="checkTTSButton">
                  <property name="text">
-                  <string>测试 TTS 是否可用（点击后会发送一个测试文本并自动播放）</string>
+                  <string>测试 TTS 是否可用（点击后会发送一个测试文本并自动播放）（这个功能也还没做（瘫））</string>
                  </property>
                 </widget>
                </item>
@@ -844,9 +857,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <y>-84</y>
+                <width>531</width>
+                <height>399</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -920,6 +933,129 @@
                    </widget>
                   </item>
                  </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="Line" name="line">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="talkSettingTopLabel">
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;对话设置&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Line" name="line_2">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="addSameDayHisSummaryCheckBox">
+                 <property name="text">
+                  <string>每次对话前都添加当天所有对话的总结（可能会造成 token 大量消耗！）</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Line" name="line_3">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="addXDayAgoHisSummaryCheckBox">
+                 <property name="text">
+                  <string>每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout">
+                  <item>
+                   <widget class="QLabel" name="label_3">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;x的值:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="addXDayAgoHisSummarySpinBox">
+                    <property name="minimum">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <number>30</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="Line" name="line_4">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="enableRecallCheckBox">
+                 <property name="text">
+                  <string>启用“回想”（功能还没做，勾选了也不会发生什么，先画个饼（））</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>注：启用后 AI 会按需调用工具来读取某一天、某一周或某个月的对话总结</string>
+                 </property>
                 </widget>
                </item>
                <item>
