@@ -21,7 +21,9 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
 
     def initValue(self):
         self.setting_manager = settingManager()
-        self.setting_manager.load_from_file()
+        result = self.setting_manager.load_from_file()
+        if result[0] != 0:
+            raise ValueError('设置错误')
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
         # user

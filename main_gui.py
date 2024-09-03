@@ -311,15 +311,20 @@ def main():
 def set_setting(_setting: settingManager):
     global setting
     setting = copy.deepcopy(_setting)
-    setting.write_yaml()
+    state = setting.write_yaml()
+    logger.info(f'设置写入状态：{state}')
 
 def initize():
     init = initialzationWidget()
+    init.changeSetting.connect(set_setting)
     init.show()
     app.exec_()
-    if setting.check():
+    setting_check = setting.check()
+    if setting_check == []:
+        logger.info('成功加载设置')
         main()
     else:
+        logger.warning(f'设置加载失败：存在未填入的值：{"，".join(setting_check)}')
         sys.exit()
 
 if __name__ == '__main__' :

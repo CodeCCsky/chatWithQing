@@ -151,7 +151,7 @@ class settingManager:
             self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
-        if not self.check():
+        if not self.check() == []:
             return False
         with open(self.load_path, 'w', encoding='utf-8') as f:
             write_dict = {
