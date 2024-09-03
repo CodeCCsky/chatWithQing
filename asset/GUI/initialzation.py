@@ -24,7 +24,9 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.setting_manager.load_from_parameter(user_setting(None,'男',None,None),
                                                  deepseek_api_setting(None),
                                                  show_setting(200),
-                                                 TTS_setting())
+                                                 TTS_setting(),
+                                                 chat_summary_setting(),
+                                                 recall_function_setting())
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
         # user
@@ -57,6 +59,14 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
 
         # history
         self.scan_history_file()
+
+        # summary
+        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
+        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
+        self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
+
+        # recall
+        self.enableRecallCheckBox.setChecked(self.setting_manager.recall_function_setting.enable)
 
     def initConnect(self):
         # user
@@ -91,6 +101,14 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         # ensure
         self.SaveButtonBox.accepted.connect(self.save_setting)
         self.SaveButtonBox.rejected.connect(self.cancel_save)
+
+        # summary
+        self.addSameDayHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_same_day_summary',p))
+        self.addXDayAgoHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_x_day_ago_summary',p))
+        self.addXDayAgoHisSummarySpinBox.valueChanged.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'value_of_x_day_ago',p))
+
+        # recall
+        self.enableRecallCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.recall_function_setting,'enable',p))
 
     def scan_history_file(self):
         file_lists = os.listdir('history/')
@@ -132,8 +150,8 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, '出错', f'保存失败。存在尚未填入的值：{"，".join(check)}')
 
     def cancel_save(self):
-        self.setting_manager = copy.deepcopy(self.setting_manager_backup)
-        self.closeEvent(QCloseEvent())
+        #self.setting_manager = copy.deepcopy(self.setting_manager_backup)
+        self.close()
 
     def sideListWidgetClicked(self, item):
         index = self.listWidget.indexFromItem(item)
@@ -146,7 +164,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
                                     QMessageBox.Yes | QMessageBox.No,
                                     QMessageBox.No)
         if reply == QMessageBox.Yes:
-            QApplication.quit()
+            a0.accept()
         else:
             a0.ignore()
 

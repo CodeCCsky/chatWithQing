@@ -68,6 +68,14 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # history
         self.scan_history_file()
 
+        # summary
+        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
+        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
+        self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
+
+        # recall
+        self.enableRecallCheckBox.setChecked(self.setting_manager.recall_function_setting.enable)
+
     def initConnect(self):
         # user
         self.listWidget.itemClicked.connect(self.sideListWidgetClicked)
@@ -101,6 +109,14 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # ensure
         self.SaveButtonBox.accepted.connect(self.save_setting)
         self.SaveButtonBox.rejected.connect(self.cancel_save)
+
+        # summary
+        self.addSameDayHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_same_day_summary',p))
+        self.addXDayAgoHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_x_day_ago_summary',p))
+        self.addXDayAgoHisSummarySpinBox.valueChanged.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'value_of_x_day_ago',p))
+
+        # recall
+        self.enableRecallCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.recall_function_setting,'enable',p))
 
     def scan_history_file(self):
         file_lists = os.listdir('history/')

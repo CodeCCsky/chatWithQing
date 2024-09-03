@@ -92,12 +92,27 @@ class show_setting:
             unfilled_list.append('字符显示速度')
         return unfilled_list
 
+class chat_summary_setting:
+    def __init__(self,
+                 add_same_day_summary: bool = True,
+                 add_x_day_ago_summary: bool = False,
+                 value_of_x_day_ago: int = 5) -> None:
+        self.add_same_day_summary = add_same_day_summary
+        self.add_x_day_ago_summary = add_x_day_ago_summary
+        self.value_of_x_day_ago = value_of_x_day_ago
+
+class recall_function_setting:
+    def __init__(self, enable: bool = False) -> None:
+        self.enable = enable
+
 class settingManager:
     def __init__(self) -> None:
         self.user: user_setting = None
         self.deepseek_model: deepseek_api_setting = None
         self.show_setting: show_setting = None
         self.tts_setting: TTS_setting = None
+        self.chat_summary_setting: chat_summary_setting = None
+        self.recall_function_setting: recall_function_setting = None
         self.histoy_path =  None
         self.system_prompt_main = None
         self.load_path = "setting/private_setting.yaml"
@@ -106,11 +121,15 @@ class settingManager:
                             User: user_setting,
                             Deepseek_setting: deepseek_api_setting,
                             Show_setting: show_setting,
-                            Tts_setting: TTS_setting) -> None:
+                            Tts_setting: TTS_setting,
+                            Chat_summary_setting: chat_summary_setting,
+                            Recall_function_setting: recall_function_setting) -> None:
         self.user = User
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
+        self.chat_summary_setting = Chat_summary_setting
+        self.recall_function_setting = Recall_function_setting
         self.load_system_prompt_main()
 
     def load_from_file(self, path = "setting/private_setting.yaml") -> tuple:
@@ -122,6 +141,8 @@ class settingManager:
             return 1, fe
         except yaml.YAMLError as ye:
             return 2, ye
+        except KeyError as ke:
+            return 2, ke
 
     def load_system_prompt_main(self) -> None:
         with open(SYS_PROMPT_MAIN_PATH, 'r', encoding='utf-8') as f:
@@ -135,6 +156,8 @@ class settingManager:
             deepseek = res['deepseek']
             tts = res['TTS']
             show_s = res['show']
+            summary = res['summary']
+            recall = res['recall']
             self.user = user_setting(user_name=user['name'],
                              user_sex=user['sex'],
                              favourite_food=user['favourite_food'],
@@ -148,6 +171,10 @@ class settingManager:
                                            character_name=tts['character'],
                                            emotion=tts['emotion'])
             self.show_setting = show_setting(show_s['text_show_gap'])
+            self.chat_summary_setting = chat_summary_setting(add_same_day_summary=summary['add_same_day_summary'],
+                                                             add_x_day_ago_summary=summary['add_x_day_ago_summary'],
+                                                             value_of_x_day_ago=summary['value_of_x_day_ago'])
+            self.recall_function_setting = recall_function_setting(enable=recall['enable'])
             self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
@@ -175,6 +202,14 @@ class settingManager:
                 },
                 'show' : {
                     'text_show_gap' : self.show_setting.text_show_gap,
+                },
+                'summary': {
+                    'add_same_day_summary' : self.chat_summary_setting.add_same_day_summary,
+                    'add_x_day_ago_summary' : self.chat_summary_setting.add_x_day_ago_summary,
+                    'value_of_x_day_ago' : self.chat_summary_setting.value_of_x_day_ago,
+                },
+                'recall' : {
+                    'enable' : self.recall_function_setting.enable
                 },
                 'system_prompt_main' : self.system_prompt_main,
             }
