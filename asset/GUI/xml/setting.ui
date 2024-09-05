@@ -85,7 +85,7 @@
           <set>Qt::ImhNone</set>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="stackedWidgetUser">
           <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -355,7 +355,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>357</width>
                 <height>550</height>
                </rect>
               </property>
@@ -549,7 +549,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>524</width>
                 <height>531</height>
                </rect>
               </property>
@@ -766,8 +766,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <width>198</width>
+                <height>131</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -857,9 +857,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-84</y>
+                <y>0</y>
                 <width>531</width>
-                <height>399</height>
+                <height>453</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -873,7 +873,7 @@
                <item>
                 <widget class="QLabel" name="historyLabel">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;设置要加载的历史记录&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;设置要加载的历史记录&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;加载历史记录功能因为历史记录模块的修改暂时不可用&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;还没想好怎么改这个功能...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>

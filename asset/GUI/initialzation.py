@@ -58,7 +58,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.progress_text_gap(self.setting_manager.show_setting.text_show_gap)
 
         # history
-        self.scan_history_file()
+        #self.scan_history_file()
 
         # summary
         self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
@@ -95,8 +95,8 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedSpinBox.valueChanged.connect(self.progress_text_gap)
 
         # history
-        self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'histoy_path',os.path.join('./history',p)))
-        self.scanHistoryFileButton.clicked.connect(self.scan_history_file)
+        #self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'history_path',os.path.join('./history',p)))
+        #self.scanHistoryFileButton.clicked.connect(self.scan_history_file)
 
         # ensure
         self.SaveButtonBox.accepted.connect(self.save_setting)
@@ -115,8 +115,8 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.chooseHistoryComboBox.clear()
         self.chooseHistoryComboBox.addItems(file_lists)
         self.chooseHistoryComboBox.setCurrentIndex(self.chooseHistoryComboBox.count()-1)
-        if self.setting_manager.histoy_path is None:
-            self.setting_manager.histoy_path = os.path.join('./history',self.chooseHistoryComboBox.itemText(self.chooseHistoryComboBox.count()-1))
+        if self.setting_manager.history_path is None:
+            self.setting_manager.history_path = os.path.join('./history',self.chooseHistoryComboBox.itemText(self.chooseHistoryComboBox.count()-1))
 
     def progress_text_gap(self, gap: int):
         self.show_gap_timer.start(gap)
@@ -173,4 +173,3 @@ if __name__ == '__main__':
     v0 = initialzationWidget()
     v0.show()
     app.exec_()
-    print('hahaha')
