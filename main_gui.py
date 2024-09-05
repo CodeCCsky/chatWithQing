@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
+import datetime
 import json
 import re
 import copy
@@ -18,10 +19,10 @@ from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting.setting_colletions import settingManager
 from tts import TTSAudio
 
-setting = settingManager()
-history_path = None
+#setting = settingManager()
 tts_cache_path = r"cache/"
 no_tts_sound_path = r"asset\sound\speak.wav"
+default_history_path = r'history/'
 check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
 SPEAK_GAP = 50
@@ -36,21 +37,21 @@ class mainWidget(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None: #TODO use_tts 由设置面板控制
+    def __init__(self, history_path: str, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.init_resource()
-        self.use_tts = use_tts
 
         self.is_speaking = False
         self.facial_expr_state = self.S_NORMAL
         self.init_tray()
-        self.init_setting()
+        self.init_setting(history_path)
         self.init_desktop_pet()
         self.init_talk()
         self.init_llm()
         self.init_stroke()
         self.init_text2token()
-        self.change_setting(self.setting_widget.setting_manager)
+        self.setting.tts_setting.use_setting(self.tts_model)
+        self.setting.deepseek_model.use_setting(self.llm_inferance)
 
 ### <初始化部分>
     def init_resource(self):
@@ -115,14 +116,20 @@ class mainWidget(QWidget):
         self.tray_icon.show()
 
     def init_desktop_pet(self):
-        self.desktop_pet = DesktopPet(use_tts=self.use_tts)
+        self.desktop_pet = DesktopPet(use_tts=self.setting.tts_setting.use_tts)
         self.desktop_pet.closeEvent = self.closeEvent
         self.desktop_pet.show()
 
-    def init_setting(self):
+    def init_setting(self, history_path: str):
         # TODO
+        self.setting = settingManager()
+        self.setting.load_from_file()
+        self.setting.history_path = history_path
         self.setting_widget = SettingWidget()
+        self.setting_widget.setting_manager.history_path = history_path
+        self.setting_widget.setting_manager_backup.history_path = history_path
         self.setting_widget.changeSetting.connect(self.change_setting)
+        logger.info(f'加载设置。选择的历史记录{self.setting.history_path}')
 
     def init_talk(self):#TODO
         self.talk_bubble = talkBubble()
@@ -150,8 +157,8 @@ class mainWidget(QWidget):
         self.desktop_pet.stroke_area.stroked_area_signal.connect(self.progress_stroke)
 
     def init_llm(self):
-        self.history_manager = historyManager(setting.get_user_name(), history_path)
-        self.llm_inferance = deepseek_model(setting.get_api_key(), setting.get_system_prompt())
+        self.history_manager = historyManager(user_name=self.setting.get_user_name(), history_path=self.setting.history_path)
+        self.llm_inferance = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
         self.response_content = {}
         self.llm_thread = None
 
@@ -176,16 +183,14 @@ class mainWidget(QWidget):
 ### </'显示组件'选项部分>
 ### <更换设置>
     def change_setting(self, setting_manager: settingManager):
-        global setting
-        setting = setting_manager
-        setting.tts_setting.use_setting(self.tts_model)
-        setting.deepseek_model.use_setting(self.llm_inferance)
-        self.llm_inferance.system_prompt = setting.get_system_prompt()
-        self.use_tts = setting.tts_setting.use_tts
-        if self.history_manager.history_path != setting.histoy_path:
-            self.history_manager = historyManager(setting.user.user_name, setting.histoy_path)
-            logger.info(f"加载 {setting.histoy_path}")
-        setting.write_yaml()
+        self.setting = setting_manager
+        self.setting.tts_setting.use_setting(self.tts_model)
+        self.setting.deepseek_model.use_setting(self.llm_inferance)
+        self.llm_inferance.system_prompt = self.setting.get_system_prompt()
+        #if self.history_manager.history_path != self.setting.history_path:
+        #    self.history_manager = historyManager(user_name=self.setting.user.user_name, history_path=self.setting.history_path)
+        #    logger.info(f"加载 {self.setting.history_path}")
+        self.setting.write_yaml()
 
 ### </更换设置>
 ### <处理摸摸部分>
@@ -225,7 +230,7 @@ class mainWidget(QWidget):
         # TODO 更多系统提示
         sys_input = self.progress_sys_msg()
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
-        self.llm_inferance.load_history(self.history_manager.get_history())
+        self.llm_inferance.load_history(self.history_manager.get_current_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
         self.llm_thread.start()
         self.llm_thread.finish_signal.connect(self.progress_thinking)
@@ -235,7 +240,7 @@ class mainWidget(QWidget):
         try:
             self.response_content = json.loads(response)
             self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
-            if self.use_tts:
+            if self.setting.tts_setting.use_tts:
                 self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
                 self.tts_thread.start()
                 self.tts_thread.startSpeak.connect(self.start_typing)
@@ -247,7 +252,7 @@ class mainWidget(QWidget):
             self.talk_bubble.update_text(response)
 
     def start_typing(self):
-        if self.use_tts:
+        if self.setting.tts_setting.use_tts:
             self.tts_thread.disconnect()
         self.wait_until_start_talking.stop()
         self.desktop_pet.set_speak()
@@ -256,7 +261,7 @@ class mainWidget(QWidget):
 
     def process_typing_effect(self):
         try:
-            if not self.use_tts and re.match(r'[\d\u4e00-\u9fff]',self.response_content['role_response'][self.on_read_text]):
+            if not self.setting.tts_setting.use_tts and re.match(r'[\d\u4e00-\u9fff]',self.response_content['role_response'][self.on_read_text]):
                 self.no_tts_sound_manager.play_audio()
             self.on_read_text += 1
             self.talk_bubble.update_text(self.response_content['role_response'][:self.on_read_text])
@@ -305,7 +310,9 @@ class mainWidget(QWidget):
         pass
 
 def main():
-    pet = mainWidget()
+    current_time = datetime.datetime.now()
+    current_time = current_time.strftime("%Y%m%d")
+    pet = mainWidget(history_path=os.path.join(default_history_path, f"{current_time}.json"))
     sys.exit(app.exec_())
 
 def set_setting(_setting: settingManager):
@@ -329,6 +336,7 @@ def initize():
 
 if __name__ == '__main__' :
     app = QApplication(sys.argv)
+    setting = settingManager()
     state_num = setting.load_from_file()
     if state_num[0] == 0:
         logger.info('成功加载设置')

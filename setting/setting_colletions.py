@@ -113,7 +113,7 @@ class settingManager:
         self.tts_setting: TTS_setting = None
         self.chat_summary_setting: chat_summary_setting = None
         self.recall_function_setting: recall_function_setting = None
-        self.histoy_path =  None
+        self.history_path =  None
         self.system_prompt_main = None
         self.load_path = "setting/private_setting.yaml"
 
