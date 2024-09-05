@@ -35,8 +35,8 @@ while True:
     sys_input = ''
     usr_input = input("user> ")
     history.add_user_message(usr_input)
-    llm_main_chat.load_history(history.get_history())
-    print(history.get_history())
+    llm_main_chat.load_history(history.get_current_history())
+    print(history.get_current_history())
     thread = DeepSeekThread(llm_main_chat)
     thread.start()
     #while thread.is_alive() :
