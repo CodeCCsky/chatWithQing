@@ -5,7 +5,7 @@ import copy
 from PyQt5.QtCore import Qt, QEvent, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtGui import QCloseEvent
-from asset.GUI.Ui_initialization import Ui_MainWindow
+from asset.GUI.Ui_setting import Ui_MainWindow
 from setting import *
 #from Ui_initialization import Ui_MainWindow
 
@@ -16,6 +16,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super(initialzationWidget, self).__init__()
         self.setupUi(self)
+        self.setWindowTitle('初始化设置')
         self.initValue()
         self.initConnect()
 

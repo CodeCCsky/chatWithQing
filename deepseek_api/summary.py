@@ -81,7 +81,7 @@ class deepseek_summary:
                         'prompt_tokens': chunk.usage.prompt_tokens,
                         'total_tokens': chunk.usage.total_tokens
                     }
-            print("\n-------\n",messages,"\n---\n",self.current_response,"\n---------\n\n")##################################
+            #print("\n-------\n",messages,"\n---\n",self.current_response,"\n---------\n\n")##################################
             return self.current_response, self.finish_reason, token_usage
         #except Exception as e:
         #    logger.error(f"Error sending message: {e}")

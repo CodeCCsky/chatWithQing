@@ -37,8 +37,8 @@ class deepseek_api_setting:
     def __init__(self,
                  api_key: str,
                  temperature: float = 1.1,
-                 frequency_penalty: float = 0,
-                 presence_penalty: float = 0.1) -> None:
+                 frequency_penalty: float = 0.3,
+                 presence_penalty: float = 0.3) -> None:
         self.api_key = api_key
         self.temperature = temperature
         self.frequency_penalty = frequency_penalty

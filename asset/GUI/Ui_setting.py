@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\asset\GUI\xml\setting.ui'
+# Form implementation generated from reading ui file 'c:\Users\Administrator\Desktop\workspace\chatWithQing\asset\GUI\xml\setting.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         self.scrollArea_7.setWidgetResizable(True)
         self.scrollArea_7.setObjectName("scrollArea_7")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 531, 550))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, -235, 531, 550))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout_17.setObjectName("verticalLayout_17")
@@ -400,7 +400,7 @@ class Ui_MainWindow(object):
         self.scrollArea_10.setWidgetResizable(True)
         self.scrollArea_10.setObjectName("scrollArea_10")
         self.scrollAreaWidgetContents_8 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_8.setGeometry(QtCore.QRect(0, -138, 531, 453))
+        self.scrollAreaWidgetContents_8.setGeometry(QtCore.QRect(0, 0, 531, 453))
         self.scrollAreaWidgetContents_8.setObjectName("scrollAreaWidgetContents_8")
         self.verticalLayout_23 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_8)
         self.verticalLayout_23.setObjectName("verticalLayout_23")
@@ -539,9 +539,9 @@ class Ui_MainWindow(object):
         self.APILabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">API key</span></p></body></html>"))
         self.temperatureLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">温度 temperature</span></p><p><span style=\" font-size:10pt;\">范围：0 ~ 2</span></p><p><span style=\" font-size:10pt;\">影响大模型输出的随机性</span></p><p><span style=\" font-size:10pt;\">默认为 1.1</span></p></body></html>"))
         self.temperatureShowLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.frequencyPenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">频率惩罚 frequency penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型输出相同内容（复读）的可能性越小</span></p><p><span style=\" font-size:10pt;\">默认为 0</span></p></body></html>"))
+        self.frequencyPenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">频率惩罚 frequency penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型输出相同内容（复读，说车轱辘话等）的可能性越小</span></p><p><span style=\" font-size:10pt;\">默认为 0.3</span></p></body></html>"))
         self.frequencyPenaltyShowLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.presecePenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">存在惩罚 presence penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型谈论新话题的可能性越大</span></p><p><span style=\" font-size:10pt;\">默认为 0.1</span></p></body></html>"))
+        self.presecePenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">存在惩罚 presence penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型谈论新话题的可能性越大</span></p><p><span style=\" font-size:10pt;\">默认为 0.3</span></p></body></html>"))
         self.presencePenaltyShowLabel.setText(_translate("MainWindow", "TextLabel"))
         self.TTSIntroducing.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">启用 TTS 需要同时运行 GPT-SoVITS-Inference</span></p><p><span style=\" font-size:10pt;\">若未部署，查看部署教程：</span><a href=\"https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e</span></a></p><p>在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可</p><p><span style=\" font-size:11pt; font-weight:600;\">在未启动 GPT-SoVITS-Inference 的情况下启用此功能会报错！</span></p><p>(暂时没时间去做检测了..等以后吧)</p><p><span style=\" font-size:10pt;\">项目地址：</span><a href=\"https://github.com/X-T-E-R/GPT-SoVITS-Inference\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://github.com/X-T-E-R/GPT-SoVITS-Inference</span></a></p></body></html>"))
         self.EnableTTScheckBox.setText(_translate("MainWindow", "启用TTS"))
