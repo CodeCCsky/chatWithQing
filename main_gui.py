@@ -11,17 +11,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget
+from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget, loadWidget
 from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model, historyManager, offline_tokenizer
+from deepseek_api import deepseek_model, historyManager, offline_tokenizer, deepseek_summary
 from setting.setting_colletions import settingManager
 from tts import TTSAudio
 
 #setting = settingManager()
 tts_cache_path = r"cache/"
-no_tts_sound_path = r"asset\sound\speak.wav"
+no_tts_sound_path = r"asset/sound/speak.wav"
 default_history_path = r'history/'
 check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
@@ -43,11 +43,11 @@ class mainWidget(QWidget):
 
         self.is_speaking = False
         self.facial_expr_state = self.S_NORMAL
-        self.init_tray()
         self.init_setting(history_path)
+        self.init_llm()
+        self.init_tray()
         self.init_desktop_pet()
         self.init_talk()
-        self.init_llm()
         self.init_stroke()
         self.init_text2token()
         self.setting.tts_setting.use_setting(self.tts_model)
@@ -161,6 +161,22 @@ class mainWidget(QWidget):
         self.llm_inferance = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
         self.response_content = {}
         self.llm_thread = None
+        summary_inference = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
+        if self.setting.chat_summary_setting.add_same_day_summary and self.history_manager.current_history_index > 0: # TODO 更换为线程池处理
+            today_history_summary = []
+            load_widget = loadWidget(self.history_manager.current_history_index,"加载当天记录中")
+
+            for i in range(self.history_manager.current_history_index):
+                if not self.history_manager.get_summary_by_index(i):
+                    self.history_manager.set_summary_by_index(i,summary_inference.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0])
+                crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")
+                upd_time = datetime.datetime.strptime(self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S")
+                today_history_summary.append(f"|{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.setting.get_user_name()}对话历史总结:{self.history_manager.get_summary_by_index(i)}|")
+                load_widget.finish_a_task()
+            self.history_manager.add_user_message('', ''.join(today_history_summary))
+            load_widget.close()
+        if self.setting.chat_summary_setting.add_x_day_ago_summary:
+            pass # TODO 完成多天历史
 
     def init_text2token(self):
         self.tokenizer = offline_tokenizer()
@@ -186,7 +202,7 @@ class mainWidget(QWidget):
         self.setting = setting_manager
         self.setting.tts_setting.use_setting(self.tts_model)
         self.setting.deepseek_model.use_setting(self.llm_inferance)
-        self.llm_inferance.system_prompt = self.setting.get_system_prompt()
+        self.setting.load_system_prompt_main()
         #if self.history_manager.history_path != self.setting.history_path:
         #    self.history_manager = historyManager(user_name=self.setting.user.user_name, history_path=self.setting.history_path)
         #    logger.info(f"加载 {self.setting.history_path}")
@@ -316,6 +332,7 @@ def main():
     sys.exit(app.exec_())
 
 def set_setting(_setting: settingManager):
+    _setting.load_system_prompt_main()
     global setting
     setting = copy.deepcopy(_setting)
     state = setting.write_yaml()

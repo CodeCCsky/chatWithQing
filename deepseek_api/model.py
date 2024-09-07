@@ -4,7 +4,6 @@ from openai import OpenAI
 from deepseek_api.deepseek_tools import ds_tool
 import logging
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 不记录历史，每次需要传入history_manager处理后的history

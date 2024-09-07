@@ -43,6 +43,9 @@ class chatManager:
                 processed_history[i]['content'] = json.dumps(self.origin_history[i]['content'],ensure_ascii=False)
         return processed_history
 
+    def get_current_history_dict(self) -> list:
+        return copy.deepcopy(self.origin_history)
+
     def get_full_fomatted_data(self) -> dict:
         return {"create_time" : self.create_time,
                 "update_time" : self.update_time,
@@ -142,8 +145,24 @@ class historyManager:
         self.historys[self.current_history_index].add_tool_message(tool_msg)
         self.save_history()
 
+    def get_create_time_by_index(self, index: int) -> str:
+        return self.historys[index].create_time
+
+    def get_update_time_by_index(self, index: int) -> str:
+        return self.historys[index].update_time
+
     def get_current_history(self) -> str:
         return self.historys[self.current_history_index].get_current_history()
+
+    def get_history_dict_by_index(self, index: int) -> str:
+        return self.historys[index].get_current_history_dict()
+
+    def get_summary_by_index(self, index: int) -> str:
+        return self.historys[index].summary
+
+    def set_summary_by_index(self, index: int, summary: str) -> None:
+        self.historys[index].summary = summary
+        self.save_history()
 
     def set_current_summary(self, summary: str) -> None:
         self.historys[self.current_history_index].summary = summary
