@@ -54,7 +54,7 @@ class chatManager:
                 "progressed_history" : self.progressed_history}
 
     def is_empty(self) -> bool:
-        if self.progressed_history == [] and self.origin_history == []:
+        if self.progressed_history == [] and len(self.origin_history)<2:
             return True
         else:
             return False
@@ -171,6 +171,12 @@ class historyManager:
     def set_overall_summary(self, summary: str) -> None:
         self.summary = summary
         self.save_history()
+
+    def get_full_data(self) -> dict:
+        historys = []
+        for _slice in self.historys:
+            historys.append(_slice.get_full_fomatted_data())
+        return {"summary" : self.summary, "historys" : historys}
 
     def save_history(self) -> None:
         with open(self.history_path,'w',encoding='utf-8') as f:

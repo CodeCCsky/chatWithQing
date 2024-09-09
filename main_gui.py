@@ -12,7 +12,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget, loadWidget
-from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread
+from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread, summaryWorker
 import asset.GUI.res_rc
 
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer, deepseek_summary
@@ -39,12 +39,15 @@ class mainWidget(QWidget):
     S_EYE_CLOSE_SMILE = 6
     def __init__(self, history_path: str, parent: QWidget = None) -> None:
         super().__init__(parent)
+        self.init_timer = QTimer()
         self.init_resource()
 
         self.is_speaking = False
         self.facial_expr_state = self.S_NORMAL
         self.init_setting(history_path)
         self.init_llm()
+
+    def init_2(self):
         self.init_tray()
         self.init_desktop_pet()
         self.init_talk()
@@ -157,26 +160,71 @@ class mainWidget(QWidget):
         self.desktop_pet.stroke_area.stroked_area_signal.connect(self.progress_stroke)
 
     def init_llm(self):
-        self.history_manager = historyManager(user_name=self.setting.get_user_name(), history_path=self.setting.history_path)
-        self.llm_inferance = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
-        self.response_content = {}
-        self.llm_thread = None
-        summary_inference = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
-        if self.setting.chat_summary_setting.add_same_day_summary and self.history_manager.current_history_index > 0: # TODO 更换为线程池处理
-            today_history_summary = []
-            load_widget = loadWidget(self.history_manager.current_history_index,"加载当天记录中")
+        #summary_inference = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
+        if self.setting.chat_summary_setting.add_same_day_summary: # TODO 更换为线程池处理
+            logger.info("加载历史记录中")
+            self.summary_threadpool = QThreadPool()
+            today_summary_worker = summaryWorker(api_key=self.setting.get_api_key(),
+                                                user_name=self.setting.get_user_name(),
+                                                history_path=self.setting.history_path,
+                                                generate_day_summary=False)
+            total_task_num = today_summary_worker.get_task_num()
+            if self.setting.chat_summary_setting.add_x_day_ago_summary:
+                now_date = datetime.datetime.now()
+                list_of_worker: list[summaryWorker] = []
+                for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                    current_date = now_date - datetime.timedelta(days=i)
+                    current_date_str = current_date.strftime("%Y%m%d")
+                    file_path = os.path.join(default_history_path, f"{current_date_str}.json")
+                    if not os.path.exists(file_path):
+                        continue
+                    current_date_worker = summaryWorker(api_key=self.setting.get_api_key(),
+                                                        user_name=self.setting.get_user_name(),
+                                                        history_path=file_path,
+                                                        generate_day_summary=True)
+                    total_task_num += current_date_worker.get_task_num()
+                    list_of_worker.append(current_date_worker)
 
-            for i in range(self.history_manager.current_history_index):
-                if not self.history_manager.get_summary_by_index(i):
-                    self.history_manager.set_summary_by_index(i,summary_inference.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0])
-                crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")
-                upd_time = datetime.datetime.strptime(self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S")
-                today_history_summary.append(f"|{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.setting.get_user_name()}对话历史总结:{self.history_manager.get_summary_by_index(i)}|")
-                load_widget.finish_a_task()
-            self.history_manager.add_user_message('', ''.join(today_history_summary))
-            load_widget.close()
-        if self.setting.chat_summary_setting.add_x_day_ago_summary:
-            pass # TODO 完成多天历史
+            self.load_widget = loadWidget(total_task_num)
+            today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
+            for worker in list_of_worker:
+                worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
+                self.summary_threadpool.start(worker)
+            self.load_widget.show()
+            self.init_timer.timeout.connect(self.check_summary_thread_pool)
+            self.summary_threadpool.start(today_summary_worker)
+        self.init_timer.start(100)
+
+    def check_summary_thread_pool(self):
+        if self.summary_threadpool.activeThreadCount() == 0:
+            self.init_timer.stop()
+            self.history_manager = historyManager(user_name=self.setting.get_user_name(), history_path=self.setting.history_path)
+            if self.setting.chat_summary_setting.add_same_day_summary:
+                full_summary_str = ''
+                now_date = datetime.datetime.now()
+                if self.setting.chat_summary_setting.add_x_day_ago_summary:
+                    for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                        current_date = now_date - datetime.timedelta(days=i)
+                        current_date_str = current_date.strftime("%Y%m%d")
+                        file_path = os.path.join(default_history_path, f"{current_date_str}.json")
+                        if not os.path.exists(file_path):
+                            continue
+                        summary = historyManager(user_name=self.setting.get_user_name(),history_path=file_path).summary
+                        full_summary_str += f"|{current_date.year}年{current_date.month}月{current_date.day}日对话记录总结: {summary}|\n"
+                if self.history_manager.current_history_index > 0:
+                    full_summary_str += "|今日对话记录总结:"
+                    for i in range(self.history_manager.current_history_index):
+                        crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")
+                        upd_time = datetime.datetime.strptime(self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S")
+                        full_summary_str += f"\n{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.setting.get_user_name()}对话历史总结:{self.history_manager.get_summary_by_index(i)}"
+                    full_summary_str += "|"
+                self.history_manager.set_current_summaried_history(full_summary_str)
+            self.load_widget.close()
+            self.load_widget = None
+            self.llm_inferance = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
+            self.response_content = {}
+            self.llm_thread = None
+            self.init_2()
 
     def init_text2token(self):
         self.tokenizer = offline_tokenizer()
