@@ -112,6 +112,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
 
         # summary
         self.addSameDayHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_same_day_summary',p))
+        self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummaryCheckBox.toggled.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'add_x_day_ago_summary',p))
         self.addXDayAgoHisSummarySpinBox.valueChanged.connect(lambda p:setattr(self.setting_manager.chat_summary_setting,'value_of_x_day_ago',p))
 

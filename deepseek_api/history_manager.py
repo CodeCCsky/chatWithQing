@@ -16,6 +16,10 @@ class chatManager:
         self.origin_history: list = history_data['origin_history']
         self.progressed_history: list = history_data['progressed_history']
         self.user_name: str = user_name
+        self.summaried_history: str = None
+
+    def set_summaried_history(self, summaried_history: str):
+        self.summaried_history = summaried_history
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.origin_history.append({"role":"user", "content":{self.user_name:user_input}})
@@ -41,6 +45,9 @@ class chatManager:
         for i in range(len(processed_history)):
             if isinstance(processed_history[i]['content'],dict):
                 processed_history[i]['content'] = json.dumps(self.origin_history[i]['content'],ensure_ascii=False)
+        if self.summaried_history:
+            processed_history.insert(0, {"role":"user","content":json.dumps({self.user_name:"","sys":self.summaried_history},ensure_ascii=False)})
+        #print(processed_history)
         return processed_history
 
     def get_current_history_dict(self) -> list:
@@ -80,6 +87,7 @@ class chatManager:
 
 class historyManager:
     def __init__(self, user_name: str,history_path : str = None, current_history_index: int = None) -> None:
+        logger.info(f"尝试加载位于{history_path}的历史记录文件中...")
         self.historys: list[chatManager] = []
         self.history_path = history_path
         self.user_name = user_name
@@ -159,6 +167,9 @@ class historyManager:
 
     def get_summary_by_index(self, index: int) -> str:
         return self.historys[index].summary
+
+    def set_current_summaried_history(self, summaried_history: str) -> None:
+        self.historys[self.current_history_index].set_summaried_history(summaried_history)
 
     def set_summary_by_index(self, index: int, summary: str) -> None:
         self.historys[index].summary = summary
