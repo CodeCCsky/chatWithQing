@@ -9,8 +9,6 @@ from asset.GUI.Ui_setting import Ui_MainWindow
 from setting import *
 #from Ui_setting import Ui_MainWindow
 
-# TODO
-
 class SettingWidget(QMainWindow, Ui_MainWindow):
     changeSetting = pyqtSignal(settingManager)
     def __init__(self) -> None:

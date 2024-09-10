@@ -1,7 +1,7 @@
 from tts import TTSAudio
 from PyQt5.QtCore import QThread, pyqtSignal
 
-class tts_thread(QThread):# TODO test
+class tts_thread(QThread):
     startSpeak = pyqtSignal(bool)
     def __init__(self, tts_model: TTSAudio, tts_text: str) -> None:
         super().__init__()

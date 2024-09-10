@@ -124,7 +124,6 @@ class mainWidget(QWidget):
         self.desktop_pet.show()
 
     def init_setting(self, history_path: str):
-        # TODO
         self.setting = settingManager()
         self.setting.load_from_file()
         self.setting.history_path = history_path
@@ -134,7 +133,7 @@ class mainWidget(QWidget):
         self.setting_widget.changeSetting.connect(self.change_setting)
         logger.info(f'加载设置。选择的历史记录{self.setting.history_path}')
 
-    def init_talk(self):#TODO
+    def init_talk(self):
         self.talk_bubble = talkBubble()
         self.talk_bubble.closeEvent = self.closeEvent
         self.input_label = inputLabel()
@@ -161,7 +160,7 @@ class mainWidget(QWidget):
 
     def init_llm(self):
         #summary_inference = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
-        if self.setting.chat_summary_setting.add_same_day_summary: # TODO 更换为线程池处理
+        if self.setting.chat_summary_setting.add_same_day_summary:
             logger.info("加载历史记录中")
             self.summary_threadpool = QThreadPool()
             today_summary_worker = summaryWorker(api_key=self.setting.get_api_key(),
