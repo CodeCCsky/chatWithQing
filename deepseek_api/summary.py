@@ -17,18 +17,21 @@ day_summary_prompt = """请根据以下多条包含时间的对话总结，提�
 你应该给出如下总结：
 上午9点左右，{user}分享了最近的生活经历和观看的电影，晴表现出兴趣并参与讨论。在上午11点左右，{user}在编程中遇到问题，晴主动提供帮助，建议了有效的提示词，并表现出对{user}的关注和支持。"""
 
+
 class deepseek_summary:
-    def __init__(self,
-                 api_key: str,
-                 user_name: str,
-                 temperature: float = 0.7,
-                 frequency_penalty: float = 0.3,
-                 presence_penalty: float = 0,
-                 max_retries: int = 3,
-                 retry_delay: int = 5) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        user_name: str,
+        temperature: float = 0.7,
+        frequency_penalty: float = 0.3,
+        presence_penalty: float = 0,
+        max_retries: int = 3,
+        retry_delay: int = 5,
+    ) -> None:
         self.api_key = api_key
-        self.current_response = ''
-        self.finish_reason = ''
+        self.current_response = ""
+        self.finish_reason = ""
         self.temperature = temperature
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
@@ -42,31 +45,37 @@ class deepseek_summary:
     def get_chat_summary(self, chat_history: list):
         processed_history_list = []
         for item in chat_history:
-            if item['role'] == "user":
-                #try:
-                    processed_history_list.append(f"{self.user_name}:{item['content'][self.user_name]}")
-            elif item['role'] == "assistant":
-                #try:
-                    processed_history_list.append(f"晴:{item['content']['role_response']}")
-                #except Exception:
-                #    processed_history_list.append(f"{self.user_name}:{item['content']}")
+            if item["role"] == "user":
+                # try:
+                processed_history_list.append(f"{self.user_name}:{item['content'][self.user_name]}")
+            elif item["role"] == "assistant":
+                # try:
+                processed_history_list.append(f"晴:{item['content']['role_response']}")
+            # except Exception:
+            #    processed_history_list.append(f"{self.user_name}:{item['content']}")
         if processed_history_list == []:
             return None, None, {}
-        messages = [{"role": "system", "content": self.chat_summary_prompt},
-                   {"role": "user", "content": "\n".join(processed_history_list)}]
+        messages = [
+            {"role": "system", "content": self.chat_summary_prompt},
+            {"role": "user", "content": "\n".join(processed_history_list)},
+        ]
         return self._send(messages)
 
     def get_day_summary(self, day_data: dict):
-        day_historys = day_data['historys']
+        day_historys = day_data["historys"]
         processed_historys_list = []
         for item in day_historys:
-            crt_time = datetime.datetime.strptime(item['create_time'], "%Y-%m-%d %H:%M:%S")
-            upd_time = datetime.datetime.strptime(item['update_time'], "%Y-%m-%d %H:%M:%S")
-            processed_historys_list.append(f"{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 总结: {item['summary']}")
+            crt_time = datetime.datetime.strptime(item["create_time"], "%Y-%m-%d %H:%M:%S")
+            upd_time = datetime.datetime.strptime(item["update_time"], "%Y-%m-%d %H:%M:%S")
+            processed_historys_list.append(
+                f"{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 总结: {item['summary']}"
+            )
         if processed_historys_list == []:
             return None, None, {}
-        messages = [{"role": "system", "content": self.day_summary_prompt},
-                   {"role": "user", "content": "\n".join(processed_historys_list)}]
+        messages = [
+            {"role": "system", "content": self.day_summary_prompt},
+            {"role": "user", "content": "\n".join(processed_historys_list)},
+        ]
         return self._send(messages)
 
     def _send(self, messages: list):
@@ -79,9 +88,9 @@ class deepseek_summary:
                     temperature=self.temperature,
                     frequency_penalty=self.frequency_penalty,
                     presence_penalty=self.presence_penalty,
-                    stream=True
+                    stream=True,
                 )
-                self.current_response = ''
+                self.current_response = ""
                 for chunk in response:
                     if chunk.choices[0].delta.content:
                         self.current_response += chunk.choices[0].delta.content
@@ -89,11 +98,11 @@ class deepseek_summary:
                         self.finish_reason = chunk.choices[0].finish_reason
                     if chunk.usage:
                         token_usage = {
-                            'completion_tokens': chunk.usage.completion_tokens,
-                            'prompt_tokens': chunk.usage.prompt_tokens,
-                            'total_tokens': chunk.usage.total_tokens
+                            "completion_tokens": chunk.usage.completion_tokens,
+                            "prompt_tokens": chunk.usage.prompt_tokens,
+                            "total_tokens": chunk.usage.total_tokens,
                         }
-                #print("\n-------\n",messages,"\n---\n",self.current_response,"\n---------\n\n")##################################
+                # print("\n-------\n",messages,"\n---\n",self.current_response,"\n---------\n\n")##################################
                 return self.current_response, self.finish_reason, token_usage
             except APIError as e:
                 logger.warning(f"api错误，将等待一段时间后重试 status code:{e.code}")

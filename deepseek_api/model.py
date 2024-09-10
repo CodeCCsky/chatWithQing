@@ -8,17 +8,21 @@ from deepseek_api.deepseek_tools import ds_tool
 
 logger = logging.getLogger(__name__)
 
+
 # 不记录历史，每次需要传入history_manager处理后的history
 class deepseek_model:
     """deepseek api接口. 每次发送前需要调用 load_history 加载历史."""
-    def __init__(self,
-                 api_key: str,
-                 system_prompt: str,
-                 tools: ds_tool = ds_tool(),
-                 temperature: float = 1.1,
-                 frequency_penalty: float = 0.3,
-                 presence_penalty: float = 0.3,
-                 output_json: bool = False) -> None:
+
+    def __init__(
+        self,
+        api_key: str,
+        system_prompt: str,
+        tools: ds_tool = ds_tool(),
+        temperature: float = 1.1,
+        frequency_penalty: float = 0.3,
+        presence_penalty: float = 0.3,
+        output_json: bool = False,
+    ) -> None:
         """deepseek api接口. 每次发送前需要调用load_history加载历史.
 
         Args:
@@ -72,26 +76,26 @@ class deepseek_model:
     def load_history(self, history: List[Dict]) -> None:
         if not isinstance(history, list):
             raise ValueError("History must be a list of dictionaries")
-        if history[0]['role'] == 'system':
+        if history[0]["role"] == "system":
             self.history = copy.deepcopy(history[1:])
-        else :
+        else:
             self.history = copy.deepcopy(history)
-        self.history.insert(0,{'role': 'system', 'content': self.system_prompt})
+        self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
     def send_message(self, is_prefix: bool = False) -> tuple[str, str, dict]:
         try:
             response = self.client.chat.completions.create(
                 model="deepseek-chat",
                 messages=self.history,
-                #tools=self.tools,  # TODO Implement tools functionality
+                # tools=self.tools,  # TODO Implement tools functionality
                 max_tokens=1024,
                 temperature=self.temperature,
                 frequency_penalty=self.frequency_penalty,
                 presence_penalty=self.presence_penalty,
-                stream=True
+                stream=True,
             )
             if is_prefix:
-                self.history[-1]['prefix'] = True
+                self.history[-1]["prefix"] = True
             self.current_response = ""
             token_usage = None
             self.finish_reason = None
@@ -102,9 +106,9 @@ class deepseek_model:
                     self.finish_reason = chunk.choices[0].finish_reason
                 if chunk.usage:
                     token_usage = {
-                        'completion_tokens': chunk.usage.completion_tokens,
-                        'prompt_tokens': chunk.usage.prompt_tokens,
-                        'total_tokens': chunk.usage.total_tokens
+                        "completion_tokens": chunk.usage.completion_tokens,
+                        "prompt_tokens": chunk.usage.prompt_tokens,
+                        "total_tokens": chunk.usage.total_tokens,
                     }
             self.history.clear()
             return self.current_response, self.finish_reason, token_usage
@@ -112,7 +116,6 @@ class deepseek_model:
             self.history.clear()
             logger.error(f"Error sending message: {e}")
             return "", "error", {}
-        
 
     def get_response(self) -> str:
         return self.current_response

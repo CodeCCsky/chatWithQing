@@ -9,17 +9,19 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QStatusBar, QWidget
 
 import app.asset.res_rc
 
-#import res_rc
+# import res_rc
+
 
 class inputLabel(QWidget):
     requestSend = pyqtSignal(str)
     getTokens = pyqtSignal(str)
-    def __init__(self,parent = None, is_calc_token = True, update_token_time = 1000):
+
+    def __init__(self, parent=None, is_calc_token=True, update_token_time=1000):
         super().__init__(parent)
         self.input_font_size = 16
         self.button_font_size = 16
-        self.input_font = QFont('SimHei',self.input_font_size)
-        self.button_font = QFont('SimHei',self.button_font_size)
+        self.input_font = QFont("SimHei", self.input_font_size)
+        self.button_font = QFont("SimHei", self.button_font_size)
         self.keep_opacity_time = 5000
         self.init_token_calc(update_token_time, is_calc_token)
         self.init_window_opacity_control()
@@ -29,9 +31,9 @@ class inputLabel(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
 
         fontDb = QFontDatabase()
-        fontID = fontDb.addApplicationFont(':/font/荆南波波黑.ttf')
+        fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         screen = QDesktopWidget().screenGeometry()
-        self.setGeometry(int(screen.width()*0.95-400),int(screen.height()*0.3),400,300)
+        self.setGeometry(int(screen.width() * 0.95 - 400), int(screen.height() * 0.3), 400, 300)
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
         self.verticalLayout.setContentsMargins(5, 0, 5, 0)
@@ -81,8 +83,8 @@ class inputLabel(QWidget):
 
         self.input_edit.setFont(self.input_font)
         self.input_edit.textChanged.connect(self.set_keep_opacity)
-        self.input_edit.textChanged.connect(lambda :self.update_text2token(self.input_edit.toPlainText()))
-        #self.input_edit.setStyleSheet("background: transparent;color: white;border: 4px solid lightgreen;padding: 1px;")
+        self.input_edit.textChanged.connect(lambda: self.update_text2token(self.input_edit.toPlainText()))
+        # self.input_edit.setStyleSheet("background: transparent;color: white;border: 4px solid lightgreen;padding: 1px;")
         self.clearButton.setFont(self.button_font)
         self.sendButton.setFont(self.button_font)
 
@@ -104,11 +106,11 @@ class inputLabel(QWidget):
         self.keep_opacity_timer.timeout.connect(self.reset_keep_opacity)
         self.window_opacity_timer = QTimer()
         self.window_opacity_timer.timeout.connect(self.window_opacity_control)
-        self.window_opacity_timer.start(25) # 25 毫秒更新一次窗口透明度
-        self.set_mouse_over_timer = QTimer() # 鼠标离开/进入窗口后多久更新 is_mouse_over
+        self.window_opacity_timer.start(25)  # 25 毫秒更新一次窗口透明度
+        self.set_mouse_over_timer = QTimer()  # 鼠标离开/进入窗口后多久更新 is_mouse_over
 
     def init_token_calc(self, update_token_time: int, is_calc_token: bool) -> None:
-        self.wait_to_send_text = ''
+        self.wait_to_send_text = ""
         self.is_calc_token = is_calc_token
         self.update_token_time = update_token_time
         self.text2token_timer = QTimer()
@@ -135,17 +137,17 @@ class inputLabel(QWidget):
             self.text2token_timer.stop()
 
     def show_token(self, token_num: int):
-        self.statusBar.showMessage(f'输入预计消耗的token数量(包含后台提示): {token_num} Tokens')
+        self.statusBar.showMessage(f"输入预计消耗的token数量(包含后台提示): {token_num} Tokens")
         self.text2token_timer.start(self.update_token_time)
 
     def clear_text(self):
-        self.input_edit.setPlainText('')
+        self.input_edit.setPlainText("")
         self.text2token_timer.stop()
 
     def send_text(self):
         self.sendButton.setEnabled(False)
         self.input_edit.setEnabled(False)
-        self.statusBar.showMessage('发送中...',1000)
+        self.statusBar.showMessage("发送中...", 1000)
         self.requestSend.emit(self.input_edit.toPlainText())
         self.clear_text()
 
@@ -164,10 +166,10 @@ class inputLabel(QWidget):
     def window_opacity_control(self):
         if self.is_hide is False and self.keep_opacity is False:
             if self.is_mouse_over:
-                opacity_value = min(0.99, self.windowOpacity()+0.1)
+                opacity_value = min(0.99, self.windowOpacity() + 0.1)
                 self.setWindowOpacity(opacity_value)
-            else :
-                opacity_value = max(0.3, self.windowOpacity()-0.1)
+            else:
+                opacity_value = max(0.3, self.windowOpacity() - 0.1)
                 self.setWindowOpacity(opacity_value)
         elif self.is_hide:
             self.setWindowOpacity(0)
@@ -177,7 +179,7 @@ class inputLabel(QWidget):
     def enabled_send_text(self):
         self.sendButton.setEnabled(True)
         self.input_edit.setEnabled(True)
-        self.statusBar.showMessage('')
+        self.statusBar.showMessage("")
 
     def enterEvent(self, event):
         self.set_mouse_over_timer.stop()
@@ -201,7 +203,8 @@ class inputLabel(QWidget):
             self.move(new_pos)
             event.accept()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = inputLabel()
     ex.show()

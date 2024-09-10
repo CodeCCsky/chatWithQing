@@ -4,8 +4,8 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5.QtWidgets import QApplication, QWidget
 
-#from Ui_load import Ui_Form
-#import res_rc
+# from Ui_load import Ui_Form
+# import res_rc
 import app.asset.res_rc
 from app.GUI.Ui_load import Ui_Form
 
@@ -14,7 +14,7 @@ class loadWidget(QWidget, Ui_Form):
     def __init__(self, all_task_num: int, text: str = "少女祈祷中") -> None:
         super(loadWidget, self).__init__()
         fontDb = QFontDatabase()
-        fontID = fontDb.addApplicationFont(':/font/荆南波波黑.ttf')
+        fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         self.setFont(QFont("荆南波波黑", 14, QFont.Bold))
         self.setupUi(self)
         self.all_task_num = all_task_num
@@ -39,7 +39,8 @@ class loadWidget(QWidget, Ui_Form):
             self.finished_task_num = value
             self.progressBar.setValue(int(self.finished_task_num * 100 / self.all_task_num))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     v0 = loadWidget(1)
     v0.show()

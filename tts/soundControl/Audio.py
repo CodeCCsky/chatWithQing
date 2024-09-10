@@ -7,25 +7,26 @@ import pyaudio
 
 import tts.soundControl.params as pms
 
-logger = logging.getLogger('main.tts.soundControl')
+logger = logging.getLogger("main.tts.soundControl")
+
 
 class Audio:
-    def __init__(self, output_device_index : int = None) -> None:
+    def __init__(self, output_device_index: int = None) -> None:
         self.p = pyaudio.PyAudio()
         self.file_path = None
         self.output_device_index = output_device_index
 
         # Thread
-        self.thread:threading.Thread = None
+        self.thread: threading.Thread = None
         self.stop_event = threading.Event()
 
-    def play_wav_file(self, wav_path : str) -> None:
+    def play_wav_file(self, wav_path: str) -> None:
         logger.info(f"Load wav file at {wav_path}")
         if os.path.exists(wav_path) is False:
             logger.error(f"{wav_path} not exists")
             raise FileNotFoundError("wav file not exists")
 
-        # Stop the playing Audio, if any 
+        # Stop the playing Audio, if any
         self.stop_event.set()
         if self.thread and self.thread.is_alive():
             self.thread.join()
@@ -40,15 +41,17 @@ class Audio:
 
     def _play_thread(self) -> None:
         try:
-            wf = wave.open(self.file_path, 'rb')
-            logger.debug(f"{self.file_path} start playing. \
-sampwidth:{wf.getsampwidth()} channels:{wf.getnchannels()} framerate:{wf.getframerate()}")
+            wf = wave.open(self.file_path, "rb")
+            logger.debug(
+                f"{self.file_path} start playing. \
+sampwidth:{wf.getsampwidth()} channels:{wf.getnchannels()} framerate:{wf.getframerate()}"
+            )
             stream = self.p.open(
                 format=self.p.get_format_from_width(wf.getsampwidth()),
                 channels=wf.getnchannels(),
                 rate=wf.getframerate(),
                 output_device_index=self.output_device_index,
-                output=True
+                output=True,
             )
             data = wf.readframes(1024)
             while data and not self.stop_event.is_set():
@@ -72,13 +75,14 @@ sampwidth:{wf.getsampwidth()} channels:{wf.getnchannels()} framerate:{wf.getfram
         self.p.terminate()
         self.stop()
 
+
 import audioop
 
 from requests import Response
 
 
 class responseStreamAudio:
-    def __init__(self, output_device_index : int = None) -> None:
+    def __init__(self, output_device_index: int = None) -> None:
         self.output_device_index = output_device_index
         self.wav_generator = None
         self.rate = None
@@ -88,17 +92,15 @@ class responseStreamAudio:
         self.p = pyaudio.PyAudio()
 
         # Thread
-        self.thread:threading.Thread = None
+        self.thread: threading.Thread = None
         self.stop_event = threading.Event()
 
-    def play_stream(self,
-                    wav_generator : Response,
-                    rate : int = pms.RATE,
-                    channels : int = pms.CHANNELS,
-                    width_format = pms.WIDTH_FORMAT) -> None:
+    def play_stream(
+        self, wav_generator: Response, rate: int = pms.RATE, channels: int = pms.CHANNELS, width_format=pms.WIDTH_FORMAT
+    ) -> None:
         logger.info("Load stream wav")
 
-        # Stop the playing Audio, if any 
+        # Stop the playing Audio, if any
         self.stop_event.set()
         if self.thread and self.thread.is_alive():
             self.thread.join()
@@ -116,14 +118,16 @@ class responseStreamAudio:
 
     def _play_thread(self) -> None:
         try:
-            logger.debug(f"start playing stream. \
-sampwidth:{self.width_format} channels:{self.channels} framerate:{self.rate}")
+            logger.debug(
+                f"start playing stream. \
+sampwidth:{self.width_format} channels:{self.channels} framerate:{self.rate}"
+            )
             stream = self.p.open(
                 format=self.width_format,
                 channels=self.channels,
                 rate=self.rate,
                 output_device_index=self.output_device_index,
-                output=True
+                output=True,
             )
             for audio_chunk in self.wav_generator.iter_content(chunk_size=pms.THUNK):
                 if self.stop_event.is_set():

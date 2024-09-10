@@ -12,9 +12,10 @@ from PyQt5.QtWidgets import (
 
 import app.asset.res_rc
 
-#import res_rc
+# import res_rc
 
-blink_time_list = [7000,100,200,100]
+blink_time_list = [7000, 100, 200, 100]
+
 
 class PetGraphicsView(QGraphicsView):
     EYE_NORMAL = 0
@@ -24,9 +25,10 @@ class PetGraphicsView(QGraphicsView):
     EYE_CLOSE_NORMAL = 4
     EYE_CLOSE_DEPRESSED = 5
     EYE_CLOSE_SMILE = 6
-    REFRESH_TIME = 400 # 刷新时间
-    speak_gap = 150 # 说话状态嘴部切换时间
-    stroke_upd_time = 600 # 摸头表情重置时间
+    REFRESH_TIME = 400  # 刷新时间
+    speak_gap = 150  # 说话状态嘴部切换时间
+    stroke_upd_time = 600  # 摸头表情重置时间
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -42,60 +44,35 @@ class PetGraphicsView(QGraphicsView):
         self.setScene(self.scene)
         self.scene.setBackgroundBrush(Qt.transparent)
 
-        self.show_state = {
-            'body': 0,
-            'eyes': self.EYE_NORMAL,
-            'mouth' : 0,
-            'hand': 0
-        }
+        self.show_state = {"body": 0, "eyes": self.EYE_NORMAL, "mouth": 0, "hand": 0}
 
-        self.parts = {
-            'body': self.body,
-            'eyes': self.eyes,
-            'mouth' : self.mouth_say,
-            'hand': self.hand
-        }
+        self.parts = {"body": self.body, "eyes": self.eyes, "mouth": self.mouth_say, "hand": self.hand}
 
         self.img_items = {
-            'body': QGraphicsPixmapItem(self.parts['body'][self.show_state['body']][0]),
-            'eyes': QGraphicsPixmapItem(self.parts['eyes'][self.show_state['eyes']][0]),
-            'mouth': QGraphicsPixmapItem(self.parts['mouth'][self.show_state['mouth']][0]),
-            'hand': QGraphicsPixmapItem(self.parts['hand'][self.show_state['hand']][0])
+            "body": QGraphicsPixmapItem(self.parts["body"][self.show_state["body"]][0]),
+            "eyes": QGraphicsPixmapItem(self.parts["eyes"][self.show_state["eyes"]][0]),
+            "mouth": QGraphicsPixmapItem(self.parts["mouth"][self.show_state["mouth"]][0]),
+            "hand": QGraphicsPixmapItem(self.parts["hand"][self.show_state["hand"]][0]),
         }
 
-        self.positions = {
-            'body': (0, 0),
-            'eyes': (200, 600),
-            'mouth' : (535,995),
-            'hand': (300, 890)
-        }
+        self.positions = {"body": (0, 0), "eyes": (200, 600), "mouth": (535, 995), "hand": (300, 890)}
 
-        self.current_indices = {
-            'body': 0,
-            'eyes': 0,
-            'mouth': 0,
-            'hand': 0
-        }
+        self.current_indices = {"body": 0, "eyes": 0, "mouth": 0, "hand": 0}
 
         for part, item in self.img_items.items():
             item.setPos(*self.positions[part])
             self.scene.addItem(item)
-        self.img_items['mouth'].setVisible(False)
+        self.img_items["mouth"].setVisible(False)
 
-        #表情锁定，防止在播放一个表情时和另一个表情冲突
+        # 表情锁定，防止在播放一个表情时和另一个表情冲突
         self.facial_lock = False
 
-        self.img_items['body'].setZValue(1)
-        self.img_items['eyes'].setZValue(2)
-        self.img_items['mouth'].setZValue(3)
-        self.img_items['hand'].setZValue(4)
+        self.img_items["body"].setZValue(1)
+        self.img_items["eyes"].setZValue(2)
+        self.img_items["mouth"].setZValue(3)
+        self.img_items["hand"].setZValue(4)
 
-        self.timers = {
-            'body' : QTimer(),
-            'eyes' : QTimer(),
-            'mouth' : QTimer(),
-            'hand' : QTimer()
-        }
+        self.timers = {"body": QTimer(), "eyes": QTimer(), "mouth": QTimer(), "hand": QTimer()}
         # 说话时长倒计时
         self.speak_time = QTimer()
         self.speak_time.timeout.connect(self.stop_speak)
@@ -114,65 +91,43 @@ class PetGraphicsView(QGraphicsView):
 
     def init_resources(self) -> None:
         self.eyes = (
-            (   # normal - 0
-                QPixmap(':/image/eye-1a.png'),
-                QPixmap(':/image/eye-1b.png')
-            ),
-            (   # intense - 1
-                QPixmap(':/image/eye-2a.png'),
-                QPixmap(':/image/eye-2b.png')
-            ),
-            (   # surprise - 2
-                QPixmap(':/image/eye-4a.png'),
-                QPixmap(':/image/eye-4b.png')
-            ),
-            (   # half_closed - 3
-                QPixmap(':/image/eye-12a.png'),
-                QPixmap(':/image/eye-12b.png')
-            ),
-            (   # close_normal - 4
-                QPixmap(':/image/eye-13a.png'),
-            ),
-            (   # close_with_depress - 5
-                QPixmap(':/image/eye-3a.png'),
-            ),
-            (   # close_with_smile - 6
-                QPixmap(':/image/eye-5a.png'),
-                QPixmap(':/image/eye-5b.png')
-            )
+            (QPixmap(":/image/eye-1a.png"), QPixmap(":/image/eye-1b.png")),  # normal - 0
+            (QPixmap(":/image/eye-2a.png"), QPixmap(":/image/eye-2b.png")),  # intense - 1
+            (QPixmap(":/image/eye-4a.png"), QPixmap(":/image/eye-4b.png")),  # surprise - 2
+            (QPixmap(":/image/eye-12a.png"), QPixmap(":/image/eye-12b.png")),  # half_closed - 3
+            (QPixmap(":/image/eye-13a.png"),),  # close_normal - 4
+            (QPixmap(":/image/eye-3a.png"),),  # close_with_depress - 5
+            (QPixmap(":/image/eye-5a.png"), QPixmap(":/image/eye-5b.png")),  # close_with_smile - 6
         )
-        self.mouth_say = ((
-            QPixmap(':/image/say-1.png'), 
-            QPixmap(':/image/say-2.png'),
-            QPixmap(':/image/say-3.png'),
-            QPixmap(':/image/say-4.png')
-        ),)
-        self.hand = ((
-            QPixmap(':/image/hand-a.png'),
-            QPixmap(':/image/hand-b.png')
-        ),)
-        self.body = ((
-            QPixmap(':/image/body-a.png'),
-            QPixmap(':/image/body-b.png')
-        ),)
+        self.mouth_say = (
+            (
+                QPixmap(":/image/say-1.png"),
+                QPixmap(":/image/say-2.png"),
+                QPixmap(":/image/say-3.png"),
+                QPixmap(":/image/say-4.png"),
+            ),
+        )
+        self.hand = ((QPixmap(":/image/hand-a.png"), QPixmap(":/image/hand-b.png")),)
+        self.body = ((QPixmap(":/image/body-a.png"), QPixmap(":/image/body-b.png")),)
 
     ### 以下三个方法控制除嘴部之外的部件的更新状态
     def set_image_change_timer(self) -> None:
         for part, timer in self.timers.items():
-            if part != 'mouth':
+            if part != "mouth":
                 timer.timeout.connect(lambda p=part: self.update_animation(p))
                 timer.start(self.REFRESH_TIME)
-        self.timers['mouth'].timeout.connect(lambda p='mouth': self.update_animation(p))
+        self.timers["mouth"].timeout.connect(lambda p="mouth": self.update_animation(p))
 
     def restart_image_change_timer(self) -> None:
         for part, timer in self.timers.items():
-            if part != 'mouth':
+            if part != "mouth":
                 timer.start(self.REFRESH_TIME)
 
     def stop_image_change_timer(self) -> None:
         for part, timer in self.timers.items():
-            if part != 'mouth':
+            if part != "mouth":
                 timer.stop()
+
     ###
     def progress_stroke(self):
         self.blink_index = -1
@@ -189,7 +144,7 @@ class PetGraphicsView(QGraphicsView):
             return None
         self.blink_index = (self.blink_index + 1) % 4
         if self.blink_index == 0:
-            blink_time_list[self.blink_index] = random.randint(6000,10000)
+            blink_time_list[self.blink_index] = random.randint(6000, 10000)
             self.change_emo(self.EYE_NORMAL)
         elif self.blink_index == 1:
             self.change_emo(self.EYE_HALF_CLOSED)
@@ -198,7 +153,6 @@ class PetGraphicsView(QGraphicsView):
         else:
             self.change_emo(self.EYE_HALF_CLOSED)
         self.blink_timer.start(blink_time_list[self.blink_index])
-
 
     ###
     def update_animation(self, part: str) -> None:
@@ -219,13 +173,12 @@ class PetGraphicsView(QGraphicsView):
             bool: 返回是否成功切换表情
         """
         if self.facial_lock is False:
-            #self.stop_image_change_timer()
-            self.show_state['eyes'] = index
-            self.current_indices['eyes'] = 0
-            self.img_items['eyes'].setPixmap(
-                self.parts['eyes'][self.show_state['eyes']][self.current_indices['eyes']])
-            #self.restart_image_change_timer()
-        else :
+            # self.stop_image_change_timer()
+            self.show_state["eyes"] = index
+            self.current_indices["eyes"] = 0
+            self.img_items["eyes"].setPixmap(self.parts["eyes"][self.show_state["eyes"]][self.current_indices["eyes"]])
+            # self.restart_image_change_timer()
+        else:
             return False
         self.facial_lock = add_lock
         return True
@@ -233,36 +186,40 @@ class PetGraphicsView(QGraphicsView):
     def unlock_facial_expr(self) -> None:
         self.facial_lock = False
 
-    def set_speak(self, keep_time : int = -1) -> None:
+    def set_speak(self, keep_time: int = -1) -> None:
         """设置说话动作时长
         Args:
             keep_time (int, optional): 说话动作时长，单位为**毫秒**。默认为-1时为保持显示说话动作. Defaults to -1.
         """
         self.stop_image_change_timer()
         if keep_time == -1:
-            self.timers['mouth'].start(self.speak_gap)
+            self.timers["mouth"].start(self.speak_gap)
         elif keep_time >= 0:
-            self.timers['mouth'].start(self.speak_gap)
+            self.timers["mouth"].start(self.speak_gap)
             self.speak_time.start(keep_time)
-        else :
-            print(f"illegal value of 'keep_time': {keep_time}")# TODO logging
-        self.img_items['mouth'].setVisible(True)
+        else:
+            print(f"illegal value of 'keep_time': {keep_time}")  # TODO logging
+        self.img_items["mouth"].setVisible(True)
         self.restart_image_change_timer()
 
     def stop_speak(self):
         """停止说话动作"""
         self.speak_time.stop()
-        self.timers['mouth'].stop()
-        self.img_items['mouth'].setVisible(False)
+        self.timers["mouth"].stop()
+        self.img_items["mouth"].setVisible(False)
 
     def resizeEvent(self, event):
         """让所有立绘部分跟随组件缩放"""
-        scale_factor = min(self.width() / self.parts['body'][self.show_state['body']][self.current_indices['body']].width(), self.height() / self.parts['body'][self.show_state['body']][self.current_indices['body']].height())
+        scale_factor = min(
+            self.width() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].width(),
+            self.height() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].height(),
+        )
         for part, item in self.img_items.items():
             item.setScale(scale_factor)
             item.setPos(self.positions[part][0] * scale_factor, self.positions[part][1] * scale_factor)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     pet = PetGraphicsView()
     pet.show()

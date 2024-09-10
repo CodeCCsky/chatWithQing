@@ -5,15 +5,17 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-#from PetView import PetGraphicsView
+# from PetView import PetGraphicsView
 import app.asset.res_rc
 from app.GUI.PetView import PetGraphicsView
 
-#import res_rc
+# import res_rc
+
 
 class strokeArea(QObject):
     stroked_area_signal = pyqtSignal(int)
     check_time = 1500
+
     # TODO 将坐标换为相对窗口的坐标
     def __init__(self, parent=None):
         super().__init__()
@@ -30,22 +32,12 @@ class strokeArea(QObject):
             QPoint(175, 195),
             QPoint(80, 220),
             QPoint(75, 200),
-            QPoint(0, 210)
+            QPoint(0, 210),
         ]
         self.head_poly = QPolygon(head)
-        carrot = [
-            QPoint(175, 170),
-            QPoint(200, 165),
-            QPoint(200, 190),
-            QPoint(175, 195)
-        ]
+        carrot = [QPoint(175, 170), QPoint(200, 165), QPoint(200, 190), QPoint(175, 195)]
         self.carrot_poly = QPolygon(carrot)
-        hair_l = [
-            QPoint(0, 211),
-            QPoint(75, 200),
-            QPoint(90, 305),
-            QPoint(55, 355)
-        ]
+        hair_l = [QPoint(0, 211), QPoint(75, 200), QPoint(90, 305), QPoint(55, 355)]
         self.hair_l_poly = QPolygon(hair_l)
         hair_r = [
             QPoint(200, 165),
@@ -54,7 +46,7 @@ class strokeArea(QObject):
             QPoint(209, 283),
             QPoint(225, 305),
             QPoint(300, 315),
-            QPoint(300, 140)
+            QPoint(300, 140),
         ]
         self.hair_r_poly = QPolygon(hair_r)
         face = [
@@ -63,7 +55,7 @@ class strokeArea(QObject):
             QPoint(207, 238),
             QPoint(178, 276),
             QPoint(134, 290),
-            QPoint(90, 265)
+            QPoint(90, 265),
         ]
         self.face_poly = QPolygon(face)
 
@@ -77,7 +69,7 @@ class strokeArea(QObject):
     def init_calc_dis(self):
         self.extent = [30387.5, 625, 7915, 14113.5, 8315]
         self.dis = [0.0 for _ in range(5)]
-        self.last_point = [QPoint(0,0) for _ in range(5)]
+        self.last_point = [QPoint(0, 0) for _ in range(5)]
 
     def calc_dis(self, event: QMouseEvent):
         current_area = self.check_current_pos(event)
@@ -85,10 +77,10 @@ class strokeArea(QObject):
         if current_area is not None:
             for i in range(5):
                 if i != current_area:
-                    self.last_point[i] = QPoint(0,0)     
+                    self.last_point[i] = QPoint(0, 0)
                 elif self.last_point[i].isNull() is False:
                     last_pos = self.last_point[i]
-                    dis = pow((pow((pos.x()-last_pos.x()), 2) + pow((pos.y()-last_pos.y()), 2)), 0.5)
+                    dis = pow((pow((pos.x() - last_pos.x()), 2) + pow((pos.y() - last_pos.y()), 2)), 0.5)
                     self.dis[i] += dis
                     self.last_point[i] = pos
                 else:
@@ -101,11 +93,11 @@ class strokeArea(QObject):
         max_rate = 0
         max_index = 0
         for i in range(5):
-            move_rate = pow(self.dis[i], 2) / self.extent[i] / (current_time-self.last_time)
+            move_rate = pow(self.dis[i], 2) / self.extent[i] / (current_time - self.last_time)
             if move_rate > max_rate:
                 max_rate = move_rate
                 max_index = i
-        if current_time-self.last_time < 2.0 or max_rate < 5.0:
+        if current_time - self.last_time < 2.0 or max_rate < 5.0:
             return None
         self.stroked_area_signal.emit(max_index)
         self.dis = [0.0 for _ in range(5)]
@@ -155,7 +147,8 @@ class DesktopPet(QWidget):
     S_EYE_CLOSE_NORMAL = 4
     S_EYE_CLOSE_DEPRESSED = 5
     S_EYE_CLOSE_SMILE = 6
-    def __init__(self, parent: QWidget = None, use_tts:bool = False) -> None:
+
+    def __init__(self, parent: QWidget = None, use_tts: bool = False) -> None:
         super().__init__(parent)
         self.init_subWindow()
         self.use_tts = use_tts
@@ -200,7 +193,7 @@ class DesktopPet(QWidget):
         self.layout().addWidget(self.portraitView)
         screen = QDesktopWidget().screenGeometry()
         self.adjustSize()
-        self.move(QPoint(int(screen.width()*0.95-self.width()), int(screen.height()*0.95-self.height())))
+        self.move(QPoint(int(screen.width() * 0.95 - self.width()), int(screen.height() * 0.95 - self.height())))
 
     def show_window(self):
         self.is_hide = False
@@ -218,7 +211,7 @@ class DesktopPet(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        if hasattr(self, 'portraitView'):
+        if hasattr(self, "portraitView"):
             self.portraitView.setGeometry(self.rect())
 
     def contextMenuEvent(self, event):
@@ -227,7 +220,8 @@ class DesktopPet(QWidget):
         self.stroke_area.init_calc_dis()
         self.stroke_area.init_timer()
         pet_menu = QMenu()
-        pet_menu.setStyleSheet("""
+        pet_menu.setStyleSheet(
+            """
             QMenu {
                 background-color: black;
                 color: white;
@@ -236,16 +230,17 @@ class DesktopPet(QWidget):
             QMenu::item:selected {
                 background-color: gray;
             }
-        """)
-        quit_action = pet_menu.addAction('退出')
-        hide = pet_menu.addAction('隐藏')
+        """
+        )
+        quit_action = pet_menu.addAction("退出")
+        hide = pet_menu.addAction("隐藏")
         action = pet_menu.exec_(self.mapToGlobal(event.pos()))
         if action == quit_action:
             self.closeEvent(QCloseEvent())
         if action == hide:
             self.hide_window()
 
-### 根据鼠标拖动方法 (需手动重写组件的方法)
+    ### 根据鼠标拖动方法 (需手动重写组件的方法)
     def onMousePress(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
             self.mouse_press_pos = event.globalPos()
@@ -278,7 +273,7 @@ class DesktopPet(QWidget):
     def start_following_mouse(self):
         # 更新鼠标样式
         self.setCursor(QCursor(Qt.OpenHandCursor))
-        #更新面部表情
+        # 更新面部表情
         self.portraitView.change_emo(self.S_EYE_CLOSE_DEPRESSED, True)
         # 更新跟随鼠标状态
         self.is_follow_mouse = True
@@ -286,8 +281,8 @@ class DesktopPet(QWidget):
         self.check_mouse_press_timer.stop()
 
 
-if __name__ == '__main__' :
-    
+if __name__ == "__main__":
+
     app = QApplication(sys.argv)
     pet = DesktopPet()
     pet.show()
