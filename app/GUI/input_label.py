@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
-import PyQt5.QtWidgets as QtWidgets
+
 import PyQt5.QtCore as QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QStatusBar
+import PyQt5.QtWidgets as QtWidgets
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QStatusBar, QWidget
+
 import app.asset.res_rc
+
 #import res_rc
 
 class inputLabel(QWidget):

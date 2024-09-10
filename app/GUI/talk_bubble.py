@@ -1,12 +1,25 @@
 # -*- coding: utf-8 -*-
 import sys
-import PyQt5.QtWidgets as QtWidgets
-import PyQt5.QtCore as QtCore
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMenu
-from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPen, QFont, QFontMetrics, QFontDatabase, QPolygon, QBrush, QTextDocument
-from PyQt5.QtCore import Qt, QPoint, QTimer
+
 import numpy as np
+import PyQt5.QtCore as QtCore
+import PyQt5.QtWidgets as QtWidgets
+from PyQt5.QtCore import QPoint, Qt, QTimer
+from PyQt5.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QFontDatabase,
+    QFontMetrics,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPolygon,
+)
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
+
 import app.asset.res_rc
+
 #import res_rc
 
 TEXT_UPDATE_TIME = 200 # 毫秒

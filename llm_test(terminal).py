@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
+
 import deepseek_api
 import tts
-import json
-import yaml
 from setting import settingManager
 
 setting = settingManager()
@@ -12,6 +12,8 @@ system_prompt_main = setting.get_system_prompt()
 tts_inference = tts.TTSAudio(cache_path=r'\cache')
 llm_main_chat = deepseek_api.deepseek_model(api_key=setting.get_api_key(), system_prompt=system_prompt_main)
 import threading
+
+
 class DeepSeekThread(threading.Thread):
     def __init__(self, model: deepseek_api.deepseek_model):
         super().__init__()
@@ -28,8 +30,6 @@ class DeepSeekThread(threading.Thread):
     def get_response(self):
         return self.model.get_response()
 
-import copy
-import json
 history = deepseek_api.historyManager(setting.get_user_name())
 while True:
     sys_input = ''
@@ -49,6 +49,6 @@ while True:
         thought = content['role_thoughts']
         resp = content['role_response']
         print("thought:\n",thought,"\nresonse:\n",resp)
-    except Exception as e:
+    except Exception:
         print("JSONDecodeError, origin str:\n",response,'\nerror:')
     history.add_assistant_message(response)

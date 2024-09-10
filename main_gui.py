@@ -1,21 +1,33 @@
 # -*- coding: utf-8 -*-
-import os
-import logging
-import logging.handlers
-import time
+import copy
 import datetime
 import json
+import logging
+import logging.handlers
+import os
 import re
-import copy
 import sys
-from PyQt5.QtGui import *
+import time
+
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from app.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget, loadWidget
-from app.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread, summaryWorker
-import app.asset.res_rc
-
+from app.GUI import (
+    DesktopPet,
+    SettingWidget,
+    initialzationWidget,
+    inputLabel,
+    loadWidget,
+    talkBubble,
+)
+from app.Threads import (
+    PyQt_deepseek_request_thread,
+    get_token_num_thread,
+    no_tts_sound_manager,
+    summaryWorker,
+    tts_thread,
+)
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting.setting_colletions import settingManager
 from tts import TTSAudio

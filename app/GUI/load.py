@@ -1,7 +1,8 @@
 import sys
+
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QFontDatabase, QFont
+from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtWidgets import QApplication, QWidget
 
 #from Ui_load import Ui_Form
 #import res_rc

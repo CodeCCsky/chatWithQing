@@ -1,5 +1,6 @@
-from PyQt5.QtCore import QUrl, QObject
+from PyQt5.QtCore import QObject, QUrl
 from PyQt5.QtMultimedia import QSoundEffect
+
 
 class no_tts_sound_manager(QObject):
     def __init__(self, path, max_list_len = 5):

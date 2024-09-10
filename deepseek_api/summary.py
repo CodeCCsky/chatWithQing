@@ -1,8 +1,9 @@
 import datetime
-import time
-import random
-from openai import OpenAI, APIError
 import logging
+import random
+import time
+
+from openai import APIError, OpenAI
 
 logger = logging.getLogger(__name__)
 

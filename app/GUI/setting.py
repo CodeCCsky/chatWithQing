@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import sys
-import os
 import copy
-from PyQt5.QtCore import Qt, QEvent, QTimer, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QApplication
+import os
+import sys
+
+from PyQt5.QtCore import QTimer, pyqtSignal
 from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
 from app.GUI.Ui_setting import Ui_MainWindow
 from setting import *
+
 #from Ui_setting import Ui_MainWindow
 
 class SettingWidget(QMainWindow, Ui_MainWindow):

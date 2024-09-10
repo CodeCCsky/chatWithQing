@@ -1,8 +1,10 @@
 import copy
-from typing import Union, List, Dict
-from openai import OpenAI
-from deepseek_api.deepseek_tools import ds_tool
 import logging
+from typing import Dict, List, Union
+
+from openai import OpenAI
+
+from deepseek_api.deepseek_tools import ds_tool
 
 logger = logging.getLogger(__name__)
 

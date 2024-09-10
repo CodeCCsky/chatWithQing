@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import sys
-import os
 import copy
-from PyQt5.QtCore import Qt, QEvent, QTimer, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
+import os
+import sys
+
+from PyQt5.QtCore import QTimer, pyqtSignal
 from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+
 from app.GUI.Ui_setting import Ui_MainWindow
 from setting import *
+
 #from Ui_initialization import Ui_MainWindow
 
 # 其实就是从设置界面copy了一份，改了改逻辑而已..

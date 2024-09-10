@@ -1,7 +1,10 @@
 
 import datetime
-from PyQt5.QtCore import QRunnable, QObject, pyqtSignal
+
+from PyQt5.QtCore import QObject, QRunnable, pyqtSignal
+
 from deepseek_api import deepseek_summary, historyManager
+
 
 class summaryWorker(QRunnable):
     class Signals(QObject):

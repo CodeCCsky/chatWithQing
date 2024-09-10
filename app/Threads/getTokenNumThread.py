@@ -1,5 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
+
 from deepseek_api import offline_tokenizer
+
 
 class get_token_num_thread(QThread):
     responseTokenNum = pyqtSignal(int)

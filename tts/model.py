@@ -1,14 +1,15 @@
+import datetime
+import json
+import logging
 import os
 import wave
-from typing import Literal
 from string import Template
-import json
-import requests
-import datetime
-import logging
+from typing import Literal
 
-import tts.soundControl as sc
+import requests
+
 import tts.params as params
+import tts.soundControl as sc
 
 logger = logging.getLogger(__name__)
 

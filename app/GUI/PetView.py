@@ -1,10 +1,17 @@
-import sys
 import random
-from typing import Literal
-from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
-from PyQt5.QtGui import QPixmap
+import sys
+
 from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import (
+    QApplication,
+    QGraphicsPixmapItem,
+    QGraphicsScene,
+    QGraphicsView,
+)
+
 import app.asset.res_rc
+
 #import res_rc
 
 blink_time_list = [7000,100,200,100]

@@ -1,13 +1,14 @@
 import sys
 import time
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import QSoundEffect
 
-from app.GUI.PetView import PetGraphicsView
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
 #from PetView import PetGraphicsView
 import app.asset.res_rc
+from app.GUI.PetView import PetGraphicsView
+
 #import res_rc
 
 class strokeArea(QObject):

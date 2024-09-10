@@ -1,10 +1,11 @@
-import tts.soundControl.params as pms
+import logging
 import os
-import wave
 import threading
+import wave
+
 import pyaudio
 
-import logging
+import tts.soundControl.params as pms
 
 logger = logging.getLogger('main.tts.soundControl')
 
@@ -71,8 +72,11 @@ sampwidth:{wf.getsampwidth()} channels:{wf.getnchannels()} framerate:{wf.getfram
         self.p.terminate()
         self.stop()
 
-from requests import Response
 import audioop
+
+from requests import Response
+
+
 class responseStreamAudio:
     def __init__(self, output_device_index : int = None) -> None:
         self.output_device_index = output_device_index
@@ -92,7 +96,7 @@ class responseStreamAudio:
                     rate : int = pms.RATE,
                     channels : int = pms.CHANNELS,
                     width_format = pms.WIDTH_FORMAT) -> None:
-        logger.info(f"Load stream wav")
+        logger.info("Load stream wav")
 
         # Stop the playing Audio, if any 
         self.stop_event.set()

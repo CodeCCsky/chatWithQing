@@ -1,9 +1,8 @@
-import os
-import json
 import copy
 import datetime
+import json
 import logging
-from typing import Literal
+import os
 
 DEFAULT_PATH = r"./history/"
 logger = logging.getLogger(__name__)
@@ -31,8 +30,8 @@ class chatManager:
         try:
             content = json.loads(assistant_response)
             self.origin_history.append({"role":"assistant","content":content})
-        except ValueError as ve:
-            logger.error(f"模型返回格式有误，历史对话文件将直接存储原始字符串")
+        except ValueError:
+            logger.error("模型返回格式有误，历史对话文件将直接存储原始字符串")
             self.origin_history.append({"role":"assistant","content":assistant_response})
         self.update_update_time()
 
