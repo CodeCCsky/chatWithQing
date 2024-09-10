@@ -16,7 +16,7 @@ from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initial
 from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread, summaryWorker
 import asset.GUI.res_rc
 
-from deepseek_api import deepseek_model, historyManager, offline_tokenizer, deepseek_summary
+from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting.setting_colletions import settingManager
 from tts import TTSAudio
 
