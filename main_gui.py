@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+import logging
+import logging.handlers
 import time
 import datetime
 import json
 import re
 import copy
-import logging
 import sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -27,7 +28,16 @@ check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
 SPEAK_GAP = 50
 
-logger = logging.getLogger('main_gui')
+file_handler = logging.handlers.TimedRotatingFileHandler('log/app.log', when='midnight', backupCount=10, encoding='utf8')
+stream_hanlder = logging.StreamHandler()
+logging.basicConfig(
+    format="%(asctime)s - %(filename)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[file_handler, stream_hanlder],
+)
+
+logger = logging.getLogger(__name__)
 
 class mainWidget(QWidget):
     S_NORMAL = 0
@@ -375,6 +385,7 @@ class mainWidget(QWidget):
 def main():
     current_time = datetime.datetime.now()
     current_time = current_time.strftime("%Y%m%d")
+    logger.info('设置加载完成，启动主程序中')
     pet = mainWidget(history_path=os.path.join(default_history_path, f"{current_time}.json"))
     sys.exit(app.exec_())
 
@@ -399,6 +410,7 @@ def initize():
         sys.exit()
 
 if __name__ == '__main__' :
+    logger.info('程序启动')
     app = QApplication(sys.argv)
     setting = settingManager()
     state_num = setting.load_from_file()

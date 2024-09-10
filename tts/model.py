@@ -10,7 +10,7 @@ import logging
 import tts.soundControl as sc
 import tts.params as params
 
-logger = logging.getLogger("main.tts")
+logger = logging.getLogger(__name__)
 
 class TTSAudio :
     def __init__(
@@ -58,7 +58,7 @@ class TTSAudio :
             emotion = self.emotion
         if text_language is not None:
             self.text_language = text_language
-        logger.info(f"send tts request. language:{self.text_language} emotion:{emotion} content:{text}")
+        logger.info(f"发送TTS请求. language:{self.text_language} emotion:{emotion} content:{text}")
 
         #print(text)
         unencode_text = requests.utils.quote(text)
@@ -81,7 +81,7 @@ class TTSAudio :
             stream=self.is_stream)
 
         if response.status_code == 200 :
-            logger.info("Successfully get response. code:200")
+            logger.info("成功获取TTS流")
             if self.is_stream is True :
                 self.audio.play_stream(response)
                 while self.audio.thread.is_alive():
@@ -90,12 +90,12 @@ class TTSAudio :
                 file_path = os.path.join(self.cache_path,self.get_cache_file_name)
                 with wave.open(file_path, 'wb') as wf:
                     wf.writeframes(response.content)
-                logger.debug(f"A wav file was saved at {file_path}")
+                logger.debug(f"TTS缓存已保存在{file_path}")
                 if self.is_play is True :
                     self.audio.play_wav_file(file_path)
                 return file_path
         else:
-            logger.error(f"Failed to get response. code:{response.status_code} content:{response.content}")
+            logger.error(f"获取TTS失败. code:{response.status_code} content:{response.content}")
 
     def set_request_url(self, url: str) -> None:
         self.tts_url = url

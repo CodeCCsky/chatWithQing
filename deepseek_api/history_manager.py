@@ -6,7 +6,7 @@ import logging
 from typing import Literal
 
 DEFAULT_PATH = r"./history/"
-logger = logging.getLogger("history_manager")
+logger = logging.getLogger(__name__)
 
 class chatManager:
     def __init__(self, history_data: dict, user_name: str) -> None:
