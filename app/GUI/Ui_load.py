@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\asset\GUI\xml\load.ui'
+# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\app\GUI\xml\load.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #

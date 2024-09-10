@@ -5,7 +5,7 @@ import PyQt5.QtCore as QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QStatusBar
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
-import asset.GUI.res_rc
+import app.asset.res_rc
 #import res_rc
 
 class inputLabel(QWidget):

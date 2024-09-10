@@ -73,13 +73,13 @@ chatWithQing 是一个基于人工智能的二创桌宠项目。
 - 许可证文件：`licenses/SOFTWARE_LICENSE`
 - 完整文本：https://www.gnu.org/licenses/agpl-3.0.en.html
 
-2. **图像和音频**：`asset/GUI/image` 和 `asset/sound` 目录中的所有图像（图标除外）和音频文件均采用知识共享署名-非商业性使用 4.0 国际许可证（CC BY-NC 4.0）授权。
+2. **图像和音频**：`app/GUI/image` 和 `app/sound` 目录中的所有图像（图标除外）和音频文件均采用知识共享署名-非商业性使用 4.0 国际许可证（CC BY-NC 4.0）授权。
 
    - 许可证文件：`licenses/MEDIA_LICENSE`
    - 完整文本：https://creativecommons.org/licenses/by-nc/4.0/deed.zh
    - 注意：这些内容不得用于任何商业用途。
    - 特别说明：这些图片和音频的作者[莲花池池](https://space.bilibili.com/760048)要求不能将本项目内的这些资源用于商业目的。在使用这些资源时，请遵守作者的意愿和CC BY-NC 4.0许可证的条款。
-3. **OFL 授权字体**：字体文件 `asset/GUI/font/荆南波波黑.ttf` 采用 SIL 开放字体许可证（OFL）授权。
+3. **OFL 授权字体**：字体文件 `app/GUI/font/荆南波波黑.ttf` 采用 SIL 开放字体许可证（OFL）授权。
 
    - 许可证文件：`licenses/FONT_LICENSE`
    - 完整文本：https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL

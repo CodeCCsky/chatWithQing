@@ -5,7 +5,7 @@ import copy
 from PyQt5.QtCore import Qt, QEvent, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QCloseEvent
-from asset.GUI.Ui_setting import Ui_MainWindow
+from app.GUI.Ui_setting import Ui_MainWindow
 from setting import *
 #from Ui_setting import Ui_MainWindow
 

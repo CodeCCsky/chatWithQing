@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMenu
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPen, QFont, QFontMetrics, QFontDatabase, QPolygon, QBrush, QTextDocument
 from PyQt5.QtCore import Qt, QPoint, QTimer
 import numpy as np
-import asset.GUI.res_rc
+import app.asset.res_rc
 #import res_rc
 
 TEXT_UPDATE_TIME = 200 # 毫秒

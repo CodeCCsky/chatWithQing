@@ -5,8 +5,8 @@ from PyQt5.QtGui import QFontDatabase, QFont
 
 #from Ui_load import Ui_Form
 #import res_rc
-import asset.GUI.res_rc
-from asset.GUI.Ui_load import Ui_Form
+import app.asset.res_rc
+from app.GUI.Ui_load import Ui_Form
 
 
 class loadWidget(QWidget, Ui_Form):

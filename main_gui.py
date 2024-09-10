@@ -12,9 +12,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from asset.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget, loadWidget
-from asset.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread, summaryWorker
-import asset.GUI.res_rc
+from app.GUI import DesktopPet, inputLabel, talkBubble, SettingWidget, initialzationWidget, loadWidget
+from app.Threads import tts_thread, no_tts_sound_manager, PyQt_deepseek_request_thread, get_token_num_thread, summaryWorker
+import app.asset.res_rc
 
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting.setting_colletions import settingManager
@@ -22,7 +22,7 @@ from tts import TTSAudio
 
 #setting = settingManager()
 tts_cache_path = r"cache/"
-no_tts_sound_path = r"asset/sound/speak.wav"
+no_tts_sound_path = r"app/asset/sound/speak.wav"
 default_history_path = r'history/'
 check_pattern = re.compile(r'[\d\u4e00-\u9fff]')
 
@@ -196,9 +196,10 @@ class mainWidget(QWidget):
 
             self.load_widget = loadWidget(total_task_num)
             today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
-            for worker in list_of_worker:
-                worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
-                self.summary_threadpool.start(worker)
+            if self.setting.chat_summary_setting.add_x_day_ago_summary:
+                for worker in list_of_worker:
+                    worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
+                    self.summary_threadpool.start(worker)
             self.load_widget.show()
             self.init_timer.timeout.connect(self.check_summary_thread_pool)
             self.summary_threadpool.start(today_summary_worker)
@@ -387,7 +388,7 @@ def main():
     current_time = current_time.strftime("%Y%m%d")
     logger.info('设置加载完成，启动主程序中')
     pet = mainWidget(history_path=os.path.join(default_history_path, f"{current_time}.json"))
-    sys.exit(app.exec_())
+    sys.exit(main_app.exec_())
 
 def set_setting(_setting: settingManager):
     _setting.load_system_prompt_main()
@@ -400,7 +401,7 @@ def initize():
     init = initialzationWidget()
     init.changeSetting.connect(set_setting)
     init.show()
-    app.exec_()
+    main_app.exec_()
     setting_check = setting.check()
     if setting_check == []:
         logger.info('成功加载设置')
@@ -411,7 +412,7 @@ def initize():
 
 if __name__ == '__main__' :
     logger.info('程序启动')
-    app = QApplication(sys.argv)
+    main_app = QApplication(sys.argv)
     setting = settingManager()
     state_num = setting.load_from_file()
     if state_num[0] == 0:

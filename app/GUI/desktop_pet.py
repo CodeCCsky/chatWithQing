@@ -5,11 +5,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import QSoundEffect
 
-from asset.GUI.PetView import PetGraphicsView
+from app.GUI.PetView import PetGraphicsView
 #from PetView import PetGraphicsView
-import asset.GUI.res_rc
+import app.asset.res_rc
 #import res_rc
-
 
 class strokeArea(QObject):
     stroked_area_signal = pyqtSignal(int)
