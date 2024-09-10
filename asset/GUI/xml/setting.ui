@@ -71,7 +71,7 @@
          </item>
          <item>
           <property name="text">
-           <string>历史记录与对话设置</string>
+           <string>对话设置</string>
           </property>
          </item>
         </widget>
@@ -85,7 +85,7 @@
           <set>Qt::ImhNone</set>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="stackedWidgetUser">
           <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -354,7 +354,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-235</y>
+                <y>0</y>
                 <width>531</width>
                 <height>550</height>
                </rect>
@@ -858,83 +858,11 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>453</height>
+                <width>548</width>
+                <height>315</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
-               <item>
-                <widget class="Line" name="line_30">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="historyLabel">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;设置要加载的历史记录&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;加载历史记录功能因为历史记录模块的修改暂时不可用&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;还没想好怎么改这个功能...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="scanHistoryFileButton">
-                 <property name="text">
-                  <string>扫描可用的历史记录文件(history文件夹)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QWidget" name="chooseHistoryWidget" native="true">
-                 <layout class="QHBoxLayout" name="horizontalLayout_26">
-                  <item>
-                   <widget class="QLabel" name="chooseHistoryLabel">
-                    <property name="maximumSize">
-                     <size>
-                      <width>150</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>选择要加载的历史文件</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="chooseHistoryComboBox"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QWidget" name="previewWidget" native="true">
-                 <layout class="QHBoxLayout" name="horizontalLayout_27">
-                  <item>
-                   <spacer name="horizontalSpacer_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="previewButton">
-                    <property name="text">
-                     <string>预览（这个功能还没做(瘫)）</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
                <item>
                 <widget class="Line" name="line">
                  <property name="orientation">
