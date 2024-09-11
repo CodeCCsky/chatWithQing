@@ -5,6 +5,7 @@ from deepseek_api import offline_tokenizer
 
 class get_token_num_thread(QThread):
     responseTokenNum = pyqtSignal(int)
+
     def __init__(self, text: str, tokenizer: offline_tokenizer, parent=None) -> None:
         super().__init__(parent)
         self.tokenizer = tokenizer

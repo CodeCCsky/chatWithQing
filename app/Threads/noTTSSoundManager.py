@@ -3,7 +3,7 @@ from PyQt5.QtMultimedia import QSoundEffect
 
 
 class no_tts_sound_manager(QObject):
-    def __init__(self, path, max_list_len = 5):
+    def __init__(self, path, max_list_len=5):
         super().__init__()
         self.file_path = path
         self.max_list_len = max_list_len
