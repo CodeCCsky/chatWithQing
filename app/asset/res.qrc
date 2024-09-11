@@ -30,5 +30,6 @@
     <file>image/say-3.png</file>
     <file>image/say-4.png</file>
     <file>image/shadow.png</file>
+    <file>sound/speak.wav</file>
   </qresource>
 </RCC>
