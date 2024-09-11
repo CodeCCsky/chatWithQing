@@ -321,7 +321,7 @@ class mainWidget(QWidget):
         self.llm_thread.start()
         self.llm_thread.finish_signal.connect(self.progress_thinking)
 
-    def progress_thinking(self, finish_state: str):
+    def progress_thinking(self, finish_state: str):#TODO 自己写一个json解析器
         response = self.llm_thread.get_response()
         try:
             self.response_content = json.loads(response)

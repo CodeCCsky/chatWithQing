@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-
 # import numpy as np
 import random
-import math
 import sys
 
 import PyQt5.QtCore as QtCore
 import PyQt5.QtWidgets as QtWidgets
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QFontDatabase,
-    QFontMetrics,
-    QPainter,
-    QPen,
-)
+from PyQt5.QtCore import Qt, QTimer, QPoint
+from PyQt5.QtGui import QBrush, QColor, QFont, QFontDatabase, QFontMetrics, QPainter, QPen, QPolygon, QPainterPath
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 
 import app.asset.res_rc
@@ -100,9 +91,9 @@ class talkBubble(QWidget):
         self.verticalLayout.addWidget(self.widget)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem6)
-        self.verticalLayout.setStretch(0, 1)
+        self.verticalLayout.setStretch(0, 2)
         self.verticalLayout.setStretch(1, 6)
-        self.verticalLayout.setStretch(2, 1)
+        self.verticalLayout.setStretch(2, 2)
         self.name_area.setFont(self.name_font)
         self.name_area.setStyleSheet("color: white;")
         self.text_area.setFont(self.text_font)
@@ -135,13 +126,10 @@ class talkBubble(QWidget):
         self.rand_timer.start(500)
 
     def update_rand(self) -> None:
-        # np.random.seed(self.randnum)
-        self.points_num = int((self.width() + self.height()) * 1.6 / 50)
+        self.border_round = 5
         self.points_of_path = []
-        # self.points_of_path.append(get_required_point_coordinates(self.points_num, 0.03))
-        # self.points_of_path.append(get_required_point_coordinates(self.points_num, 0.015))
-        # self.points_of_path.append(get_required_point_coordinates(self.points_num, 0.01))
-        # self.path_start_index = int((np.random.rand())*2*self.points_num) % self.points_num
+        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), 2, 0.01, 0.86))
+        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), self.border_round, 0.03, 0.87))
         self.update()
 
     def update_text(self, text, is_thinking: bool = False):
@@ -163,6 +151,11 @@ class talkBubble(QWidget):
         self.keep_opacity_timer.stop()
 
     def _setTextLabel(self, name: str, text: str, is_thinking: bool = False) -> None:
+        if len(text) >= 120:#TODO test
+            size = min(16 - int((len(text) - 120) / 50), 10)
+            self.change_text_size(size)
+        else:
+            self.change_text_size(16)
         default_start = '<p style="color: white;">'
         default_end = "</p>"
         grey_start = '<p style="color: grey;">'
@@ -256,49 +249,65 @@ class talkBubble(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
 
         # 背景和边框
-        window_width = self.width()
-        window_height = self.height()
-
         # 背景
-        #        bg_polygon_zoom_factor = 0.83
-        #        bg_polygon = QPolygon([QPoint(int(x*window_width*bg_polygon_zoom_factor + window_width/2), int(y*window_height*bg_polygon_zoom_factor + window_height/2)) for x, y in self.points_of_path[0]])
+        bg_path = QPainterPath()
+        bg_path.moveTo(
+            self.points_of_path[0][1][0],
+            self.points_of_path[0][1][1],
+        )
+        for i in range(0, 12, 3):
+            p1 = self.points_of_path[0][i]
+            p2 = self.points_of_path[0][i + 1]
+            p3 = self.points_of_path[0][i + 2]
+            bg_path.cubicTo(
+                p1[0],
+                p1[1],
+                p2[0],
+                p2[1],
+                p3[0],
+                p3[1],
+            )
+        bg_path.quadTo(
+            self.points_of_path[0][0][0],
+            self.points_of_path[0][0][1],
+            self.points_of_path[0][1][0],
+            self.points_of_path[0][1][1],
+        )
+        bg_path.closeSubpath()
 
         # 背景边缘线
-        #        border_path = QPainterPath()
-        #        border_zoom_factor = 0.87
-        #        border_path.moveTo(self.points_of_path[1][self.path_start_index][0]*window_width*border_zoom_factor + window_width/2,
-        #                           self.points_of_path[1][self.path_start_index][1]*window_height*border_zoom_factor + window_height/2)
+        border_path = QPainterPath()
+        border_path.moveTo(
+            (self.points_of_path[1][1][0] + self.points_of_path[1][2][0]) / 2,
+            (self.points_of_path[1][1][1] + self.points_of_path[1][2][1]) / 2,
+        )
+        for i in range(0, 12 * self.border_round, 3):
+            p1 = self.points_of_path[1][i]
+            p2 = self.points_of_path[1][i + 1]
+            p3 = self.points_of_path[1][i + 2]
+            border_path.cubicTo(
+                p1[0],
+                p1[1],
+                p2[0],
+                p2[1],
+                p3[0],
+                p3[1],
+            )
+        border_path.quadTo(
+            self.points_of_path[1][0][0],
+            self.points_of_path[1][0][1],
+            self.points_of_path[1][1][0],
+            self.points_of_path[1][1][1],
+        )
+        border_path.closeSubpath()
 
-        # 边框
-        #        for i in range(self.path_start_index, self.points_num + self.path_start_index - 1, 3):
-        #            p1 = self.points_of_path[1][i%self.points_num]
-        #            p2 = self.points_of_path[1][(i + 1)%self.points_num]
-        #            p3 = self.points_of_path[1][(i + 2)%self.points_num]
-        #            border_path.cubicTo(p1[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p1[1]*window_height*border_zoom_factor + window_height/2,
-        #                                p2[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p2[1]*window_height*border_zoom_factor + window_height/2,
-        #                                p3[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p3[1]*window_height*border_zoom_factor + window_height/2)
-        #        border_zoom_factor = 0.9
-        #        for i in range(self.path_start_index, self.points_num + self.path_start_index - 1, 3):
-        #            p1 = self.points_of_path[2][i%self.points_num]
-        #            p2 = self.points_of_path[2][(i + 1)%self.points_num]
-        #            p3 = self.points_of_path[2][(i + 2)%self.points_num]
-        #            border_path.cubicTo(p1[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p1[1]*window_height*border_zoom_factor + window_height/2,
-        #                                p2[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p2[1]*window_height*border_zoom_factor + window_height/2,
-        #                                p3[0]*window_width*border_zoom_factor + window_width/2,
-        #                                p3[1]*window_height*border_zoom_factor + window_height/2)
         # 绘画背景和边框
-        painter.setPen(QPen(QColor(0, 0, 0, 210), 10, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        painter.setBrush(QBrush(QColor(0, 0, 0), Qt.SolidPattern))
-        #        painter.drawPolygon(bg_polygon)
-        painter.setBrush(QBrush())
-        painter.setPen(QPen(QColor(252, 58, 170, 255), 8, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-
-    #        painter.drawPath(border_path)
+        painter.setPen(QPen(QColor(0, 0, 0, 220), 8, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        # painter.setBrush(QBrush(QColor(0, 0, 0), Qt.SolidPattern))
+        painter.fillPath(bg_path, QColor(0, 0, 0))
+        # painter.setBrush(QBrush())
+        painter.setPen(QPen(QColor(252, 58, 170, 255), 5, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+        painter.drawPath(border_path)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -376,14 +385,23 @@ def font_size_in_pixels(font_size_pt: int) -> int:
 #    return points
 
 
-def get_square_with_noise(round: int, noise_level: float):
-    pi = 3.14159265
+def get_square_with_noise(a: int, b: int, _round: int, noise_level: float, zoom_factor: float):
     points = []
-    start_num = random.randint(1, 4)
-    for _ in range(round):
-        for i in range(12):
-            current_angle = float(i + start_num * 3 - 2) % 12 * 2 * pi
-            math.tan(current_angle)
+    corner = [(a / 2, b / 2), (-a / 2, b / 2), (-a / 2, -b / 2), (a / 2, -b / 2)]
+    start_num = random.randint(0, 3)
+    for _ in range(_round):
+        for cr in range(4):
+            current_cr = (cr + start_num) % 4
+            next_cr = (current_cr + 1) % 4
+            for i in range(0, 3):
+                noise_x = 1 + (random.random() * 2 - 1) * noise_level
+                noise_y = 1 + (random.random() * 2 - 1) * noise_level
+                x = (corner[current_cr][0] * (3 - i) / 3 + corner[next_cr][0] * i / 3) * noise_x * zoom_factor
+                x = x + a / 2
+                y = (corner[current_cr][1] * (3 - i) / 3 + corner[next_cr][1] * i / 3) * noise_y * zoom_factor
+                y = y + b / 2
+                points.append((x, y))
+    return points
 
 
 if __name__ == "__main__":
