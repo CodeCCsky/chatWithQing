@@ -51,7 +51,7 @@ class deepseek_summary:
             elif item["role"] == "assistant":
                 try:
                     processed_history_list.append(f"晴:{item['content']['role_response']}")
-                except (KeyError, ValueError):
+                except (KeyError, ValueError, TypeError):
                     processed_history_list.append(f"{self.user_name}:{item['content']}")
         if processed_history_list == []:
             return None, None, {}
