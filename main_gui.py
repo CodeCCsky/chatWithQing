@@ -31,6 +31,7 @@ from app.Threads import (
 from deepseek_api import deepseek_model, historyManager, offline_tokenizer
 from setting.setting_colletions import settingManager
 from tts import TTSAudio
+from FixJSON import fixJSON
 
 #setting = settingManager()
 tts_cache_path = r"cache/"
@@ -208,13 +209,13 @@ class mainWidget(QWidget):
 
             self.load_widget = loadWidget(total_task_num)
             today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
+            self.summary_threadpool.start(today_summary_worker)
             if self.setting.chat_summary_setting.add_x_day_ago_summary:
                 for worker in list_of_worker:
                     worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
                     self.summary_threadpool.start(worker)
             self.load_widget.show()
             self.init_timer.timeout.connect(self.check_summary_thread_pool)
-            self.summary_threadpool.start(today_summary_worker)
         self.init_timer.start(100)
 
     def check_summary_thread_pool(self):
@@ -324,7 +325,7 @@ class mainWidget(QWidget):
     def progress_thinking(self, finish_state: str):#TODO 自己写一个json解析器
         response = self.llm_thread.get_response()
         try:
-            self.response_content = json.loads(response)
+            self.response_content = fixJSON.loads(response)
             self.talk_bubble.update_text(self.response_content['role_thoughts'], is_thinking=True)
             if self.setting.tts_setting.use_tts:
                 self.tts_thread = tts_thread(self.tts_model,self.response_content['role_response'])
@@ -332,10 +333,12 @@ class mainWidget(QWidget):
                 self.tts_thread.startSpeak.connect(self.start_typing)
             else:
                 self.wait_until_start_talking.start(2000)
-        except ValueError:
+        except json.JSONDecodeError:
             self.talk_bubble.update_text(response)
+            self.finish_this_round_of_talk()
         except KeyError:
             self.talk_bubble.update_text(response)
+            self.finish_this_round_of_talk()
 
     def start_typing(self):
         if self.setting.tts_setting.use_tts:

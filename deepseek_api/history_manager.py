@@ -1,6 +1,7 @@
 import copy
 import datetime
 import json
+from FixJSON import fixJSON
 import logging
 import os
 
@@ -29,7 +30,7 @@ class chatManager:
 
     def add_assistant_message(self, assistant_response: str) -> None:
         try:
-            content = json.loads(assistant_response)
+            content = fixJSON.loads(assistant_response)
             self.origin_history.append({"role": "assistant", "content": content})
         except ValueError:
             logger.error("模型返回格式有误，历史对话文件将直接存储原始字符串")
