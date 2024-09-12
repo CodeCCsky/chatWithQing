@@ -154,7 +154,6 @@ class talkBubble(QWidget):
             self.change_text_size(size)
             self.text_area.setFont(self.text_font)
         else:
-            print(16)
             self.change_text_size(16)
         default_start = '<p style="color: white;">'
         default_end = "</p>"
