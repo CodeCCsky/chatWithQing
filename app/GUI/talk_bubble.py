@@ -5,13 +5,11 @@ import sys
 
 import PyQt5.QtCore as QtCore
 import PyQt5.QtWidgets as QtWidgets
-from PyQt5.QtCore import Qt, QTimer, QPoint
-from PyQt5.QtGui import QBrush, QColor, QFont, QFontDatabase, QFontMetrics, QPainter, QPen, QPolygon, QPainterPath
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QColor, QFont, QFontDatabase, QFontMetrics, QPainter, QPen, QPainterPath, QTextCursor
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 
 import app.asset.res_rc
-
-# import res_rc
 
 TEXT_UPDATE_TIME = 200  # 毫秒
 
@@ -34,7 +32,7 @@ class talkBubble(QWidget):
 
     def initUI(self) -> None:
         fontDb = QFontDatabase()
-        fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
+        # fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         screen = QDesktopWidget().screenGeometry()
         self.setGeometry(int(screen.width() * 0.5 - 800 / 2), int(screen.height() * 0.7), 800, 200)
 
@@ -86,14 +84,14 @@ class talkBubble(QWidget):
         self.horizontalLayout.setStretch(0, 4)
         self.horizontalLayout.setStretch(1, 4)
         self.horizontalLayout.setStretch(2, 1)
-        self.horizontalLayout.setStretch(3, 27)
-        self.horizontalLayout.setStretch(4, 5)
+        self.horizontalLayout.setStretch(3, 25)
+        self.horizontalLayout.setStretch(4, 8)
         self.verticalLayout.addWidget(self.widget)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem6)
-        self.verticalLayout.setStretch(0, 2)
-        self.verticalLayout.setStretch(1, 6)
-        self.verticalLayout.setStretch(2, 2)
+        self.verticalLayout.setStretch(0, 5)
+        self.verticalLayout.setStretch(1, 7)
+        self.verticalLayout.setStretch(2, 4)
         self.name_area.setFont(self.name_font)
         self.name_area.setStyleSheet("color: white;")
         self.text_area.setFont(self.text_font)
@@ -151,10 +149,12 @@ class talkBubble(QWidget):
         self.keep_opacity_timer.stop()
 
     def _setTextLabel(self, name: str, text: str, is_thinking: bool = False) -> None:
-        if len(text) >= 120:#TODO test
-            size = min(16 - int((len(text) - 120) / 50), 10)
+        if len(text) >= 120:  # TODO test
+            size = max(16 - int((len(text) - 120) / 50), 12)
             self.change_text_size(size)
+            self.text_area.setFont(self.text_font)
         else:
+            print(16)
             self.change_text_size(16)
         default_start = '<p style="color: white;">'
         default_end = "</p>"
@@ -197,6 +197,11 @@ class talkBubble(QWidget):
         self.name_str = name
         self.text_str = processed_text
         self.text_area.setHtml(self.text_str)
+        # 保持显示最后一行
+        cursor = self.text_area.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        self.text_area.setTextCursor(cursor)
+        self.text_area.ensureCursorVisible()
         self.adjustSize()
 
     def adjustSize(self) -> None:
@@ -204,8 +209,8 @@ class talkBubble(QWidget):
         document.setTextWidth(self.text_area.width())
         document_height = document.size().height()
         window_width = self.width()
-        self.text_area.setFixedHeight(document_height)
-        window_height = max(200, int(document_height * 4 / 3))
+        self.text_area.setFixedHeight(min(int(document_height), 400))
+        window_height = max(200, int(self.text_area.height() * 4 / 3))
         self.setFixedSize(window_width, window_height)
         self.update()
 
@@ -407,5 +412,6 @@ def get_square_with_noise(a: int, b: int, _round: int, noise_level: float, zoom_
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = talkBubble()
+    ex.update_text("测试" * 100)
     ex.show()
     sys.exit(app.exec_())
