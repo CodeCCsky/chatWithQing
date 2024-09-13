@@ -11,7 +11,8 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 
 import app.asset.res_rc
 from app.GUI.opacity_controller import opacity_controller
-#from opacity_controller import opacity_controller
+
+# from opacity_controller import opacity_controller
 
 TEXT_UPDATE_TIME = 200  # 毫秒
 

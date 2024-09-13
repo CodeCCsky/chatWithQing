@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget
 
 class opacity_controller(QWidget):
     opacityModeChange = pyqtSignal(str)
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
@@ -42,7 +43,10 @@ class opacity_controller(QWidget):
             elif self.windowOpacity() + self.opacity_update_delta < nxt_opacity:
                 nxt_opacity = self.windowOpacity() + self.opacity_update_delta
             self.setWindowOpacity(nxt_opacity)
-            if abs(self.windowOpacity() - self.opacity_modes_list[self.opacity_current_mode])< self.opacity_update_delta:
+            if (
+                abs(self.windowOpacity() - self.opacity_modes_list[self.opacity_current_mode])
+                < self.opacity_update_delta
+            ):
                 self.opacityModeChange.emit(self.opacity_current_mode)
                 if self.keep_opacity_after_change:
                     self.keep_opacity = True
@@ -65,7 +69,9 @@ class opacity_controller(QWidget):
         if delay > 0:
             if self.opacity_delay_timer.receivers(self.opacity_delay_timer.timeout) > 0:
                 self.opacity_delay_timer.timeout.disconnect()
-            self.opacity_delay_timer.timeout.connect(lambda: self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity))
+            self.opacity_delay_timer.timeout.connect(
+                lambda: self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity)
+            )
             self.opacity_delay_timer.start(delay)
         else:
             self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity)
