@@ -20,7 +20,7 @@ class fixJSON:
                 pointer = fixJSON._jump_pointer(json_str, pointer - 1)
                 if json_str[pointer] == '"':
                     json_str = json_str[:pointer] + '\\"' + json_str[pointer + 1 :]
-        raise json.JSONDecodeError
+        raise ValueError
 
     @staticmethod
     def _jump_pointer(text: str, pointer_pos: int):

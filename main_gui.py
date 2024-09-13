@@ -333,7 +333,7 @@ class mainWidget(QWidget):
                 self.tts_thread.startSpeak.connect(self.start_typing)
             else:
                 self.wait_until_start_talking.start(2000)
-        except json.JSONDecodeError:
+        except ValueError:
             self.talk_bubble.update_text(response)
             self.finish_this_round_of_talk()
         except KeyError:

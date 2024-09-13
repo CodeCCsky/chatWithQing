@@ -10,12 +10,18 @@ from PyQt5.QtGui import QColor, QFont, QFontDatabase, QFontMetrics, QPainter, QP
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 
 import app.asset.res_rc
+from app.GUI.opacity_controller import opacity_controller
+#from opacity_controller import opacity_controller
 
 TEXT_UPDATE_TIME = 200  # 毫秒
 
 
 # 忘记做分离了 :(
-class talkBubble(QWidget):
+class talkBubble(opacity_controller):
+    HIDE_OPACITY = 0
+    AWAIT_OPACITY = 0.3
+    SHOW_OPACITY = 0.99
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
@@ -24,15 +30,14 @@ class talkBubble(QWidget):
         self.row_spacing = 2
         self.name_str = "晴"
         self.text_str = ""
-        self.keep_opacity_time = 5000
 
+        self.setup_opacity_controller()
         self.initUI()
         self.init_rand()
-        self.init_window_opacity_control()
 
     def initUI(self) -> None:
         fontDb = QFontDatabase()
-        # fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
+        fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         screen = QDesktopWidget().screenGeometry()
         self.setGeometry(int(screen.width() * 0.5 - 800 / 2), int(screen.height() * 0.7), 800, 200)
 
@@ -105,17 +110,17 @@ class talkBubble(QWidget):
         self.text_area.contextMenuEvent = self.contextMenuEvent
         self.text_area.textChanged.connect(self.adjustSize)
         self.name_area.setText("晴")
-        self.is_hide = False
 
-    def init_window_opacity_control(self):
+    """def init_window_opacity_control(self):
+        self.keep_opacity_time = 100
+        self.target_opacity = 0
         self.keep_opacity = False
         self.keep_opacity_timer = QTimer()
         self.keep_opacity_timer.timeout.connect(self.reset_keep_opacity)
-        self.is_mouse_over = True
+        self.keep_opacity_timer.start(self.keep_opacity_time)
         self.window_opacity_timer = QTimer()
         self.window_opacity_timer.timeout.connect(self.window_opacity_control)
-        self.window_opacity_timer.start(25)  # 25 毫秒更新一次窗口透明度
-        self.set_mouse_over_timer = QTimer()  # 鼠标离开/进入窗口后多久更新 is_mouse_over
+        self.window_opacity_timer.start(25)  # 25 毫秒更新一次窗口透明度"""
 
     def init_rand(self) -> None:
         self.update_rand()
@@ -126,30 +131,19 @@ class talkBubble(QWidget):
     def update_rand(self) -> None:
         self.border_round = 5
         self.points_of_path = []
-        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), 2, 0.01, 0.86))
+        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), 2, 0.01, 0.85))
         self.points_of_path.append(get_square_with_noise(self.width(), self.height(), self.border_round, 0.03, 0.87))
         self.update()
 
     def update_text(self, text, is_thinking: bool = False):
-        self.set_keep_opacity()
+        self.set_opacity_mode(mode="normal")
         self._setTextLabel("晴", text, is_thinking)
 
     def clear_text(self):
         self._setTextLabel("晴", "")
 
-    def set_keep_opacity_time(self, keep_time: int):
-        self.keep_opacity_time = keep_time
-
-    def set_keep_opacity(self):
-        self.keep_opacity = True
-        self.keep_opacity_timer.start(self.keep_opacity_time)
-
-    def reset_keep_opacity(self):
-        self.keep_opacity = False
-        self.keep_opacity_timer.stop()
-
     def _setTextLabel(self, name: str, text: str, is_thinking: bool = False) -> None:
-        if len(text) >= 120:  # TODO test
+        if len(text) >= 120:
             size = max(16 - int((len(text) - 120) / 50), 12)
             self.change_text_size(size)
             self.text_area.setFont(self.text_font)
@@ -213,40 +207,17 @@ class talkBubble(QWidget):
         self.setFixedSize(window_width, window_height)
         self.update()
 
-    def hide_window(self):
-        self.is_hide = True
-        self.setWindowOpacity(0)
+    def hide_window(self, wait_time=10):
+        self.set_opacity_mode(mode="hide", delay=wait_time, clear_keep_opacity_status=True, is_keep_opacity=True)
 
-    def show_window(self):
-        self.is_hide = False
-        self.setWindowOpacity(0.99)
-
-    def set_mouse_over(self, status: bool):
-        self.set_mouse_over_timer.stop()
-        self.is_mouse_over = status
-
-    def window_opacity_control(self):
-        if self.is_hide is False and self.keep_opacity is False:
-            if self.is_mouse_over:
-                opacity_value = min(0.99, self.windowOpacity() + 0.1)
-                self.setWindowOpacity(opacity_value)
-            else:
-                opacity_value = max(0.3, self.windowOpacity() - 0.1)
-                self.setWindowOpacity(opacity_value)
-        elif self.is_hide:
-            self.setWindowOpacity(0)
-        elif self.keep_opacity:
-            self.setWindowOpacity(0.99)
+    def show_window(self, wait_time=10):
+        self.set_opacity_mode(mode="normal", delay=wait_time, clear_keep_opacity_status=True)
 
     def enterEvent(self, event):
-        self.set_mouse_over_timer.stop()
-        self.set_mouse_over_timer.timeout.connect(lambda p=True: self.set_mouse_over(p))
-        self.set_mouse_over_timer.start(10)
+        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
 
     def leaveEvent(self, event):
-        self.set_mouse_over_timer.stop()
-        self.set_mouse_over_timer.timeout.connect(lambda p=False: self.set_mouse_over(p))
-        self.set_mouse_over_timer.start(1000)
+        self.set_opacity_mode(mode="await", clear_keep_opacity_status=True, delay=3000)
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
@@ -365,30 +336,6 @@ def font_size_in_pixels(font_size_pt: int) -> int:
     return font_size_px
 
 
-# def get_required_point_coordinates(points_num: int, noise_level: float):
-#    # 生成背景和边界QPainterPath所需路径
-#    points = []
-#    a, b = 0.5, 0.5
-#    pi_2 = np.pi / 2
-#    pi_3_2 = 3 * np.pi / 2
-#    for i in range(points_num):
-#        theta = (np.pi * 2.0 * i / points_num)
-#        sin_theta = np.sin(theta)
-#        cos_theta = np.cos(theta)
-#        _len = (a * b) / np.power(np.power(a * sin_theta, 4) + np.power(b * cos_theta, 4), 0.25)
-#        x = _len * cos_theta
-#        y = _len * sin_theta
-#        noise_x = 1 + (np.random.rand() * 2 - 1) * noise_level
-#        noise_y = 1 + (np.random.rand() * 2 - 1) * noise_level
-#        x *= noise_x
-#        y *= noise_y
-#        points.append((x, y))
-#    if not points:
-#        print("Warning: points list is empty")
-#        return None
-#    return points
-
-
 def get_square_with_noise(a: int, b: int, _round: int, noise_level: float, zoom_factor: float):
     points = []
     corner = [(a / 2, b / 2), (-a / 2, b / 2), (-a / 2, -b / 2), (a / 2, -b / 2)]
@@ -411,6 +358,7 @@ def get_square_with_noise(a: int, b: int, _round: int, noise_level: float, zoom_
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = talkBubble()
-    ex.update_text("测试" * 100)
+    atimer = QTimer()
+    atimer.singleShot(50 * 1000, lambda: ex.update_text("测试" * 100))
     ex.show()
     sys.exit(app.exec_())
