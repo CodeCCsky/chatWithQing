@@ -166,4 +166,6 @@ cache/*.mp3
 private_setting.yaml
 history/*
 .VSCodeCounter/
+.vscode/
 write_system_prompt_private.py
+*.log.*

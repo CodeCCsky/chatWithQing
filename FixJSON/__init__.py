@@ -1,0 +1,1 @@
+from FixJSON.decoder import fixJSON
