@@ -33,7 +33,6 @@ class inputLabel(opacity_controller, Ui_Form):
         self.input_font = QFont("荆南波波黑", self.input_font_size)
         self.button_font = QFont("荆南波波黑", self.button_font_size)
         screen = QDesktopWidget().screenGeometry()
-        self.setGeometry(int(screen.width() * 0.95 - 400), int(screen.height() * 0.3), 400, 300)
 
         self.setupUi(self)
         self.statusBar = QStatusBar(self)

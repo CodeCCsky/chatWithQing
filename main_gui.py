@@ -166,6 +166,7 @@ class mainWidget(QWidget):
         self.talk_bubble = talkBubble()
         self.talk_bubble.closeEvent = self.closeEvent
         self.input_label = inputLabel()
+        self.input_label.move(self.desktop_pet.x(), int(self.desktop_pet.y() - self.input_label.height() * 1.2))
         self.input_label.closeEvent = self.closeEvent
         self.input_label.requestSend.connect(self.start_talk)
         # 链接信号和槽
