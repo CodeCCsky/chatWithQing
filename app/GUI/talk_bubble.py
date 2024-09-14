@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 import app.asset.res_rc
 from app.GUI.opacity_controller import opacity_controller
 
-# from opacity_controller import opacity_controller
+#from opacity_controller import opacity_controller
 
 TEXT_UPDATE_TIME = 200  # 毫秒
 
@@ -208,11 +208,13 @@ class talkBubble(opacity_controller):
         self.setFixedSize(window_width, window_height)
         self.update()
 
-    def hide_window(self, wait_time=10):
-        self.set_opacity_mode(mode="hide", delay=wait_time, clear_keep_opacity_status=True, is_keep_opacity=True)
+    def hide_window(self):
+        self.set_opacity_mode(
+            mode="hide", clear_keep_opacity_status=True, is_keep_opacity=True, lock_when_change=True, is_enforce=True
+        )
 
-    def show_window(self, wait_time=10):
-        self.set_opacity_mode(mode="normal", delay=wait_time, clear_keep_opacity_status=True)
+    def show_window(self):
+        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, lock_when_change=True, is_enforce=True)
 
     def enterEvent(self, event):
         self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
@@ -360,6 +362,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = talkBubble()
     atimer = QTimer()
-    atimer.singleShot(50 * 1000, lambda: ex.update_text("测试" * 100))
+    atimer.singleShot(10 * 1000, lambda: ex.hide_window())
     ex.show()
     sys.exit(app.exec_())
