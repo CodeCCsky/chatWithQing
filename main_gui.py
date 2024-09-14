@@ -23,12 +23,11 @@ from app.GUI import (
 )
 from app.Threads import (
     PyQt_deepseek_request_thread,
-    get_token_num_thread,
     no_tts_sound_manager,
     summaryWorker,
     tts_thread,
 )
-from deepseek_api import deepseek_model, historyManager, offline_tokenizer
+from deepseek_api import deepseek_model, historyManager
 from setting.setting_colletions import settingManager
 from tts import TTSAudio
 from FixJSON import fixJSON
@@ -79,7 +78,6 @@ class mainWidget(QWidget):
         self.init_desktop_pet()
         self.init_talk()
         self.init_stroke()
-        self.init_text2token()
         self.setting.tts_setting.use_setting(self.tts_model)
         self.setting.deepseek_model.use_setting(self.llm_inferance)
 
@@ -265,12 +263,6 @@ class mainWidget(QWidget):
             self.response_content = {}
             self.llm_thread = None
             self.init_2()
-
-    def init_text2token(self):
-        self.tokenizer = offline_tokenizer()
-        self.input_label.getTokens.connect(self.progress_text2token)
-        self.text2token_thread = None
-
     ### </初始化部分>
 
     ### <'显示组件'选项部分>
@@ -305,17 +297,7 @@ class mainWidget(QWidget):
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
             self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
-
     ### </处理摸摸部分>
-    ### <处理预计token数部分>
-    def progress_text2token(self, text: str):
-        sys_msg = self.progress_sys_msg(False)
-        tpl_text = self.history_manager.get_user_message_template(setting.get_user_name(), text, sys_msg)
-        self.text2token_thread = get_token_num_thread(text=tpl_text, tokenizer=self.tokenizer)
-        self.text2token_thread.responseTokenNum.connect(self.input_label.show_token)
-        self.text2token_thread.run()
-
-    ### </处理预计token数部分>
 
     ### <实现对话部分>
     def progress_sys_msg(self, clear_pet_state: bool = True) -> str:

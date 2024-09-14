@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QStatusBar
 
@@ -14,14 +14,12 @@ from app.GUI.opacity_controller import opacity_controller
 
 class inputLabel(opacity_controller, Ui_Form):
     requestSend = pyqtSignal(str)
-    getTokens = pyqtSignal(str)
 
     def __init__(self, parent=None, is_calc_token=True, update_token_time=1000):
         super(inputLabel, self).__init__(parent)
         self.input_font_size = 14
         self.button_font_size = 14
         self.keep_opacity_time = 5000
-        self.init_token_calc(update_token_time, is_calc_token)
         self.setup_opacity_controller(opacity_next_mode_list={"normal": "await", "await": "await", "hide": "hide"})
         self.initUI()
 
@@ -41,7 +39,6 @@ class inputLabel(opacity_controller, Ui_Form):
         self.input_edit.textChanged.connect(
             lambda: self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True)
         )
-        self.input_edit.textChanged.connect(lambda: self.update_text2token(self.input_edit.toPlainText()))
         # self.input_edit.setStyleSheet("background: transparent;color: white;border: 4px solid lightgreen;padding: 1px;")
         self.clearButton.setFont(self.button_font)
         self.sendButton.setFont(self.button_font)
@@ -56,29 +53,8 @@ class inputLabel(opacity_controller, Ui_Form):
         self.pushButton.clicked.connect(self.hide_window)
         self.pushButton.setStyleSheet("background: none; border: none;")
 
-    def init_token_calc(self, update_token_time: int, is_calc_token: bool) -> None:
-        self.wait_to_send_text = ""
-        self.is_calc_token = is_calc_token
-        self.update_token_time = update_token_time
-        self.text2token_timer = QTimer()
-        self.text2token_timer.timeout.connect(self.send_text2token)
-
-    def update_text2token(self, text: str):
-        self.text2token_timer.start(self.update_token_time)
-        self.wait_to_send_text = text
-
-    def send_text2token(self):
-        if self.is_calc_token:
-            self.getTokens.emit(self.wait_to_send_text)
-            self.text2token_timer.stop()
-
-    def show_token(self, token_num: int):
-        self.statusBar.showMessage(f"输入预计消耗的token数量(包含后台提示): {token_num} Tokens")
-        self.text2token_timer.start(self.update_token_time)
-
     def clear_text(self):
         self.input_edit.setPlainText("")
-        self.text2token_timer.stop()
 
     def send_text(self):
         self.sendButton.setEnabled(False)
