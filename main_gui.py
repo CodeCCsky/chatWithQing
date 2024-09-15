@@ -27,10 +27,10 @@ from app.Threads import (
     summaryWorker,
     tts_thread,
 )
-from deepseek_api import deepseek_model, historyManager
-from setting.setting_colletions import settingManager
-from tts import TTSAudio
-from FixJSON import fixJSON
+from third_party.deepseek_api import deepseek_model, historyManager
+from third_party.setting import settingManager
+from third_party.tts import TTSAudio
+from third_party.FixJSON import fixJSON
 
 # setting = settingManager()
 tts_cache_path = r"cache/"

@@ -5,7 +5,7 @@ import wave
 
 import pyaudio
 
-import tts.soundControl.params as pms
+import third_party.tts.soundControl.params as pms
 
 logger = logging.getLogger("main.tts.soundControl")
 

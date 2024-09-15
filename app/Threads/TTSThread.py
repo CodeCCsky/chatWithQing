@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from tts import TTSAudio
+from third_party.tts import TTSAudio
 
 
 class tts_thread(QThread):

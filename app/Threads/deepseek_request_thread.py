@@ -2,7 +2,7 @@ from typing import Union
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from deepseek_api import deepseek_model, historyManager
+from third_party.deepseek_api import deepseek_model, historyManager
 
 
 class PyQt_deepseek_request_thread(QThread):

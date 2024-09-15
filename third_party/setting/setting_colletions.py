@@ -1,5 +1,5 @@
-from deepseek_api.model import deepseek_model
-from tts import TTSAudio
+from third_party.deepseek_api.model import deepseek_model
+from third_party.tts import TTSAudio
 import yaml
 
 SYS_PROMPT_MAIN_PATH = r"system_prompt\main\system_prompt_main.txt"
@@ -122,7 +122,7 @@ class settingManager:
         self.function_setting: function_setting = None
         self.history_path = None
         self.system_prompt_main = None
-        self.load_path = "setting/private_setting.yaml"
+        self.load_path = "third_party/setting/private_setting.yaml"
 
     def load_from_parameter(
         self,
@@ -141,7 +141,7 @@ class settingManager:
         self.function_setting = function_setting
         self.load_system_prompt_main()
 
-    def load_from_file(self, path="setting/private_setting.yaml") -> tuple:
+    def load_from_file(self, path="third_party/setting/private_setting.yaml") -> tuple:
         self.load_path = path
         try:
             self._read_yaml()

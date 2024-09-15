@@ -4,7 +4,7 @@ from typing import Dict, List, Union
 
 from openai import OpenAI
 
-from deepseek_api.deepseek_tools import ds_tool
+from third_party.deepseek_api.deepseek_tools import ds_tool
 
 logger = logging.getLogger(__name__)
 

@@ -8,8 +8,8 @@ from typing import Literal
 
 import requests
 
-import tts.params as params
-import tts.soundControl as sc
+import third_party.tts.params as params
+import third_party.tts.soundControl as sc
 
 logger = logging.getLogger(__name__)
 

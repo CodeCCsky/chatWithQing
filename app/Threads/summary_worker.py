@@ -2,7 +2,7 @@ import datetime
 import logging
 from PyQt5.QtCore import QObject, QRunnable, pyqtSignal
 
-from deepseek_api import deepseek_summary, historyManager
+from third_party.deepseek_api import deepseek_summary, historyManager
 
 logger = logging.getLogger(__name__)
 

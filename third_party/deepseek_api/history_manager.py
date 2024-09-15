@@ -1,7 +1,7 @@
 import copy
 import datetime
 import json
-from FixJSON import fixJSON
+from third_party.FixJSON import fixJSON
 import logging
 import os
 
