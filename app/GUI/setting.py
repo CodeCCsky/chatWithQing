@@ -184,7 +184,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
             self.setting_manager.user.user_sex = sex
 
     def progress_image_preview(self, is_show: bool):
-        if is_show == True:
+        if is_show:
             self.image_preview_widget.show()
         else:
             self.image_preview_widget.hide()

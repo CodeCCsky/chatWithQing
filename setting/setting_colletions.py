@@ -161,7 +161,7 @@ class settingManager:
     def _read_yaml(self) -> None:
         with open(self.load_path, "r", encoding="utf-8") as f:
             res: dict = yaml.load(f.read(), Loader=yaml.FullLoader)
-            
+
             # User settings
             user: dict = res["user"]
             self.user = user_setting(
@@ -170,7 +170,7 @@ class settingManager:
                 favourite_food=user["favourite_food"],
                 user_location=user["location"],
             )
-            
+
             # Deepseek settings
             deepseek: dict = res["deepseek"]
             self.deepseek_model = deepseek_api_setting(
@@ -179,7 +179,7 @@ class settingManager:
                 frequency_penalty=deepseek.get("frequency_penalty", 0.3),
                 presence_penalty=deepseek.get("presence_penalty", 0.3),
             )
-            
+
             # TTS settings
             tts: dict = res["TTS"]
             self.tts_setting = TTS_setting(
@@ -188,14 +188,13 @@ class settingManager:
                 character_name=tts.get("character", "晴"),
                 emotion=tts.get("emotion", "default"),
             )
-            
+
             # Show settings
             show_s: dict = res["show"]
             self.show_setting = show_setting(
-                text_show_gap=show_s.get("text_show_gap", 200),
-                img_show_zoom=show_s.get("img_show_zoom",1.0)
+                text_show_gap=show_s.get("text_show_gap", 200), img_show_zoom=show_s.get("img_show_zoom", 1.0)
             )
-            
+
             # Chat summary settings
             summary: dict = res["summary"]
             self.chat_summary_setting = chat_summary_setting(
@@ -203,13 +202,11 @@ class settingManager:
                 add_x_day_ago_summary=summary.get("add_x_day_ago_summary", False),
                 value_of_x_day_ago=summary.get("value_of_x_day_ago", 5),
             )
-            
+
             # function settings
-            func: dict = res["function"]
-            self.function_setting = function_setting(
-                recall=func.get("recall", False)
-            )
-            
+            func: dict = res.get("function", {})
+            self.function_setting = function_setting(recall=func.get("recall", False))
+
             self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
@@ -237,7 +234,7 @@ class settingManager:
                 },
                 "show": {
                     "text_show_gap": self.show_setting.text_show_gap,
-                    "img_show_zoom": self.show_setting.img_show_zoom
+                    "img_show_zoom": self.show_setting.img_show_zoom,
                 },
                 "summary": {
                     "add_same_day_summary": self.chat_summary_setting.add_same_day_summary,

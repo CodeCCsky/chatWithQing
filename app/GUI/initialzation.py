@@ -8,7 +8,9 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from app.GUI.Ui_setting import Ui_MainWindow
+from app.GUI.image_preview import image_preview
 from setting import *
+
 
 # from Ui_initialization import Ui_MainWindow
 
@@ -30,10 +32,10 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.setting_manager.load_from_parameter(
             user_setting(None, "男", None, None),
             deepseek_api_setting(None),
-            show_setting(200),
+            show_setting(),
             TTS_setting(),
             chat_summary_setting(),
-            (),
+            function_setting(),
         )
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
@@ -64,6 +66,8 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.example_text = "这个显示速度还可以吗？"
         self.example_pointer = 0
         self.progress_text_gap(self.setting_manager.show_setting.text_show_gap)
+        self.imageShowSlider.setValue(int(self.setting_manager.show_setting.img_show_zoom * 100))
+        self.imageShowPreviewCheckBox.setChecked(False)
 
         # history
         # self.scan_history_file()
@@ -74,6 +78,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
 
         # function
+        print(self.setting_manager.function_setting)
         self.enableRecallCheckBox.setChecked(self.setting_manager.function_setting.recall)
 
     def initConnect(self):
@@ -112,7 +117,15 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.lTTSEmotionEdit.textChanged.connect(lambda p: setattr(self.setting_manager.tts_setting, "emotion", p))
 
         # show
+        self.image_preview_widget = image_preview(zoom_factor=self.setting_manager.show_setting.img_show_zoom)
         self.textShowSpeedSpinBox.valueChanged.connect(self.progress_text_gap)
+        self.imageShowSlider.valueChanged.connect(lambda p: self.imageShowZoomPercentLabel.setText(str(p) + "%"))
+        self.imageShowSlider.valueChanged.connect(
+            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p)/100.0)
+        )
+        self.imageShowSlider.valueChanged.connect(lambda p:self.image_preview_widget.resize_(float(p)/100.0))
+        self.imageShowPreviewCheckBox.toggled.connect(self.progress_image_preview)
+        self.image_preview_widget.closeSignal.connect(lambda : self.imageShowPreviewCheckBox.setChecked(False))
 
         # history
         # self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'history_path',os.path.join('./history',p)))
@@ -157,6 +170,12 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedExampleLabel.setText(self.example_text[: self.example_pointer])
         self.example_pointer = (self.example_pointer + 1) % (len(self.example_text) + 1)
 
+    def progress_image_preview(self, is_show: bool):
+        if is_show:
+            self.image_preview_widget.show()
+        else:
+            self.image_preview_widget.hide()
+
     def progress_user_sex(self, index: int):
         if index == 0:
             self.yourSexEdit.setEnabled(False)
@@ -176,7 +195,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         if check == []:
             self.setting_manager_backup = copy.deepcopy(self.setting_manager)
             self.changeSetting.emit(self.setting_manager)
-            QMessageBox.information(self, "已保存", "已保存当前设置。")
+            QMessageBox.information(self, "已保存", "已保存当前设置。关闭当前窗口以启动主程序。")
         else:
             QMessageBox.warning(self, "出错", f'保存失败。存在尚未填入的值：{"，".join(check)}')
 
