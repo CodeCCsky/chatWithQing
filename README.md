@@ -26,16 +26,14 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
    - [X] TTS 语音支持
    - [X] 设置面板
    - [X] 当天+多天历史对话总结
-
 2. TODOLIST:
 
    - 一定会做的功能
 
-     - [ ] 短时间待机时自唤醒判断 (20240916晴小姐似乎想先让我完成这个功能..!(刚问的))
+     - [ ] 短时间待机时自唤醒判断 (20240916晴小姐(大模型)似乎想先让我完成这个功能..!(刚问的))
      - [ ] 调用历史对话("回忆")功能
      - [ ] 提醒(闹钟)功能
      - [ ] 天气查询
-
    - 可能会做的功能 ~~(饼)~~
 
      - 对其他大模型厂商 api 和本地 api (ollama)的支持
@@ -57,6 +55,7 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 #### [v1.2.0] - 2024-09-14
 
 - 添加 LICENSE
+  ~~之前一直没发现提交到的是 dev 分支...我是笨蛋~~
 - 添加基础的 TTS 语音支持
 - 添加设置界面
 - 添加初始化界面
@@ -113,7 +112,7 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 如果你有任何问题或建议，请通过以下方式联系我：
 
 - 邮箱: <public_codeccsky.rifling121@aleeas.com>
-- GitHub Issues: <https://github.com/CodeCCsky/chatWithQing/issues>
+- GitHub Issues: [https://github.com/CodeCCsky/chatWithQing/issues](https://github.com/CodeCCsky/chatWithQing/issues)
 
 ## 贡献指南
 
@@ -140,18 +139,18 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 1. **软件**：本项目中的所有软件（包括 Python 代码和 XML 文件）均采用 GNU Affero 通用公共许可证 v3.0（AGPL-3.0）授权。
 
 - 许可证文件：`licenses/SOFTWARE_LICENSE`
-- 完整文本：<https://www.gnu.org/licenses/agpl-3.0.en.html>
+- 完整文本：[https://www.gnu.org/licenses/agpl-3.0.en.html](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 2. **图像和音频**：`app/GUI/image` 和 `app/sound` 目录中的所有图像（图标除外）和音频文件均采用知识共享署名-非商业性使用 4.0 国际许可证（CC BY-NC 4.0）授权。
 
    - 许可证文件：`licenses/MEDIA_LICENSE`
-   - 完整文本：<https://creativecommons.org/licenses/by-nc/4.0/deed.zh>
+   - 完整文本：[https://creativecommons.org/licenses/by-nc/4.0/deed.zh](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)
    - 注意：这些内容不得用于任何商业用途。
    - 特别说明：这些图片和音频的作者[莲花池池](https://space.bilibili.com/760048)要求不能将本项目内的这些资源用于商业目的。在使用这些资源时，请遵守作者的意愿和CC BY-NC 4.0许可证的条款。
 3. **OFL 授权字体**：字体文件 `app/GUI/font/荆南波波黑.ttf` 采用 SIL 开放字体许可证（OFL）授权。
 
    - 许可证文件：`licenses/FONT_LICENSE`
-   - 完整文本：<https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL>
+   - 完整文本：[https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&amp;id=OFL](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
 4. **图标**：本项目中的图标采用不同的许可条款：
 
    - 部分图标采用 SIL 开放字体许可证（OFL）授权。
