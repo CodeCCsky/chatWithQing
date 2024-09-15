@@ -1,9 +1,10 @@
 import sys
 import time
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from PyQt5.QtGui import QCloseEvent, QCursor, QMouseEvent, QPolygon
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QVBoxLayout, QWidget
+
 
 # from PetView import PetGraphicsView
 import app.asset.res_rc
