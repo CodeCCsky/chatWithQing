@@ -169,3 +169,4 @@ history/*
 .vscode/
 write_system_prompt_private.py
 *.log.*
+package_to_exe.py

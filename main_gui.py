@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import datetime
-import json
 import logging
 import logging.handlers
 import os
@@ -9,9 +8,10 @@ import re
 import sys
 import time
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt, QTimer, QThreadPool
+from PyQt5.QtGui import QIcon, QFontDatabase, QCloseEvent
+from PyQt5.QtWidgets import QWidget, QApplication, QAction, QSystemTrayIcon, QMenu, QStyleFactory, QMessageBox
+
 
 from app.GUI import (
     DesktopPet,
@@ -263,6 +263,7 @@ class mainWidget(QWidget):
             self.response_content = {}
             self.llm_thread = None
             self.init_2()
+
     ### </初始化部分>
 
     ### <'显示组件'选项部分>
@@ -297,6 +298,7 @@ class mainWidget(QWidget):
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
             self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+
     ### </处理摸摸部分>
 
     ### <实现对话部分>
