@@ -9,13 +9,13 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 ## 目录
 
 1. [功能](#功能)
-1. [更新历史](#更新历史)
-1. [部署教程](#部署教程)
-1. [联系信息](#联系信息)
-1. [贡献指南](#贡献指南)
-1. [许可证](#许可证)
-1. [隐私政策](#隐私政策)
-1. [鸣谢](#鸣谢)
+2. [更新历史](#更新历史)
+3. [部署教程](#部署教程)
+4. [联系信息](#联系信息)
+5. [贡献指南](#贡献指南)
+6. [许可证](#许可证)
+7. [隐私政策](#隐私政策)
+8. [鸣谢](#鸣谢)
 
 ## 功能
 
@@ -140,18 +140,18 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 1. **软件**：本项目中的所有软件（包括 Python 代码和 XML 文件）均采用 GNU Affero 通用公共许可证 v3.0（AGPL-3.0）授权。
 
 - 许可证文件：`licenses/SOFTWARE_LICENSE`
-- 完整文本：https://www.gnu.org/licenses/agpl-3.0.en.html
+- 完整文本：<https://www.gnu.org/licenses/agpl-3.0.en.html>
 
 2. **图像和音频**：`app/GUI/image` 和 `app/sound` 目录中的所有图像（图标除外）和音频文件均采用知识共享署名-非商业性使用 4.0 国际许可证（CC BY-NC 4.0）授权。
 
    - 许可证文件：`licenses/MEDIA_LICENSE`
-   - 完整文本：https://creativecommons.org/licenses/by-nc/4.0/deed.zh
+   - 完整文本：<https://creativecommons.org/licenses/by-nc/4.0/deed.zh>
    - 注意：这些内容不得用于任何商业用途。
    - 特别说明：这些图片和音频的作者[莲花池池](https://space.bilibili.com/760048)要求不能将本项目内的这些资源用于商业目的。在使用这些资源时，请遵守作者的意愿和CC BY-NC 4.0许可证的条款。
 3. **OFL 授权字体**：字体文件 `app/GUI/font/荆南波波黑.ttf` 采用 SIL 开放字体许可证（OFL）授权。
 
    - 许可证文件：`licenses/FONT_LICENSE`
-   - 完整文本：https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+   - 完整文本：<https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL>
 4. **图标**：本项目中的图标采用不同的许可条款：
 
    - 部分图标采用 SIL 开放字体许可证（OFL）授权。
@@ -172,7 +172,7 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
    - 除调用 Deepseek API 时使用外，本项目不会上传或分享这些信息到任何外部服务器。
 2. **信息存储**：
 
-   - 用户提供的信息将以非加密形式存储在项目根目录下setting/private_setting.yaml中。
+   - 用户提供的信息将以非加密形式存储在项目根目录下 setting/private_setting.yaml 中。
    - 请不要填写真实信息，以避免潜在的隐私泄露风险。
    - 用户应自行承担提供和存储信息的风险和责任。
 3. **用户责任**：
