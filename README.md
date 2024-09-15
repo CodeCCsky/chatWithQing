@@ -42,7 +42,6 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
      - 对代码、长文本的额外窗口展示？
      - 性能监控？
      - 网页提取？搜索？
-     - 欢迎在 issue 中提出各种点子...
 
 ## 更新历史
 
@@ -111,14 +110,18 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 
 ## 联系信息
 
-如果你有任何问题或建议，请通过以下方式联系我们：
+如果你有任何问题或建议，请通过以下方式联系我：
 
-- 邮箱: [public_codeccsky.rifling121@aleeas.com]
-- GitHub Issues: [https://github.com/CodeCCsky/chatWithQing/issues]
+- 邮箱: <public_codeccsky.rifling121@aleeas.com>
+- GitHub Issues: <https://github.com/CodeCCsky/chatWithQing/issues>
 
 ## 贡献指南
 
-欢迎社区的贡献！如果你想要为项目贡献代码，请遵循以下步骤：
+欢迎对社区的贡献！
+
+如果你有什么好点子，欢迎在 [Issues](https://github.com/CodeCCsky/chatWithQing/issues) 中提出
+
+如果你想要为项目贡献代码，请遵循以下步骤：
 
 1. Fork 本仓库。
 2. 创建一个新的分支 (`git checkout -b feature/your-feature-name`)。
