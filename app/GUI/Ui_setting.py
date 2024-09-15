@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\Administrator\Desktop\workspace\chatWithQing\app\GUI\xml\setting.ui'
+# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\app\asset\xml\setting.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -387,6 +387,35 @@ class Ui_MainWindow(object):
         self.textShowSpeedExampleLabel.setObjectName("textShowSpeedExampleLabel")
         self.horizontalLayout_25.addWidget(self.textShowSpeedExampleLabel)
         self.verticalLayout_21.addWidget(self.textShowSpeedExampleWidget)
+        self.line_5 = QtWidgets.QFrame(self.scrollAreaWidgetTextShow)
+        self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_5.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_5.setObjectName("line_5")
+        self.verticalLayout_21.addWidget(self.line_5)
+        self.imageShowLabel = QtWidgets.QLabel(self.scrollAreaWidgetTextShow)
+        self.imageShowLabel.setObjectName("imageShowLabel")
+        self.verticalLayout_21.addWidget(self.imageShowLabel)
+        self.widget_2 = QtWidgets.QWidget(self.scrollAreaWidgetTextShow)
+        self.widget_2.setObjectName("widget_2")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget_2)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.imageShowLabel_2 = QtWidgets.QLabel(self.widget_2)
+        self.imageShowLabel_2.setObjectName("imageShowLabel_2")
+        self.horizontalLayout_2.addWidget(self.imageShowLabel_2)
+        self.imageShowZoomPercentLabel = QtWidgets.QLabel(self.widget_2)
+        self.imageShowZoomPercentLabel.setObjectName("imageShowZoomPercentLabel")
+        self.horizontalLayout_2.addWidget(self.imageShowZoomPercentLabel)
+        self.imageShowSlider = QtWidgets.QSlider(self.widget_2)
+        self.imageShowSlider.setMinimum(50)
+        self.imageShowSlider.setMaximum(200)
+        self.imageShowSlider.setProperty("value", 100)
+        self.imageShowSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.imageShowSlider.setObjectName("imageShowSlider")
+        self.horizontalLayout_2.addWidget(self.imageShowSlider)
+        self.verticalLayout_21.addWidget(self.widget_2)
+        self.imageShowPreviewCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetTextShow)
+        self.imageShowPreviewCheckBox.setObjectName("imageShowPreviewCheckBox")
+        self.verticalLayout_21.addWidget(self.imageShowPreviewCheckBox)
         spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_21.addItem(spacerItem12)
         self.scrollArea_9.setWidget(self.scrollAreaWidgetTextShow)
@@ -472,7 +501,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(5)
+        self.stackedWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -524,6 +553,10 @@ class Ui_MainWindow(object):
         self.haomiao.setText(_translate("MainWindow", "毫秒"))
         self._exampleL.setText(_translate("MainWindow", "示例"))
         self.textShowSpeedExampleLabel.setText(_translate("MainWindow", "这个显示速度还可以吗？"))
+        self.imageShowLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">桌宠图片大小设置</span></p></body></html>"))
+        self.imageShowLabel_2.setText(_translate("MainWindow", "缩放"))
+        self.imageShowZoomPercentLabel.setText(_translate("MainWindow", "100%"))
+        self.imageShowPreviewCheckBox.setText(_translate("MainWindow", "预览"))
         self.talkSettingTopLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">对话设置</span></p></body></html>"))
         self.addSameDayHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前都添加当天所有对话的总结（可能会造成 token 大量消耗！）"))
         self.addXDayAgoHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）(功能未完成）"))

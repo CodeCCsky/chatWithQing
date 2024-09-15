@@ -148,6 +148,9 @@ class mainWidget(QWidget):
     def init_desktop_pet(self):
         self.desktop_pet = DesktopPet(use_tts=self.setting.tts_setting.use_tts)
         self.desktop_pet.closeEvent = self.closeEvent
+        self.desktop_pet.resize(
+            int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
+        )
         self.desktop_pet.show()
 
     def init_setting(self, history_path: str):
@@ -286,6 +289,9 @@ class mainWidget(QWidget):
         self.setting.tts_setting.use_setting(self.tts_model)
         self.setting.deepseek_model.use_setting(self.llm_inferance)
         self.setting.load_system_prompt_main()
+        self.desktop_pet.resize(
+            int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
+        )
         # if self.history_manager.history_path != self.setting.history_path:
         #    self.history_manager = historyManager(user_name=self.setting.user.user_name, history_path=self.setting.history_path)
         #    logger.info(f"加载 {self.setting.history_path}")

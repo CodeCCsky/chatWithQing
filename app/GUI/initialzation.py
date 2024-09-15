@@ -33,7 +33,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             show_setting(200),
             TTS_setting(),
             chat_summary_setting(),
-            recall_function_setting(),
+            (),
         )
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
@@ -73,8 +73,8 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
         self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
 
-        # recall
-        self.enableRecallCheckBox.setChecked(self.setting_manager.recall_function_setting.enable)
+        # function
+        self.enableRecallCheckBox.setChecked(self.setting_manager.function_setting.recall)
 
     def initConnect(self):
         # user
@@ -134,9 +134,9 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
         )
 
-        # recall
+        # function
         self.enableRecallCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.recall_function_setting, "enable", p)
+            lambda p: setattr(self.setting_manager.function_setting, "recall", p)
         )
 
     def scan_history_file(self):

@@ -85,13 +85,16 @@ class TTS_setting:
 
 
 class show_setting:
-    def __init__(self, text_show_gap: int) -> None:
+    def __init__(self, text_show_gap: int = 200, img_show_zoom: bool = 1) -> None:
         self.text_show_gap = text_show_gap
+        self.img_show_zoom = img_show_zoom
 
     def check(self) -> list:
         unfilled_list = []
         if not self.text_show_gap:
             unfilled_list.append("字符显示速度")
+        if not self.img_show_zoom:
+            unfilled_list.append("图片大小缩放")
         return unfilled_list
 
 
@@ -104,9 +107,9 @@ class chat_summary_setting:
         self.value_of_x_day_ago = value_of_x_day_ago
 
 
-class recall_function_setting:
-    def __init__(self, enable: bool = False) -> None:
-        self.enable = enable
+class function_setting:
+    def __init__(self, recall: bool = False) -> None:
+        self.recall = recall
 
 
 class settingManager:
@@ -116,7 +119,7 @@ class settingManager:
         self.show_setting: show_setting = None
         self.tts_setting: TTS_setting = None
         self.chat_summary_setting: chat_summary_setting = None
-        self.recall_function_setting: recall_function_setting = None
+        self.function_setting: function_setting = None
         self.history_path = None
         self.system_prompt_main = None
         self.load_path = "setting/private_setting.yaml"
@@ -128,14 +131,14 @@ class settingManager:
         Show_setting: show_setting,
         Tts_setting: TTS_setting,
         Chat_summary_setting: chat_summary_setting,
-        Recall_function_setting: recall_function_setting,
+        function_setting: function_setting,
     ) -> None:
         self.user = User
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
         self.chat_summary_setting = Chat_summary_setting
-        self.recall_function_setting = Recall_function_setting
+        self.function_setting = function_setting
         self.load_system_prompt_main()
 
     def load_from_file(self, path="setting/private_setting.yaml") -> tuple:
@@ -157,35 +160,56 @@ class settingManager:
 
     def _read_yaml(self) -> None:
         with open(self.load_path, "r", encoding="utf-8") as f:
-            res = yaml.load(f.read(), Loader=yaml.FullLoader)
-            user = res["user"]
-            deepseek = res["deepseek"]
-            tts = res["TTS"]
-            show_s = res["show"]
-            summary = res["summary"]
-            recall = res["recall"]
+            res: dict = yaml.load(f.read(), Loader=yaml.FullLoader)
+            
+            # User settings
+            user: dict = res["user"]
             self.user = user_setting(
                 user_name=user["name"],
                 user_sex=user["sex"],
                 favourite_food=user["favourite_food"],
                 user_location=user["location"],
             )
+            
+            # Deepseek settings
+            deepseek: dict = res["deepseek"]
             self.deepseek_model = deepseek_api_setting(
                 api_key=deepseek["api_key"],
-                temperature=deepseek["temperature"],
-                frequency_penalty=deepseek["frequency_penalty"],
-                presence_penalty=deepseek["presence_penalty"],
+                temperature=deepseek.get("temperature", 1.1),
+                frequency_penalty=deepseek.get("frequency_penalty", 0.3),
+                presence_penalty=deepseek.get("presence_penalty", 0.3),
             )
+            
+            # TTS settings
+            tts: dict = res["TTS"]
             self.tts_setting = TTS_setting(
-                use_tts=tts["use_tts"], url=tts["url"], character_name=tts["character"], emotion=tts["emotion"]
+                use_tts=tts.get("use_tts", False),
+                url=tts.get("url", "http://127.0.0.1:5000/tts"),
+                character_name=tts.get("character", "晴"),
+                emotion=tts.get("emotion", "default"),
             )
-            self.show_setting = show_setting(show_s["text_show_gap"])
+            
+            # Show settings
+            show_s: dict = res["show"]
+            self.show_setting = show_setting(
+                text_show_gap=show_s.get("text_show_gap", 200),
+                img_show_zoom=show_s.get("img_show_zoom",1.0)
+            )
+            
+            # Chat summary settings
+            summary: dict = res["summary"]
             self.chat_summary_setting = chat_summary_setting(
-                add_same_day_summary=summary["add_same_day_summary"],
-                add_x_day_ago_summary=summary["add_x_day_ago_summary"],
-                value_of_x_day_ago=summary["value_of_x_day_ago"],
+                add_same_day_summary=summary.get("add_same_day_summary", True),
+                add_x_day_ago_summary=summary.get("add_x_day_ago_summary", False),
+                value_of_x_day_ago=summary.get("value_of_x_day_ago", 5),
             )
-            self.recall_function_setting = recall_function_setting(enable=recall["enable"])
+            
+            # function settings
+            func: dict = res["function"]
+            self.function_setting = function_setting(
+                recall=func.get("recall", False)
+            )
+            
             self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
@@ -213,13 +237,14 @@ class settingManager:
                 },
                 "show": {
                     "text_show_gap": self.show_setting.text_show_gap,
+                    "img_show_zoom": self.show_setting.img_show_zoom
                 },
                 "summary": {
                     "add_same_day_summary": self.chat_summary_setting.add_same_day_summary,
                     "add_x_day_ago_summary": self.chat_summary_setting.add_x_day_ago_summary,
                     "value_of_x_day_ago": self.chat_summary_setting.value_of_x_day_ago,
                 },
-                "recall": {"enable": self.recall_function_setting.enable},
+                "function": {"recall": self.function_setting.recall},
                 "system_prompt_main": self.system_prompt_main,
             }
             yaml.dump(data=write_dict, stream=f, allow_unicode=True)

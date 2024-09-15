@@ -2,13 +2,13 @@ import sys
 import time
 
 from PyQt5.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
-from PyQt5.QtGui import QCloseEvent, QCursor, QMouseEvent, QPolygon
+from PyQt5.QtGui import QCloseEvent, QCursor, QMouseEvent, QPolygon, QPolygonF
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QVBoxLayout, QWidget
 
 
-# from PetView import PetGraphicsView
+# from pet_view import PetGraphicsView
 import app.asset.res_rc
-from app.GUI.PetView import PetGraphicsView
+from app.GUI.pet_view import PetGraphicsView
 
 # import res_rc
 
@@ -16,49 +16,74 @@ from app.GUI.PetView import PetGraphicsView
 class strokeArea(QObject):
     stroked_area_signal = pyqtSignal(int)
     check_time = 1500
+    BASIC_WIDTH = 300
+    BASIC_HEIGHT = 400
 
     # TODO 将坐标换为相对窗口的坐标
-    def __init__(self, parent=None):
+    def __init__(self, width: int, height: int, parent=None) -> None:
         super().__init__()
-        self.init_poly()
+        self.init_poly(width, height)
         self.init_timer()
         self.init_calc_dis()
 
-    def init_poly(self):
-        head = [
-            QPoint(0, 125),
-            QPoint(250, 40),
-            QPoint(300, 140),
-            QPoint(175, 170),
-            QPoint(175, 195),
-            QPoint(80, 220),
-            QPoint(75, 200),
-            QPoint(0, 210),
+    def init_poly(self, width: int, height: int) -> None:
+        self.head = [
+            (0, 125),
+            (250, 40),
+            (300, 140),
+            (175, 170),
+            (175, 195),
+            (80, 220),
+            (75, 200),
+            (0, 210),
         ]
-        self.head_poly = QPolygon(head)
-        carrot = [QPoint(175, 170), QPoint(200, 165), QPoint(200, 190), QPoint(175, 195)]
-        self.carrot_poly = QPolygon(carrot)
-        hair_l = [QPoint(0, 211), QPoint(75, 200), QPoint(90, 305), QPoint(55, 355)]
-        self.hair_l_poly = QPolygon(hair_l)
-        hair_r = [
-            QPoint(200, 165),
-            QPoint(207, 238),
-            QPoint(231, 256),
-            QPoint(209, 283),
-            QPoint(225, 305),
-            QPoint(300, 315),
-            QPoint(300, 140),
+        head_point = [
+            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.head
         ]
-        self.hair_r_poly = QPolygon(hair_r)
-        face = [
-            QPoint(80, 220),
-            QPoint(200, 192),
-            QPoint(207, 238),
-            QPoint(178, 276),
-            QPoint(134, 290),
-            QPoint(90, 265),
+        self.head_poly = QPolygon(head_point)
+
+        self.carrot = [(175, 170), (200, 165), (200, 190), (175, 195)]
+        carrot_point = [
+            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.carrot
         ]
-        self.face_poly = QPolygon(face)
+        self.carrot_poly = QPolygon(carrot_point)
+
+        self.hair_l = [(0, 211), (75, 200), (90, 305), (55, 355)]
+        hair_l_point = [
+            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.hair_l
+        ]
+        self.hair_l_poly = QPolygon(hair_l_point)
+
+        self.hair_r = [
+            (200, 165),
+            (207, 238),
+            (231, 256),
+            (209, 283),
+            (225, 305),
+            (300, 315),
+            (300, 140),
+        ]
+        hair_r_point = [
+            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.hair_r
+        ]
+        self.hair_r_poly = QPolygon(hair_r_point)
+
+        self.face = [
+            (80, 220),
+            (200, 192),
+            (207, 238),
+            (178, 276),
+            (134, 290),
+            (90, 265),
+        ]
+        face_point = [
+            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.face
+        ]
+        self.face_poly = QPolygon(face_point)
+
+    def resize_poly(self, width: int, height: int):
+        self.init_poly(width, height)
+        self.init_calc_dis()
 
     def init_timer(self):
         self.last_time = time.time()
@@ -68,7 +93,13 @@ class strokeArea(QObject):
         self.stroke_timer.start(self.check_time)
 
     def init_calc_dis(self):
-        self.extent = [30387.5, 625, 7915, 14113.5, 8315]
+        self.extent = [
+            self.polygon_area(self.head_poly),
+            self.polygon_area(self.carrot_poly),
+            self.polygon_area(self.hair_l_poly),
+            self.polygon_area(self.hair_r_poly),
+            self.polygon_area(self.face_poly),
+        ]
         self.dis = [0.0 for _ in range(5)]
         self.last_point = [QPoint(0, 0) for _ in range(5)]
 
@@ -139,6 +170,18 @@ class strokeArea(QObject):
         else:
             return None
 
+    @staticmethod
+    def polygon_area(polygon: QPolygon):
+        polygon = QPolygonF(polygon)
+        n = polygon.size()
+        area = 0.0
+        for i in range(n):
+            j = (i + 1) % n
+            area += polygon[i].x() * polygon[j].y()
+            area -= polygon[j].x() * polygon[i].y()
+        area = abs(area) / 2.0
+        return area
+
 
 class DesktopPet(QWidget):
     S_NORMAL = 0
@@ -171,7 +214,7 @@ class DesktopPet(QWidget):
         self.portraitView.mousePressEvent = self.onMousePress
         self.portraitView.mouseReleaseEvent = self.onMouseRelease
         self.portraitView.mouseMoveEvent = self.onMouseMove
-        self.stroke_area = strokeArea()
+        self.stroke_area = strokeArea(self.width(), self.height())
 
     def init_subWindow(self) -> None:
         """初始化窗体
@@ -189,7 +232,7 @@ class DesktopPet(QWidget):
     def init_pet_image(self):
         """初始化立绘(?)组件"""
         self.portraitView = PetGraphicsView(self)
-        self.portraitView.setMinimumSize(300, 400)
+        self.portraitView.setMinimumSize(150, 200)
         self.portraitView.setMouseTracking(True)
         self.layout().addWidget(self.portraitView)
         screen = QDesktopWidget().screenGeometry()
@@ -214,6 +257,7 @@ class DesktopPet(QWidget):
         super().resizeEvent(event)
         if hasattr(self, "portraitView"):
             self.portraitView.setGeometry(self.rect())
+        self.stroke_area.resize_poly(self.width(), self.height())
 
     def contextMenuEvent(self, event):
         """右键菜单"""
