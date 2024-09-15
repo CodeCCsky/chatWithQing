@@ -151,6 +151,10 @@ class mainWidget(QWidget):
         self.desktop_pet.resize(
             int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
         )
+        self.desktop_pet.move(
+            int(self.screen().geometry().width() * 0.95 - self.desktop_pet.width()),
+            int(self.screen().geometry().height() * 0.95 - self.desktop_pet.height()),
+        )
         self.desktop_pet.show()
 
     def init_setting(self, history_path: str):
@@ -167,7 +171,15 @@ class mainWidget(QWidget):
         self.talk_bubble = talkBubble()
         self.talk_bubble.closeEvent = self.closeEvent
         self.input_label = inputLabel()
-        self.input_label.move(self.desktop_pet.x(), int(self.desktop_pet.y() - self.input_label.height() * 1.2))
+        self.input_label.move(
+            int(
+                min(
+                    self.desktop_pet.x() + self.desktop_pet.width() / 2 - self.input_label.width() / 2,
+                    self.screen().geometry().width() - self.input_label.width(),
+                )
+            ),
+            int(self.desktop_pet.y() - self.input_label.height() * 1.2),
+        )
         self.input_label.closeEvent = self.closeEvent
         self.input_label.requestSend.connect(self.start_talk)
         # 链接信号和槽
