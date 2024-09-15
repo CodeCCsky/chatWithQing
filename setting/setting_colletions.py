@@ -2,7 +2,7 @@ from deepseek_api.model import deepseek_model
 from tts import TTSAudio
 import yaml
 
-SYS_PROMPT_MAIN_PATH = r"system_prompt\system_prompt_main.txt"
+SYS_PROMPT_MAIN_PATH = r"system_prompt\main\system_prompt_main.txt"
 
 
 class user_setting:

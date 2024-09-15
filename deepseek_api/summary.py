@@ -7,9 +7,9 @@ from openai import APIError, OpenAI
 
 logger = logging.getLogger(__name__)
 
-chat_summary_prompt = """请你根据以下对话，提取关键信息，给出总结。应使用简洁的语言，尽量包含较准确的内容，输出不能多于100字。如果某一条对话为json格式，你需要视json中的\"role_response\"项的内容为这条对话的内容。"""
+CHAT_PROMPT = """请你根据以下对话，提取关键信息，给出总结。应使用简洁的语言，尽量包含较准确的内容，输出不能多于100字。如果某一条对话为json格式，你需要视json中的\"role_response\"项的内容为这条对话的内容。"""
 
-day_summary_prompt = """请根据以下多条包含时间的对话总结，提取关键信息，生成一份简洁的总对话总结。总结中应使用较粗略的时间词描述对话发生的时间段，使用简洁干练的语言，避免冗长描述。
+DAY_PROMPT = """请根据以下多条包含时间的对话总结，提取关键信息，生成一份简洁的总对话总结。总结中应使用较粗略的时间词描述对话发生的时间段，使用简洁干练的语言，避免冗长描述。
 例如以下输入：
 2024-09-07 08:53:25到2024-09-07 09:04:53 总结：{user}正在分享最近的生活经历，想要与晴讨论{user}最近看的电影。晴表现出对{user}生活的兴趣，并对{user}所提及的电影感兴趣。
 2024-09-07 10:45:23到2024-09-07 10:53:21 总结：{user}在编程中遇到问题，需要写一条大语言模型的提示词来总结对话。晴主动提供帮助，建议提示词为：「请总结以下对话的主要内容,提取关键信息,并概括对话双方的立场和观点。」晴表现出对{user}的关注和支持。
@@ -38,8 +38,8 @@ class deepseek_summary:
         self.user_name = user_name
         self.max_retries = max_retries
         self.retry_delay = retry_delay
-        self.chat_summary_prompt = chat_summary_prompt.format(user=self.user_name)
-        self.day_summary_prompt = day_summary_prompt.format(user=self.user_name)
+        self.chat_summary_prompt = get_summary_prompt()[0].format(user=self.user_name)
+        self.day_summary_prompt = get_summary_prompt()[1].format(user=self.user_name)
         self.client = OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com")
 
     def get_chat_summary(self, chat_history: list):
@@ -111,3 +111,17 @@ class deepseek_summary:
             except Exception as e:
                 logger.error(f"获取总结时出现意料之外的错误，将等待一段时间后重试 {e}")
                 delay = self.retry_delay + random.uniform(0, 5)
+
+
+def get_summary_prompt() -> tuple[str, str]:
+    chat_summary_prompt = CHAT_PROMPT
+    day_summary_prompt = DAY_PROMPT
+    try:
+        with open(r"system_prompt\summary\chat_summary_prompt.txt", "r", encoding="utf-8") as f:
+            chat_summary_prompt = f.read()
+        with open(r"system_prompt\summary\day_summary_prompt.txt", "r", encoding="utf-8") as f:
+            day_summary_prompt = f.read()
+    except OSError:
+        pass
+    finally:
+        return (chat_summary_prompt, day_summary_prompt)
