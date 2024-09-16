@@ -18,7 +18,7 @@ class deepseek_model:
         api_key: str,
         system_prompt: str,
         tools: ds_tool = ds_tool(),
-        temperature: float = 1.1,
+        temperature: float = 1.5,
         frequency_penalty: float = 0.3,
         presence_penalty: float = 0.3,
         output_json: bool = False,

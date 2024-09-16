@@ -23,9 +23,9 @@ class deepseek_summary:
         self,
         api_key: str,
         user_name: str,
-        temperature: float = 0.7,
+        temperature: float = 1,
         frequency_penalty: float = 0.3,
-        presence_penalty: float = 0,
+        presence_penalty: float = 0.3,
         max_retries: int = 3,
         retry_delay: int = 5,
     ) -> None:

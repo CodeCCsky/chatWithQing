@@ -328,7 +328,6 @@ class mainWidget(QWidget):
             sys_input += f"| {setting.get_user_name()}摸了摸你的{self.pet_part} |"
             if clear_pet_state:
                 self.pet_part = None
-        sys_input += '|'+input("sys>")+'|'
         return sys_input
 
     def start_talk(self, input_text: str):
