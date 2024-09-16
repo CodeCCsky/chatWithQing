@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import time
+import random
 
 from PyQt5.QtCore import Qt, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon, QFontDatabase, QCloseEvent
@@ -31,6 +32,7 @@ from third_party.deepseek_api import deepseek_model, historyManager
 from third_party.setting import settingManager
 from third_party.tts import TTSAudio
 from third_party.FixJSON import fixJSON
+from third_party.chat_activity_manager import chat_activity_manager
 
 # setting = settingManager()
 tts_cache_path = r"cache/"
@@ -39,6 +41,8 @@ default_history_path = r"history/"
 check_pattern = re.compile(r"[\d\u4e00-\u9fff]")
 
 SPEAK_GAP = 50
+
+TIMESENDGAP = 30
 
 file_handler = logging.handlers.TimedRotatingFileHandler(
     "log/app.log", when="midnight", backupCount=10, encoding="utf8"
@@ -78,10 +82,11 @@ class mainWidget(QWidget):
         self.init_desktop_pet()
         self.init_talk()
         self.init_stroke()
+        self.init_chat_activity_manager()
         self.setting.tts_setting.use_setting(self.tts_model)
         self.setting.deepseek_model.use_setting(self.llm_inference)
 
-    ### <初始化部分>
+    ### 初始化部分
     def init_resource(self):
         """加载资源"""
         # icon
@@ -168,6 +173,7 @@ class mainWidget(QWidget):
         logger.info(f"加载设置。选择的历史记录{self.setting.history_path}")
 
     def init_talk(self):
+        self.current_time_counter = 0
         self.talk_bubble = talkBubble()
         self.talk_bubble.closeEvent = self.closeEvent
         self.input_label = inputLabel()
@@ -279,9 +285,17 @@ class mainWidget(QWidget):
             self.llm_thread = None
             self.init_2()
 
-    ### </初始化部分>
+    def init_chat_activity_manager(self):
+        # TODO 自定义等待时间列表？
+        self.chat_activity_manager = chat_activity_manager(
+            self.history_manager, self.setting, wakeup_time=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+        )
+        self.chat_activity_manager.chatActivityTimeout.connect(self.progress_wakeup)
+        self.input_label.requestSend.connect(self.chat_activity_manager.reset_wakeup)
+        self.input_label.input_edit.textChanged.connect(self.chat_activity_manager.reset_wakeup)
+        self.chat_activity_manager.start_timer()
 
-    ### <'显示组件'选项部分>
+    ### '显示组件'选项部分
     def show_setting_window_event(self):
         self.setting_widget.setVisible(True)
 
@@ -294,8 +308,7 @@ class mainWidget(QWidget):
     def show_desktop_pet(self):
         self.desktop_pet.show_window()
 
-    ### </'显示组件'选项部分>
-    ### <更换设置>
+    ### 更换设置
     def change_setting(self, setting_manager: settingManager):
         self.setting = setting_manager
         self.setting.tts_setting.use_setting(self.tts_model)
@@ -304,35 +317,44 @@ class mainWidget(QWidget):
         self.desktop_pet.resize(
             int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
         )
-        # if self.history_manager.history_path != self.setting.history_path:
-        #    self.history_manager = historyManager(user_name=self.setting.user.user_name, history_path=self.setting.history_path)
-        #    logger.info(f"加载 {self.setting.history_path}")
         self.setting.write_yaml()
 
-    ### </更换设置>
-    ### <处理摸摸部分>
+    ### 处理摸摸部分
     def progress_stroke(self, max_index: int):
         matching_dict = {0: "头", 1: "胡萝卜发卡", 2: "头发", 3: "头发", 4: "脸"}
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
             self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
 
-    ### </处理摸摸部分>
+    ### 处理自激活部分
 
-    ### <实现对话部分>
-    def progress_sys_msg(self, clear_pet_state: bool = True) -> str:
+    def progress_wakeup(self, wait_time: int):
+        input_text = self.input_label.input_edit.toPlainText()
+        self.input_label.sendButton.setEnabled(False)
+        if wait_time != -1:
+            sys_text = f"{self.setting.get_user_name()}超过{wait_time}分钟未更新输入|"
+        else:
+            sys_text = f"{self.setting.get_user_name()}过久未更新输入，自激活功能关闭，你需要等待到下一次{self.setting.get_user_name()}输入时才能重启自激活功能|"
+        if input_text and random.randint(1, 10) > 3:
+            sys_text += f"你偷看了{self.setting.get_user_name}的输入框,已输入的文本如下:{input_text}|"
+        self.start_talk("", sys_text)
+
+    ### 实现对话部分
+    def progress_sys_msg(self, sys: str, clear_pet_state: bool = True) -> str:
+        sys = str(sys)
         _time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        sys_input = f"|当前时间:{_time}(24时制)|"
+        sys_input = f"|当前时间{_time}(24时制)|{sys}" if self.current_time_counter == 0 else f"|{sys}"
+        self.current_time_counter = (self.current_time_counter + 1) % TIMESENDGAP
         # status_bar_hint = ''
         if self.pet_part is not None:
-            sys_input += f"|{setting.get_user_name()}摸了摸你的{self.pet_part}|"
+            sys_input += f"{setting.get_user_name()}摸了摸你的{self.pet_part}|"
             if clear_pet_state:
                 self.pet_part = None
         return sys_input
 
-    def start_talk(self, input_text: str):
+    def start_talk(self, input_text: str, sys: str = ""):
         # TODO 更多系统提示
-        sys_input = self.progress_sys_msg()
+        sys_input = self.progress_sys_msg(sys)
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
         self.llm_inference.load_history(self.history_manager.get_current_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inference, self.history_manager)
@@ -383,7 +405,7 @@ class mainWidget(QWidget):
         self.text_update_timer.stop()
         self.input_label.enabled_send_text()
 
-    ### <实现对话部分>
+    ### 其他
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """重写closeEvent，添加确认框"""

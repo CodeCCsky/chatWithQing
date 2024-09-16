@@ -112,6 +112,7 @@ class deepseek_summary:
                 delay = self.retry_delay + random.uniform(0, 5)
         return "", "error", {}
 
+
 def get_summary_prompt() -> tuple[str, str]:
     chat_summary_prompt = CHAT_PROMPT
     day_summary_prompt = DAY_PROMPT
