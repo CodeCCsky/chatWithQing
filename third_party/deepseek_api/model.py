@@ -126,7 +126,7 @@ class deepseek_model:
                 delay = self.retry_delay + random.uniform(0, 5)  # 增加随机延迟
                 time.sleep(delay)
             except Exception as e:
-                logger.error(f"获取总结时出现意料之外的错误，将等待一段时间后重试 {e}")
+                logger.error(f"获取回复时出现意料之外的错误，将等待一段时间后重试 {e}")
                 delay = self.retry_delay + random.uniform(0, 5)
         self.history.clear()
         return "", "error", {}
