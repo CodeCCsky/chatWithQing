@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 import app.asset.res_rc
 from app.GUI.opacity_controller import opacity_controller
 
-#from opacity_controller import opacity_controller
+# from opacity_controller import opacity_controller
 
 TEXT_UPDATE_TIME = 200  # 毫秒
 
@@ -150,47 +150,25 @@ class talkBubble(opacity_controller):
             self.text_area.setFont(self.text_font)
         else:
             self.change_text_size(16)
-        default_start = '<p style="color: white;">'
-        default_end = "</p>"
-        grey_start = '<p style="color: grey;">'
-        purple_start = '<p style="color: #ff0084;"'
-        processed_text = ""
-        emph_flag = False  # TODO 标记强调
-        grey_flag = is_thinking
-        skip_char_num = 0
-        if text.startswith("**"):
-            emph_flag = True
-            processed_text = purple_start
-        elif grey_flag:
-            processed_text = grey_start
-        else:
-            processed_text = default_start
-        for i in range(0, len(text)):
-            if skip_char_num > 0:
-                skip_char_num = skip_char_num - 1
-                continue
-            if text[i : i + 1] == "**":
-                emph_flag = not emph_flag
-                skip_char_num = 1
-                if emph_flag:
-                    processed_text = processed_text + default_end + purple_start
-                elif grey_flag:
-                    processed_text = processed_text + default_end + grey_start
-                else:
-                    processed_text = processed_text + default_end + default_start
-            elif text[i] == "\n":
-                if emph_flag:
-                    processed_text = processed_text + default_end + purple_start
-                elif grey_flag:
-                    processed_text = processed_text + default_end + grey_start
-                else:
-                    processed_text = processed_text + default_end + default_start
-            else:
-                processed_text += text[i]
-        processed_text += "</p>"
         self.name_str = name
-        self.text_str = processed_text
+
+        # 下面这一段文本处理是 Deepseek 写的... 我原本的代码没有AI写得好...(X_X)
+        if is_thinking:
+            self.text_str = f'<p style="color: gray;">{text}</p>'
+        else:
+            # 切片, 下标为偶数的部分为正常部分, 下标为奇数的部分为强调部分
+            slices = text.split("**")
+            slices_html = []
+
+            for i, slice_ in enumerate(slices):
+                if i % 2 == 0:
+                    slices_html.append(f'<span style="color: white;">{slice_}</span>')
+                else:
+                    slices_html.append(f'<span style="color: #ff0084;">{slice_}</span>')
+
+        self.text_str = f'<p>{"".join(slices_html)}</p>'
         self.text_area.setHtml(self.text_str)
+
         # 保持显示最后一行
         cursor = self.text_area.textCursor()
         cursor.movePosition(QTextCursor.End)
@@ -207,20 +185,6 @@ class talkBubble(opacity_controller):
         window_height = max(200, int(self.text_area.height() * 4 / 3))
         self.setFixedSize(window_width, window_height)
         self.update()
-
-    def hide_window(self):
-        self.set_opacity_mode(
-            mode="hide", clear_keep_opacity_status=True, is_keep_opacity=True, lock_when_change=True, is_enforce=True
-        )
-
-    def show_window(self):
-        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, lock_when_change=True, is_enforce=True)
-
-    def enterEvent(self, event):
-        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
-
-    def leaveEvent(self, event):
-        self.set_opacity_mode(mode="await", clear_keep_opacity_status=True, delay=3000)
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
