@@ -91,39 +91,8 @@ class deepseek_model:
         self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
     def send_message(self, is_prefix: bool = False) -> tuple[str, str, dict]:
-        """try:
-            response = self.client.chat.completions.create(
-                model="deepseek-chat",
-                messages=self.history,
-                # tools=self.tools,  # TODO Implement tools functionality
-                max_tokens=1024,
-                temperature=self.temperature,
-                frequency_penalty=self.frequency_penalty,
-                presence_penalty=self.presence_penalty,
-                stream=True,
-            )
-            if is_prefix:
-                self.history[-1]["prefix"] = True
-            self.current_response = ""
-            token_usage = None
-            self.finish_reason = None
-            for chunk in response:
-                if chunk.choices[0].delta.content:
-                    self.current_response += chunk.choices[0].delta.content
-                if chunk.choices[0].finish_reason:
-                    self.finish_reason = chunk.choices[0].finish_reason
-                if chunk.usage:
-                    token_usage = {
-                        "completion_tokens": chunk.usage.completion_tokens,
-                        "prompt_tokens": chunk.usage.prompt_tokens,
-                        "total_tokens": chunk.usage.total_tokens,
-                    }
-            self.history.clear()
-            return self.current_response, self.finish_reason, token_usage
-        except Exception as e:
-            self.history.clear()
-            logger.error(f"Error sending message: {e}")
-            return "", "error", {}"""
+        if is_prefix:
+            self.history[-1]["prefix"] = True
         for _ in range(self.max_retries):
             try:
                 response = self.client.chat.completions.create(
@@ -137,6 +106,8 @@ class deepseek_model:
                     stream=True,
                 )
                 self.current_response = ""
+                token_usage = None
+                self.finish_reason = None
                 for chunk in response:
                     if chunk.choices[0].delta.content:
                         self.current_response += chunk.choices[0].delta.content
@@ -148,6 +119,7 @@ class deepseek_model:
                             "prompt_tokens": chunk.usage.prompt_tokens,
                             "total_tokens": chunk.usage.total_tokens,
                         }
+                self.history.clear()
                 return self.current_response, self.finish_reason, token_usage
             except APIError as e:
                 logger.error(f"api错误，将等待一段时间后重试 status code:{e.code}")
@@ -156,6 +128,7 @@ class deepseek_model:
             except Exception as e:
                 logger.error(f"获取总结时出现意料之外的错误，将等待一段时间后重试 {e}")
                 delay = self.retry_delay + random.uniform(0, 5)
+        self.history.clear()
         return "", "error", {}
 
     def get_response(self) -> str:
