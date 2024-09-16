@@ -151,6 +151,7 @@ class talkBubble(opacity_controller):
         else:
             self.change_text_size(16)
         self.name_str = name
+        text = text.replace('\n', '<br>')
 
         # 下面这一段文本处理是 Deepseek 写的... 我原本的代码没有AI写得好...(X_X)
         if is_thinking:
@@ -166,7 +167,7 @@ class talkBubble(opacity_controller):
                 else:
                     slices_html.append(f'<span style="color: #ff0084;">{slice_}</span>')
 
-        self.text_str = f'<p>{"".join(slices_html)}</p>'
+            self.text_str = f'<p>{"".join(slices_html)}</p>'
         self.text_area.setHtml(self.text_str)
 
         # 保持显示最后一行
