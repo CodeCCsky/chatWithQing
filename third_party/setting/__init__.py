@@ -1,1 +1,1 @@
-from third_party.setting.setting_colletions import settingManager, user_setting, deepseek_api_setting, TTS_setting, show_setting, function_setting, chat_summary_setting
+from third_party.setting.setting_colletions import settingManager, user_setting, deepseek_api_setting, TTS_setting, show_setting, extension_func_setting, chat_summary_setting

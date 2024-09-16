@@ -107,7 +107,7 @@ class chat_summary_setting:
         self.value_of_x_day_ago = value_of_x_day_ago
 
 
-class function_setting:
+class extension_func_setting:
     def __init__(self, recall: bool = False) -> None:
         self.recall = recall
 
@@ -119,7 +119,7 @@ class settingManager:
         self.show_setting: show_setting = None
         self.tts_setting: TTS_setting = None
         self.chat_summary_setting: chat_summary_setting = None
-        self.function_setting: function_setting = None
+        self.extension_func_setting: extension_func_setting = None
         self.history_path = None
         self.system_prompt_main = None
         self.load_path = "third_party/setting/private_setting.yaml"
@@ -131,14 +131,14 @@ class settingManager:
         Show_setting: show_setting,
         Tts_setting: TTS_setting,
         Chat_summary_setting: chat_summary_setting,
-        function_setting: function_setting,
+        extension_func_setting: extension_func_setting,
     ) -> None:
         self.user = User
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
         self.chat_summary_setting = Chat_summary_setting
-        self.function_setting = function_setting
+        self.extension_func_setting = extension_func_setting
         self.load_system_prompt_main()
 
     def load_from_file(self, path="third_party/setting/private_setting.yaml") -> tuple:
@@ -203,9 +203,9 @@ class settingManager:
                 value_of_x_day_ago=summary.get("value_of_x_day_ago", 5),
             )
 
-            # function settings
-            func: dict = res.get("function", {})
-            self.function_setting = function_setting(recall=func.get("recall", False))
+            # extension_func settings
+            func: dict = res.get("extension_func", {})
+            self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
 
             self.load_system_prompt_main()
 
@@ -241,7 +241,7 @@ class settingManager:
                     "add_x_day_ago_summary": self.chat_summary_setting.add_x_day_ago_summary,
                     "value_of_x_day_ago": self.chat_summary_setting.value_of_x_day_ago,
                 },
-                "function": {"recall": self.function_setting.recall},
+                "extension_func": {"recall": self.extension_func_setting.recall},
                 "system_prompt_main": self.system_prompt_main,
             }
             yaml.dump(data=write_dict, stream=f, allow_unicode=True)

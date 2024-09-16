@@ -79,7 +79,7 @@ class mainWidget(QWidget):
         self.init_talk()
         self.init_stroke()
         self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_inferance)
+        self.setting.deepseek_model.use_setting(self.llm_inference)
 
     ### <初始化部分>
     def init_resource(self):
@@ -274,7 +274,7 @@ class mainWidget(QWidget):
                 self.history_manager.set_current_summaried_history(full_summary_str)
             self.load_widget.close()
             self.load_widget = None
-            self.llm_inferance = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
+            self.llm_inference = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
             self.response_content = {}
             self.llm_thread = None
             self.init_2()
@@ -299,7 +299,7 @@ class mainWidget(QWidget):
     def change_setting(self, setting_manager: settingManager):
         self.setting = setting_manager
         self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_inferance)
+        self.setting.deepseek_model.use_setting(self.llm_inference)
         self.setting.load_system_prompt_main()
         self.desktop_pet.resize(
             int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
@@ -328,14 +328,15 @@ class mainWidget(QWidget):
             sys_input += f"| {setting.get_user_name()}摸了摸你的{self.pet_part} |"
             if clear_pet_state:
                 self.pet_part = None
+        sys_input += '|'+input("sys>")+'|'
         return sys_input
 
     def start_talk(self, input_text: str):
         # TODO 更多系统提示
         sys_input = self.progress_sys_msg()
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
-        self.llm_inferance.load_history(self.history_manager.get_current_history())
-        self.llm_thread = PyQt_deepseek_request_thread(self.llm_inferance, self.history_manager)
+        self.llm_inference.load_history(self.history_manager.get_current_history())
+        self.llm_thread = PyQt_deepseek_request_thread(self.llm_inference, self.history_manager)
         self.llm_thread.start()
         self.llm_thread.finish_signal.connect(self.progress_thinking)
 

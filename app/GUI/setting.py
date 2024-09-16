@@ -79,8 +79,8 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
         self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
 
-        # function
-        self.enableRecallCheckBox.setChecked(self.setting_manager.function_setting.recall)
+        # extension_func
+        self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
 
     def initConnect(self):
         # user
@@ -148,8 +148,8 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
             lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
         )
 
-        # function
-        self.enableRecallCheckBox.toggled.connect(lambda p: setattr(self.setting_manager.function_setting, "recall", p))
+        # extension_func
+        self.enableRecallCheckBox.toggled.connect(lambda p: setattr(self.setting_manager.extension_func_setting, "recall", p))
 
     def scan_history_file(self):
         file_lists = os.listdir("history/")
