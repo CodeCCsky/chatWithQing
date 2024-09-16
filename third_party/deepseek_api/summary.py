@@ -102,16 +102,15 @@ class deepseek_summary:
                             "prompt_tokens": chunk.usage.prompt_tokens,
                             "total_tokens": chunk.usage.total_tokens,
                         }
-                # print("\n-------\n",messages,"\n---\n",self.current_response,"\n---------\n\n")##################################
                 return self.current_response, self.finish_reason, token_usage
             except APIError as e:
-                logger.warning(f"api错误，将等待一段时间后重试 status code:{e.code}")
+                logger.error(f"api错误，将等待一段时间后重试 status code:{e.code}")
                 delay = self.retry_delay + random.uniform(0, 5)  # 增加随机延迟
                 time.sleep(delay)
             except Exception as e:
                 logger.error(f"获取总结时出现意料之外的错误，将等待一段时间后重试 {e}")
                 delay = self.retry_delay + random.uniform(0, 5)
-
+        return "", "error", {}
 
 def get_summary_prompt() -> tuple[str, str]:
     chat_summary_prompt = CHAT_PROMPT

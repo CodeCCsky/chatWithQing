@@ -1,8 +1,10 @@
 import copy
 import logging
+import time
+import random
 from typing import Dict, List, Union
 
-from openai import OpenAI
+from openai import OpenAI, APIError
 
 from third_party.deepseek_api.deepseek_tools import ds_tool
 
@@ -22,6 +24,8 @@ class deepseek_model:
         frequency_penalty: float = 0.3,
         presence_penalty: float = 0.3,
         output_json: bool = False,
+        max_retries: int = 3,
+        retry_delay: int = 5,
     ) -> None:
         """deepseek api接口. 每次发送前需要调用load_history加载历史.
 
@@ -33,6 +37,8 @@ class deepseek_model:
             frequency_penalty (float, optional): 频率惩罚 (-2 ~ 2), 0 以上时越高的频率惩罚会使模型输出相同内容的可能越小. Defaults to 0.3.
             presence_penalty (float, optional): 存在惩罚 (-2 ~ 2), 0 以上时越高的存在惩罚会使模型谈论新话题的可能性越大. Defaults to 0.1.
             output_json (bool, optional): 要求大模型严格使用json格式回复. 该项不建议设置为True, 经测试会有不给出回复的问题. Defaults to False.
+            max_retries (int, optional): 请求出错时重试次数. Defaults to 3.
+            retry_delay (int, optional): 请求出错时重试等待时间. Defaults to 5.
         """
         self.history = []
         self.api_key = api_key
@@ -44,6 +50,8 @@ class deepseek_model:
         self.presence_penalty = presence_penalty
         self.output_json = output_json
         self.system_prompt = system_prompt
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
         if self.system_prompt is not None:
             self.history.append({"role": "system", "content": self.system_prompt})
 
@@ -83,7 +91,7 @@ class deepseek_model:
         self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
     def send_message(self, is_prefix: bool = False) -> tuple[str, str, dict]:
-        try:
+        """try:
             response = self.client.chat.completions.create(
                 model="deepseek-chat",
                 messages=self.history,
@@ -115,7 +123,40 @@ class deepseek_model:
         except Exception as e:
             self.history.clear()
             logger.error(f"Error sending message: {e}")
-            return "", "error", {}
+            return "", "error", {}"""
+        for _ in range(self.max_retries):
+            try:
+                response = self.client.chat.completions.create(
+                    model="deepseek-chat",
+                    messages=self.history,
+                    # tools=self.tools,  # TODO Implement tools functionality
+                    max_tokens=1024,
+                    temperature=self.temperature,
+                    frequency_penalty=self.frequency_penalty,
+                    presence_penalty=self.presence_penalty,
+                    stream=True,
+                )
+                self.current_response = ""
+                for chunk in response:
+                    if chunk.choices[0].delta.content:
+                        self.current_response += chunk.choices[0].delta.content
+                    if chunk.choices[0].finish_reason:
+                        self.finish_reason = chunk.choices[0].finish_reason
+                    if chunk.usage:
+                        token_usage = {
+                            "completion_tokens": chunk.usage.completion_tokens,
+                            "prompt_tokens": chunk.usage.prompt_tokens,
+                            "total_tokens": chunk.usage.total_tokens,
+                        }
+                return self.current_response, self.finish_reason, token_usage
+            except APIError as e:
+                logger.error(f"api错误，将等待一段时间后重试 status code:{e.code}")
+                delay = self.retry_delay + random.uniform(0, 5)  # 增加随机延迟
+                time.sleep(delay)
+            except Exception as e:
+                logger.error(f"获取总结时出现意料之外的错误，将等待一段时间后重试 {e}")
+                delay = self.retry_delay + random.uniform(0, 5)
+        return "", "error", {}
 
     def get_response(self) -> str:
         return self.current_response
