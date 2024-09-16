@@ -128,6 +128,7 @@ class deepseek_model:
             except Exception as e:
                 logger.error(f"获取回复时出现意料之外的错误，将等待一段时间后重试 {e}")
                 delay = self.retry_delay + random.uniform(0, 5)
+                time.sleep(delay)
         self.history.clear()
         return "", "error", {}
 
