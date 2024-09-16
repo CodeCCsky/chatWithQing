@@ -325,7 +325,7 @@ class mainWidget(QWidget):
         sys_input = f"|当前时间:{_time}(24时制)|"
         # status_bar_hint = ''
         if self.pet_part is not None:
-            sys_input += f"| {setting.get_user_name()}摸了摸你的{self.pet_part} |"
+            sys_input += f"|{setting.get_user_name()}摸了摸你的{self.pet_part}|"
             if clear_pet_state:
                 self.pet_part = None
         return sys_input
