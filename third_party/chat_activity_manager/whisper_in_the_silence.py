@@ -50,8 +50,7 @@ class chat_activity_manager(QObject):
 
     def progress_wakeup(self, is_complete_topic: bool) -> None:
         self.is_complete_topic = is_complete_topic
-        # wait_time = sum(self.wakeup_time[: self.current_wait_index])
-        wait_time = (self.current_wait_index + 1) * 10  # TESE
+        wait_time = sum(self.wakeup_time[: self.current_wait_index])
         if self.current_wait_index == len(self.wakeup_time) - 2:
             logger.info("自激活中...已达最大自激活次数，在这次自激活后将关闭该模块。下次需要输入文本来重启自激活模块")
             self.chatActivityTimeout.emit(-1)

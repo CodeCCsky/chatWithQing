@@ -42,7 +42,7 @@ check_pattern = re.compile(r"[\d\u4e00-\u9fff]")
 
 SPEAK_GAP = 50
 
-TIMESENDGAP = 30
+TIMESENDGAP = 3
 
 file_handler = logging.handlers.TimedRotatingFileHandler(
     "log/app.log", when="midnight", backupCount=10, encoding="utf8"
@@ -287,9 +287,7 @@ class mainWidget(QWidget):
 
     def init_chat_activity_manager(self):
         # TODO 自定义等待时间列表？
-        self.chat_activity_manager = chat_activity_manager(
-            self.history_manager, self.setting, wakeup_time=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-        )
+        self.chat_activity_manager = chat_activity_manager(self.history_manager, self.setting,)
         self.chat_activity_manager.chatActivityTimeout.connect(self.progress_wakeup)
         self.input_label.requestSend.connect(self.chat_activity_manager.reset_wakeup)
         self.input_label.input_edit.textChanged.connect(self.chat_activity_manager.reset_wakeup)
@@ -334,7 +332,7 @@ class mainWidget(QWidget):
         if wait_time != -1:
             sys_text = f"{self.setting.get_user_name()}超过{wait_time}分钟未更新输入|"
         else:
-            sys_text = f"{self.setting.get_user_name()}过久未更新输入，自激活功能关闭，你需要等待到下一次{self.setting.get_user_name()}输入时才能重启自激活功能|"
+            sys_text = f"{self.setting.get_user_name()}超过{wait_time}分钟未更新输入。超过自激活功能最大时间，自激活功能关闭，你需要等待到下一次{self.setting.get_user_name()}输入时才能重启自激活功能|"
         if input_text and random.randint(1, 10) > 3:
             sys_text += f"你偷看了{self.setting.get_user_name}的输入框,已输入的文本如下:{input_text}|"
         self.start_talk("", sys_text)
