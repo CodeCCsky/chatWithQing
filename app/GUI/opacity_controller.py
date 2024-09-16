@@ -15,7 +15,7 @@ class opacity_controller(QWidget):
         opacity_next_mode_list: dict = {"normal": "await", "await": "hide", "hide": "hide"},
         opacity_current_mode: str = "normal",
     ):
-        self.opacity_update_time = 50
+        self.opacity_update_time = 25
         self.opacity_update_delta = 0.1
         self.opacity_update_timer = QTimer()
         self.opacity_update_timer.timeout.connect(self._window_opacity_control)
@@ -91,7 +91,7 @@ class opacity_controller(QWidget):
         if is_enforce:
             self.opacity_mode_change_lock = False
         if self.opacity_mode_change_lock:
-            return None
+            return False
         self.opacity_mode_change_lock = lock_when_change
         self.opacity_delay_timer.stop()
         if delay > 0:
@@ -103,6 +103,7 @@ class opacity_controller(QWidget):
             self.opacity_delay_timer.start(delay)
         else:
             self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity)
+        return True
 
     def _change_opacity(self, mode: str, clear_keep_opacity_status: bool, is_keep_opacity: bool):
         self.opacity_delay_timer.stop()
@@ -110,3 +111,18 @@ class opacity_controller(QWidget):
         self.opacity_current_mode = mode
         self.opacity_update_timer.start(self.opacity_update_time)
         self.opacity_change_timer.start(self.opacity_mode_keep_time[self.opacity_current_mode])
+
+    def hide_window(self):
+        self.set_opacity_mode(
+            mode="hide", clear_keep_opacity_status=True, is_keep_opacity=True, lock_when_change=True, is_enforce=True
+        )
+
+    def show_window(self):
+        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, lock_when_change=True, is_enforce=True)
+
+    def enterEvent(self, event):
+        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
+
+    def leaveEvent(self, event):
+        if self.opacity_current_mode != "hide":
+            self.set_opacity_mode(mode="await", clear_keep_opacity_status=True, delay=3000)

@@ -63,20 +63,6 @@ class inputLabel(opacity_controller, Ui_Form):
         self.requestSend.emit(self.input_edit.toPlainText())
         self.clear_text()
 
-    def hide_window(self):
-        self.set_opacity_mode(
-            mode="hide", clear_keep_opacity_status=True, is_keep_opacity=True, lock_when_change=True, is_enforce=True
-        )
-
-    def show_window(self):
-        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, lock_when_change=True, is_enforce=True)
-
-    def enterEvent(self, event):
-        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
-
-    def leaveEvent(self, event):
-        self.set_opacity_mode(mode="await", clear_keep_opacity_status=True, delay=3000)
-
     def enabled_send_text(self):
         self.sendButton.setEnabled(True)
         self.input_edit.setEnabled(True)
