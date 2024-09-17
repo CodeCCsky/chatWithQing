@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtCore import pyqtSignal, Qt
-from app.GUI.pet_view import PetGraphicsView
+from app.GUI.src.pet_view import PetGraphicsView
 
 # from pet_view import PetGraphicsView
 

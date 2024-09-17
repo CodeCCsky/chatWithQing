@@ -10,7 +10,7 @@ from PyQt5.QtGui import QColor, QFont, QFontDatabase, QFontMetrics, QPainter, QP
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QWidget
 
 import app.asset.res_rc
-from app.GUI.opacity_controller import opacity_controller
+from app.GUI.src.opacity_controller import opacity_controller
 
 # from opacity_controller import opacity_controller
 
