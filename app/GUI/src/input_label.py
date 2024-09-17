@@ -6,8 +6,8 @@ from PyQt5.QtGui import QFont, QFontDatabase, QIcon, QMouseEvent
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QStatusBar
 
 import app.asset.res_rc
-from app.GUI.Ui_input_label import Ui_Form
-from app.GUI.opacity_controller import opacity_controller
+from app.GUI.Ui.Ui_input_label import Ui_Form
+from app.GUI.src.opacity_controller import opacity_controller
 
 # import res_rc
 

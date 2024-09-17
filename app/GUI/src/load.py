@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 # from Ui_load import Ui_Form
 # import res_rc
 import app.asset.res_rc
-from app.GUI.Ui_load import Ui_Form
+from app.GUI.Ui.Ui_load import Ui_Form
 
 
 class loadWidget(QWidget, Ui_Form):

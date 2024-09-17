@@ -5,43 +5,45 @@ import sys
 
 from PyQt5.QtCore import QTimer, pyqtSignal
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from app.GUI.Ui_setting import Ui_MainWindow
-from app.GUI.image_preview import image_preview
-from third_party.setting_manager import *
+from app.GUI.Ui.Ui_setting import Ui_MainWindow
+from third_party.setting_manager import settingManager
+from app.GUI.src.image_preview import image_preview
 
-
-# from Ui_initialization import Ui_MainWindow
-
-# 其实就是从设置界面copy了一份，改了改逻辑而已..
+# from Ui_setting import Ui_MainWindow
 
 
-class initialzationWidget(QMainWindow, Ui_MainWindow):
+class SettingWidget(QMainWindow, Ui_MainWindow):
     changeSetting = pyqtSignal(settingManager)
 
     def __init__(self) -> None:
-        super(initialzationWidget, self).__init__()
+        super(SettingWidget, self).__init__()
         self.setupUi(self)
-        self.setWindowTitle("初始化设置")
         self.initValue()
         self.initConnect()
 
     def initValue(self):
         self.setting_manager = settingManager()
-        self.setting_manager.load_from_parameter(
-            user_setting(None, "男", None, None),
-            deepseek_api_setting(None),
-            show_setting(),
-            TTS_setting(),
-            chat_summary_setting(),
-            extension_func_setting(),
-        )
+        result = self.setting_manager.load_from_file()
+        if result[0] != 0:
+            raise ValueError("设置错误")
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
         # user
-        self.yourSexComboBox.setCurrentIndex(0)
-        self.yourSexEdit.setEnabled(False)
+        self.yourNameEdit.setText(self.setting_manager.user.user_name)
+        self.yourAddressEdit.setText(self.setting_manager.user.user_location)
+        self.yourFavouriteFood.setText(self.setting_manager.user.favourite_food)
+        if self.setting_manager.user.user_sex == "男":
+            self.yourSexComboBox.setCurrentIndex(0)
+            self.yourSexEdit.setEnabled(False)
+        elif self.setting_manager.user.user_sex == "女":
+            self.yourSexComboBox.setCurrentIndex(1)
+            self.yourSexEdit.setEnabled(False)
+        else:
+            self.yourSexComboBox.setCurrentIndex(2)
+            self.yourSexEdit.setEnabled(True)
+            self.yourSexEdit.setText(self.setting_manager.user.user_sex)
 
         # deepseek
         self.lAPIEdit.setText(self.setting_manager.deepseek_model.api_key)
@@ -78,7 +80,6 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
 
         # extension_func
-        print(self.setting_manager.extension_func_setting)
         self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
 
     def initConnect(self):
@@ -139,18 +140,16 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.addSameDayHisSummaryCheckBox.toggled.connect(
             lambda p: setattr(self.setting_manager.chat_summary_setting, "add_same_day_summary", p)
         )
+        self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummaryCheckBox.toggled.connect(
             lambda p: setattr(self.setting_manager.chat_summary_setting, "add_x_day_ago_summary", p)
         )
-        self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummarySpinBox.valueChanged.connect(
             lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
         )
 
         # extension_func
-        self.enableRecallCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.extension_func_setting, "recall", p)
-        )
+        self.enableRecallCheckBox.toggled.connect(lambda p: setattr(self.setting_manager.extension_func_setting, "recall", p))
 
     def scan_history_file(self):
         file_lists = os.listdir("history/")
@@ -170,12 +169,6 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedExampleLabel.setText(self.example_text[: self.example_pointer])
         self.example_pointer = (self.example_pointer + 1) % (len(self.example_text) + 1)
 
-    def progress_image_preview(self, is_show: bool):
-        if is_show:
-            self.image_preview_widget.show()
-        else:
-            self.image_preview_widget.hide()
-
     def progress_user_sex(self, index: int):
         if index == 0:
             self.yourSexEdit.setEnabled(False)
@@ -190,39 +183,34 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
                 sex = "其他"
             self.setting_manager.user.user_sex = sex
 
-    def save_setting(self):
-        check = self.setting_manager.check()
-        if check == []:
-            self.setting_manager_backup = copy.deepcopy(self.setting_manager)
-            self.changeSetting.emit(self.setting_manager)
-            QMessageBox.information(self, "已保存", "已保存当前设置。关闭当前窗口以启动主程序。")
+    def progress_image_preview(self, is_show: bool):
+        if is_show:
+            self.image_preview_widget.show()
         else:
-            QMessageBox.warning(self, "出错", f'保存失败。存在尚未填入的值：{"，".join(check)}')
+            self.image_preview_widget.hide()
+
+    def save_setting(self):
+        self.setting_manager_backup = copy.deepcopy(self.setting_manager)
+        self.changeSetting.emit(self.setting_manager)
+        self.closeEvent(QCloseEvent())
 
     def cancel_save(self):
-        # self.setting_manager = copy.deepcopy(self.setting_manager_backup)
-        self.close()
+        self.setting_manager = copy.deepcopy(self.setting_manager_backup)
+        self.closeEvent(QCloseEvent())
 
     def sideListWidgetClicked(self, item):
         index = self.listWidget.indexFromItem(item)
         self.stackedWidget.setCurrentIndex(index.row())
 
     def closeEvent(self, a0: QCloseEvent):
-        reply = QMessageBox.warning(
-            self,
-            "退出",
-            "确认要直接退出程序吗？若已经保存过，则按保存的设置启动主程序；若未保存，则会直接退出程序。",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
-        )
-        if reply == QMessageBox.Yes:
-            a0.accept()
-        else:
-            a0.ignore()
+        self.setVisible(False)
+        self.image_preview_widget.hide()
+        self.imageShowPreviewCheckBox.setChecked(False)
+        a0.ignore()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    v0 = initialzationWidget()
+    v0 = SettingWidget()
     v0.show()
-    app.exec_()
+    sys.exit(app.exec_())
