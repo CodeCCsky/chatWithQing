@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMenu, QVBoxLayout, QW
 
 # from pet_view import PetGraphicsView
 import app.asset.res_rc
-from app.GUI.pet_view import PetGraphicsView
+from app.GUI.src.pet_view import PetGraphicsView
 
 # import res_rc
 
