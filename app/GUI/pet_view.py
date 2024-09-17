@@ -14,7 +14,7 @@ import app.asset.res_rc
 
 # import res_rc
 
-blink_time_list = [7000, 100, 200, 100]
+blink_time_list = [3000, 100, 200, 100]
 
 
 class PetGraphicsView(QGraphicsView):
@@ -144,7 +144,7 @@ class PetGraphicsView(QGraphicsView):
             return None
         self.blink_index = (self.blink_index + 1) % 4
         if self.blink_index == 0:
-            blink_time_list[self.blink_index] = random.randint(6000, 10000)
+            blink_time_list[self.blink_index] = random.randint(3000, 5000)
             self.change_emo(self.EYE_NORMAL)
         elif self.blink_index == 1:
             self.change_emo(self.EYE_HALF_CLOSED)

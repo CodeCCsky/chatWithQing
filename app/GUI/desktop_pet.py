@@ -253,6 +253,15 @@ class DesktopPet(QWidget):
     def stop_speak(self):
         self.portraitView.stop_speak()
 
+    def change_emo(self, index: int) -> None:
+        self.facial_expr_state = index
+        if self.facial_expr_state == self.S_NORMAL:
+            self.portraitView.unlock_facial_expr()
+            self.portraitView.change_emo(index=self.facial_expr_state)
+        else:
+            self.portraitView.unlock_facial_expr()
+            self.portraitView.change_emo(index=self.facial_expr_state, add_lock=True)
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if hasattr(self, "portraitView"):
@@ -296,8 +305,7 @@ class DesktopPet(QWidget):
         # 释放时停止计时器、鼠标样式
         self.check_mouse_press_timer.stop()
         self.setCursor(QCursor(Qt.ArrowCursor))
-        self.portraitView.unlock_facial_expr()
-        self.portraitView.change_emo(self.facial_expr_state)
+        self.change_emo(self.facial_expr_state)
         if self.is_follow_mouse:
             self.is_follow_mouse = False
 
@@ -319,7 +327,7 @@ class DesktopPet(QWidget):
         # 更新鼠标样式
         self.setCursor(QCursor(Qt.OpenHandCursor))
         # 更新面部表情
-        self.portraitView.change_emo(self.S_EYE_CLOSE_DEPRESSED, True)
+        self.change_emo(self.S_EYE_CLOSE_DEPRESSED)
         # 更新跟随鼠标状态
         self.is_follow_mouse = True
         # 停止计时器防止重复调用此函数
