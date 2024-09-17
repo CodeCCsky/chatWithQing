@@ -14,7 +14,6 @@ class emo_manager:
 
     def __init__(self) -> None:
         self.load_path = r"setting\emo_manager_setting.yaml"
-        self.load_path = r"D:\workspace\CGMO\chatWIthQing\setting\emo_manager_setting.yaml"
         self.confirmed_emoji = {
             self.EYE_NORMAL: [],
             self.EYE_INTENSE: [],
@@ -26,8 +25,9 @@ class emo_manager:
         }
         self.unconfirmed_emoji = []
         self.ignored_str = []
+        self.read_yaml()
 
-    def _read_yaml(self) -> None:
+    def read_yaml(self) -> None:
         with open(self.load_path, "r", encoding="utf-8") as f:
             res: dict = yaml.load(f.read(), Loader=yaml.FullLoader)
             self.confirmed_emoji = res.get("confirmed", self.confirmed_emoji)
@@ -43,7 +43,7 @@ class emo_manager:
             }
             yaml.dump(data=data, stream=f, allow_unicode=True)
 
-    def process_string(self, input_string):
+    def process_string(self, input_string: str):
         extracted_emotion = {}
         result_string = input_string
         now_unconfirmed = []
@@ -55,19 +55,19 @@ class emo_manager:
         for match in matches:
             start, end = match.span()
             substring = match.group(1)
-            
+
             if substring in self.ignored_str:
                 continue
-            
+
             matching_keys = []
             for key, value_list in self.confirmed_emoji.items():
                 if substring in value_list:
                     matching_keys.append(key)
-            
+
             if matching_keys:
                 chosen_key = random.choice(matching_keys)
                 extracted_emotion[start - offset] = chosen_key
-                result_string = result_string[:start - offset] + result_string[end - offset:]
+                result_string = result_string[: start - offset] + result_string[end - offset :]
                 offset += end - start
             else:
                 extracted_emotion[start - offset] = -1

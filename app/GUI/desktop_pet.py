@@ -253,14 +253,16 @@ class DesktopPet(QWidget):
     def stop_speak(self):
         self.portraitView.stop_speak()
 
-    def change_emo(self, index: int) -> None:
-        self.facial_expr_state = index
-        if self.facial_expr_state == self.S_NORMAL:
-            self.portraitView.unlock_facial_expr()
-            self.portraitView.change_emo(index=self.facial_expr_state)
-        else:
-            self.portraitView.unlock_facial_expr()
-            self.portraitView.change_emo(index=self.facial_expr_state, add_lock=True)
+    def change_emo(self, index: int, force_update: bool = False) -> None:
+        if self.facial_expr_state != index or force_update:
+            print("index",index)
+            self.facial_expr_state == index
+            if self.facial_expr_state == self.S_NORMAL:
+                self.portraitView.unlock_facial_expr()
+                self.portraitView.change_emo(index=index)
+            else:
+                self.portraitView.unlock_facial_expr()
+                self.portraitView.change_emo(index=index, add_lock=True)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

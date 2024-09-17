@@ -33,6 +33,7 @@ from third_party.setting_manager import settingManager
 from third_party.tts import TTSAudio
 from third_party.FixJSON import fixJSON
 from third_party.chat_activity_manager import chat_activity_manager
+from third_party.emo_manager import emo_manager
 
 # setting = settingManager()
 tts_cache_path = r"cache/"
@@ -160,6 +161,7 @@ class mainWidget(QWidget):
             int(self.screen().geometry().width() * 0.95 - self.desktop_pet.width()),
             int(self.screen().geometry().height() * 0.95 - self.desktop_pet.height()),
         )
+        self.emo_manager = emo_manager()
         self.desktop_pet.show()
 
     def init_setting(self, history_path: str):
@@ -287,7 +289,10 @@ class mainWidget(QWidget):
 
     def init_chat_activity_manager(self):
         # TODO 自定义等待时间列表？
-        self.chat_activity_manager = chat_activity_manager(self.history_manager, self.setting,)
+        self.chat_activity_manager = chat_activity_manager(
+            self.history_manager,
+            self.setting,
+        )
         self.chat_activity_manager.chatActivityTimeout.connect(self.progress_wakeup)
         self.input_label.requestSend.connect(self.chat_activity_manager.reset_wakeup)
         self.input_label.input_edit.textChanged.connect(self.chat_activity_manager.reset_wakeup)
@@ -334,7 +339,7 @@ class mainWidget(QWidget):
         else:
             sys_text = f"{self.setting.get_user_name()}超过{wait_time}分钟未更新输入。超过自激活功能最大时间，自激活功能关闭，你需要等待到下一次{self.setting.get_user_name()}输入时才能重启自激活功能|"
         if input_text and random.randint(1, 10) > 3:
-            sys_text += f"你偷看了{self.setting.get_user_name}的输入框,已输入的文本如下:{input_text}|"
+            sys_text += f"你偷看了{self.setting.get_user_name()}的输入框,已输入的文本如下:{input_text}|"
         self.start_talk("", sys_text)
 
     ### 实现对话部分
@@ -364,6 +369,10 @@ class mainWidget(QWidget):
         try:
             self.response_content = fixJSON.loads(response)
             self.talk_bubble.update_text(self.response_content["role_thoughts"], is_thinking=True)
+            self.response_content["role_response"] = self.emo_manager.process_string(
+                self.response_content["role_response"]
+            )
+            self.emo_manager.write_yaml()
             if self.setting.tts_setting.use_tts:
                 self.tts_thread = tts_thread(self.tts_model, self.response_content["role_response"])
                 self.tts_thread.start()
@@ -388,12 +397,19 @@ class mainWidget(QWidget):
     def process_typing_effect(self):
         try:
             if not self.setting.tts_setting.use_tts and re.match(
-                r"[\d\u4e00-\u9fff]", self.response_content["role_response"][self.on_read_text]
+                r"[\d\u4e00-\u9fff]", self.response_content["role_response"][0][self.on_read_text]
             ):
                 self.no_tts_sound_manager.play_audio()
+            vaild_emo_key = [key for key in self.response_content["role_response"][1] if key <= self.on_read_text]
+            if not vaild_emo_key:
+                current_emo = 0
+            else:
+                current_emo = self.response_content["role_response"][1][max(vaild_emo_key)]
+                current_emo = current_emo if current_emo != -1 else 0
+            self.desktop_pet.change_emo(current_emo)
             self.on_read_text += 1
-            self.talk_bubble.update_text(self.response_content["role_response"][: self.on_read_text])
-            if self.on_read_text > len(self.response_content["role_response"]):
+            self.talk_bubble.update_text(self.response_content["role_response"][0][: self.on_read_text])
+            if self.on_read_text > len(self.response_content["role_response"][0]):
                 self.finish_this_round_of_talk()
         except IndexError:
             self.finish_this_round_of_talk()

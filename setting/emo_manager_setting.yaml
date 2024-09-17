@@ -10,6 +10,7 @@ confirmed:
   - 认真
   - 笑
   - 轻快
+  - 好奇
   1:
   - 阴郁
   - 沉醉
@@ -17,8 +18,10 @@ confirmed:
   - 强烈的爱意
   2:
   - 害羞
+  - 脸红
   - 惊讶
   - 震惊
+  - 好奇
   3:
   - 撒娇
   - 俏皮
@@ -36,4 +39,5 @@ confirmed:
   - 傻笑
   - 笑
 ignored: []
-unconfirmed: []
+unconfirmed:
+- 轻声
