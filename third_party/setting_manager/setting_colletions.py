@@ -122,7 +122,7 @@ class settingManager:
         self.extension_func_setting: extension_func_setting = None
         self.history_path = None
         self.system_prompt_main = None
-        self.load_path = "third_party/setting/private_setting.yaml"
+        self.load_path = r"setting/private_setting.yaml"
 
     def load_from_parameter(
         self,
@@ -141,7 +141,7 @@ class settingManager:
         self.extension_func_setting = extension_func_setting
         self.load_system_prompt_main()
 
-    def load_from_file(self, path="third_party/setting/private_setting.yaml") -> tuple:
+    def load_from_file(self, path=r"setting/private_setting.yaml") -> tuple:
         self.load_path = path
         try:
             self._read_yaml()

@@ -29,7 +29,7 @@ from app.Threads import (
     tts_thread,
 )
 from third_party.deepseek_api import deepseek_model, historyManager
-from third_party.setting import settingManager
+from third_party.setting_manager import settingManager
 from third_party.tts import TTSAudio
 from third_party.FixJSON import fixJSON
 from third_party.chat_activity_manager import chat_activity_manager

@@ -8,7 +8,7 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from app.GUI.Ui_setting import Ui_MainWindow
-from third_party.setting import settingManager
+from third_party.setting_manager import settingManager
 from app.GUI.image_preview import image_preview
 
 # from Ui_setting import Ui_MainWindow

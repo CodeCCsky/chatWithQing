@@ -1,7 +1,7 @@
 import logging
 import random
 from third_party.deepseek_api import historyManager
-from third_party.setting import settingManager
+from third_party.setting_manager import settingManager
 from third_party.chat_activity_manager.topic_complete_check import topic_check_thread
 from PyQt5.QtCore import QObject, pyqtSignal, QTimer
 
