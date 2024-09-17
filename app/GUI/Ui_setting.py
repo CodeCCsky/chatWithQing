@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\app\asset\xml\setting.ui'
+# Form implementation generated from reading ui file 'c:\Users\Administrator\Desktop\workspace\chatWithQing\app\asset\xml\setting.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -30,6 +30,8 @@ class Ui_MainWindow(object):
         self.listWidget.setStyleSheet("QListWidget::item {height: 50px; text-align: center;};")
         self.listWidget.setProperty("isWrapping", False)
         self.listWidget.setObjectName("listWidget")
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
         item = QtWidgets.QListWidgetItem()
         self.listWidget.addItem(item)
         item = QtWidgets.QListWidgetItem()
@@ -492,6 +494,34 @@ class Ui_MainWindow(object):
         self.scrollArea_10.setWidget(self.scrollAreaWidgetContents_8)
         self.verticalLayout_22.addWidget(self.scrollArea_10)
         self.stackedWidget.addWidget(self.stackedWidgetHistory)
+        self.stackedWidgetEmotionManage = QtWidgets.QWidget()
+        self.stackedWidgetEmotionManage.setObjectName("stackedWidgetEmotionManage")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.stackedWidgetEmotionManage)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.scrollArea = QtWidgets.QScrollArea(self.stackedWidgetEmotionManage)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName("scrollArea")
+        self.scrollAreaWidgetEmotionManage = QtWidgets.QWidget()
+        self.scrollAreaWidgetEmotionManage.setGeometry(QtCore.QRect(0, 0, 548, 315))
+        self.scrollAreaWidgetEmotionManage.setObjectName("scrollAreaWidgetEmotionManage")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetEmotionManage)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.line_6 = QtWidgets.QFrame(self.scrollAreaWidgetEmotionManage)
+        self.line_6.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_6.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_6.setObjectName("line_6")
+        self.verticalLayout_3.addWidget(self.line_6)
+        self.enableEmotionManageCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetEmotionManage)
+        self.enableEmotionManageCheckBox.setObjectName("enableEmotionManageCheckBox")
+        self.verticalLayout_3.addWidget(self.enableEmotionManageCheckBox)
+        self.EmotionManagePushButton = QtWidgets.QPushButton(self.scrollAreaWidgetEmotionManage)
+        self.EmotionManagePushButton.setObjectName("EmotionManagePushButton")
+        self.verticalLayout_3.addWidget(self.EmotionManagePushButton)
+        spacerItem15 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem15)
+        self.scrollArea.setWidget(self.scrollAreaWidgetEmotionManage)
+        self.verticalLayout_2.addWidget(self.scrollArea)
+        self.stackedWidget.addWidget(self.stackedWidgetEmotionManage)
         self.horizontalLayout_15.addWidget(self.stackedWidget)
         self.verticalLayout.addWidget(self.settingMainWidget)
         self.SaveButtonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
@@ -501,7 +531,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(4)
+        self.stackedWidget.setCurrentIndex(6)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -521,6 +551,8 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "显示设置"))
         item = self.listWidget.item(5)
         item.setText(_translate("MainWindow", "对话设置"))
+        item = self.listWidget.item(6)
+        item.setText(_translate("MainWindow", "表情差分设置"))
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.yourNameLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的名字</span></p></body></html>"))
         self.yourSexLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的性别</span></p></body></html>"))
@@ -563,3 +595,5 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>x的值:</p></body></html>"))
         self.enableRecallCheckBox.setText(_translate("MainWindow", "启用“回想”（功能还没做，勾选了也不会发生什么，先画个饼（））"))
         self.label_4.setText(_translate("MainWindow", "注：启用后 AI 会按需调用工具来读取某一天、某一周或某个月的对话总结"))
+        self.enableEmotionManageCheckBox.setText(_translate("MainWindow", "启用表情差分"))
+        self.EmotionManagePushButton.setText(_translate("MainWindow", "启动表情差分管理界面"))
