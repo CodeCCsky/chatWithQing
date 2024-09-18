@@ -31,3 +31,10 @@ class image_preview(QWidget):
     def show(self):
         self.setWindowFlags(Qt.Window)
         super().show()
+
+    def change_emo(self, index: int) -> None:
+        self.pet_image.unlock_facial_expr()
+        if index != 0:
+            self.pet_image.change_emo(index=index, add_lock=True)
+        else:
+            self.pet_image.change_emo(index=index)
