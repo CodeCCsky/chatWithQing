@@ -105,7 +105,7 @@ class chatManager:
 
 class historyManager:
     def __init__(self, user_name: str, history_path: str = None, current_history_index: int = None) -> None:
-        logger.info(f"尝试加载位于{history_path}的历史记录文件中...")
+        logger.debug(f"尝试加载位于{history_path}的历史记录文件中...")
         self.historys: list[chatManager] = []
         self.history_path = history_path
         self.user_name = user_name
@@ -120,7 +120,7 @@ class historyManager:
                     for _slice in historys:
                         self.historys.append(chatManager(_slice, self.user_name))
                         if self.historys[-1].is_empty():
-                            logger.info(f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。")
+                            logger.debug(f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。")
                             self.historys.pop()
                     if self.current_history_index is None:
                         self.historys.append(chatManager(chatManager.get_template_dict(), self.user_name))
@@ -128,7 +128,7 @@ class historyManager:
                         self.historys[self.current_history_index].init_create_time()
                         self.save_history()
             except FileNotFoundError as fe:
-                logger.error(f"指定的对话历史文件未找到。Error:{fe}")
+                logger.warning(f"指定的对话历史文件未找到。Error:{fe}")
                 self.create_new_history_file()
             except PermissionError as pe:
                 logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
@@ -150,7 +150,7 @@ class historyManager:
         self.current_history_index = len(self.historys) - 1
         self.historys[self.current_history_index].init_create_time()
         self.save_history()
-        logger.info(f"创建了新的历史对话文件在{self.history_path}")
+        logger.debug(f"创建了新的历史对话文件在{self.history_path}")
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.historys[self.current_history_index].add_user_message(user_input, sys_input)
