@@ -255,8 +255,7 @@ class DesktopPet(QWidget):
 
     def change_emo(self, index: int, force_update: bool = False) -> None:
         if self.facial_expr_state != index or force_update:
-            print("index",index)
-            self.facial_expr_state == index
+            self.facial_expr_state = index
             if self.facial_expr_state == self.S_NORMAL:
                 self.portraitView.unlock_facial_expr()
                 self.portraitView.change_emo(index=index)
@@ -324,6 +323,7 @@ class DesktopPet(QWidget):
             # 摸头模块计算
             self.stroke_area.calc_dis(event)
             self.portraitView.progress_stroke()
+            self.facial_expr_state = self.S_NORMAL
 
     def start_following_mouse(self):
         # 更新鼠标样式

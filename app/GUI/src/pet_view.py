@@ -131,12 +131,15 @@ class PetGraphicsView(QGraphicsView):
     ###
     def progress_stroke(self):
         self.blink_index = -1
-        self.change_emo(self.EYE_CLOSE_SMILE)
+        self.unlock_facial_expr()
+        self.change_emo(self.EYE_CLOSE_SMILE, True)
         self.stroke_timer.start(self.stroke_upd_time)
 
     def stop_stroke(self):
         self.stroke_timer.stop()
         self.blink_index = 3
+        self.unlock_facial_expr()
+        self.change_emo(self.EYE_NORMAL)
         self.progress_blink()
 
     def progress_blink(self):
