@@ -119,21 +119,15 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 
 ## 贡献指南
 
-欢迎对社区的贡献！
+欢迎大家对社区的贡献！
 
 如果你有什么好点子，欢迎在 [Issues](https://github.com/CodeCCsky/chatWithQing/issues) 中提出
 
-如果你想要为项目贡献代码，请遵循以下步骤：
-
-1. Fork 本仓库。
-2. 创建一个新的分支 (`git checkout -b feature/your-feature-name`)。
-3. 提交你的更改 (`git commit -am 'Add some feature'`)。
-4. 推送到分支 (`git push origin feature/your-feature-name`)。
-5. 创建一个新的 Pull Request。
+如果你想要为项目贡献代码，建议等待本人找时间将项目的所有文件、类、变量名重新命名后再进行 PR (代码写得不规范非常抱歉..会挤时间出来解决的)
 
 #### 代码风格
 
-本项目使用 `black` 进行代码格式化。请在提交代码前使用 `black` 格式化你的代码：
+本项目使用 `black` 进行代码格式化。
 
 ## 许可证
 
