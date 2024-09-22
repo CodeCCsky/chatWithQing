@@ -112,6 +112,11 @@ class extension_func_setting:
         self.recall = recall
 
 
+class emo_setting:
+    def __init__(self, show_in_text: bool = False) -> None:
+        self.show_in_text = show_in_text
+
+
 class settingManager:
     def __init__(self) -> None:
         self.user: user_setting = None
@@ -120,6 +125,7 @@ class settingManager:
         self.tts_setting: TTS_setting = None
         self.chat_summary_setting: chat_summary_setting = None
         self.extension_func_setting: extension_func_setting = None
+        self.emo_setting: emo_setting = None
         self.history_path = None
         self.system_prompt_main = None
         self.load_path = r"setting/private_setting.yaml"
@@ -131,14 +137,16 @@ class settingManager:
         Show_setting: show_setting,
         Tts_setting: TTS_setting,
         Chat_summary_setting: chat_summary_setting,
-        extension_func_setting: extension_func_setting,
+        extension_func_setting_: extension_func_setting,
+        emo_setting_: emo_setting,
     ) -> None:
         self.user = User
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
         self.chat_summary_setting = Chat_summary_setting
-        self.extension_func_setting = extension_func_setting
+        self.extension_func_setting = extension_func_setting_
+        self.emo_setting = emo_setting_
         self.load_system_prompt_main()
 
     def load_from_file(self, path=r"setting/private_setting.yaml") -> tuple:
@@ -207,6 +215,10 @@ class settingManager:
             func: dict = res.get("extension_func", {})
             self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
 
+            # emo setting
+            emo: dict = res.get("emo", {})
+            self.emo_setting = emo_setting(show_in_text=emo.get("show_in_text", False))
+
             self.load_system_prompt_main()
 
     def write_yaml(self) -> bool:
@@ -242,6 +254,7 @@ class settingManager:
                     "value_of_x_day_ago": self.chat_summary_setting.value_of_x_day_ago,
                 },
                 "extension_func": {"recall": self.extension_func_setting.recall},
+                "emo": {"show_in_text": self.emo_setting.show_in_text},
                 "system_prompt_main": self.system_prompt_main,
             }
             yaml.dump(data=write_dict, stream=f, allow_unicode=True)

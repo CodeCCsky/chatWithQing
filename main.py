@@ -172,6 +172,7 @@ class mainWidget(QWidget):
         self.setting_widget.setting_manager.history_path = history_path
         self.setting_widget.setting_manager_backup.history_path = history_path
         self.setting_widget.changeSetting.connect(self.change_setting)
+        self.setting_widget.changeEmoSetting.connect(self.change_emo_setting)
         logger.info(f"加载设置。选择的历史记录{self.setting.history_path}")
 
     def init_talk(self):
@@ -321,6 +322,9 @@ class mainWidget(QWidget):
             int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
         )
         self.setting.write_yaml()
+
+    def change_emo_setting(self, emotion_setting: emo_manager):
+        self.emo_manager = copy.deepcopy(emotion_setting)
 
     ### 处理摸摸部分
     def progress_stroke(self, max_index: int):

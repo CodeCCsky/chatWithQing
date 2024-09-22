@@ -8,14 +8,16 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from app.GUI.Ui.Ui_setting import Ui_MainWindow
-from third_party.setting_manager import settingManager
 from app.GUI.src.image_preview import image_preview
-
+from app.GUI.src.emotion_manager import emotionManagerWidget
+from third_party.setting_manager import settingManager
+from third_party.emo_manager import emo_manager
 # from Ui_setting import Ui_MainWindow
 
 
 class SettingWidget(QMainWindow, Ui_MainWindow):
     changeSetting = pyqtSignal(settingManager)
+    changeEmoSetting = pyqtSignal(emo_manager)
 
     def __init__(self) -> None:
         super(SettingWidget, self).__init__()
@@ -29,6 +31,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         if result[0] != 0:
             raise ValueError("设置错误")
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
+        self.emotion_manager = emo_manager()
 
         # user
         self.yourNameEdit.setText(self.setting_manager.user.user_name)
@@ -82,6 +85,12 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # extension_func
         self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
 
+        # emo
+        self.showEmoInTextCheckBox.setChecked(self.setting_manager.emo_setting.show_in_text)
+        self.emo_manager_widget = emotionManagerWidget(self.emotion_manager)
+        self.emo_manager_widget.show()
+        self.emo_manager_widget.setVisible(False)
+
     def initConnect(self):
         # user
         self.listWidget.itemClicked.connect(self.sideListWidgetClicked)
@@ -122,11 +131,11 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedSpinBox.valueChanged.connect(self.progress_text_gap)
         self.imageShowSlider.valueChanged.connect(lambda p: self.imageShowZoomPercentLabel.setText(str(p) + "%"))
         self.imageShowSlider.valueChanged.connect(
-            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p)/100.0)
+            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p) / 100.0)
         )
-        self.imageShowSlider.valueChanged.connect(lambda p:self.image_preview_widget.resize_(float(p)/100.0))
+        self.imageShowSlider.valueChanged.connect(lambda p: self.image_preview_widget.resize_(float(p) / 100.0))
         self.imageShowPreviewCheckBox.toggled.connect(self.progress_image_preview)
-        self.image_preview_widget.closeSignal.connect(lambda : self.imageShowPreviewCheckBox.setChecked(False))
+        self.image_preview_widget.closeSignal.connect(lambda: self.imageShowPreviewCheckBox.setChecked(False))
 
         # history
         # self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'history_path',os.path.join('./history',p)))
@@ -149,7 +158,15 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         )
 
         # extension_func
-        self.enableRecallCheckBox.toggled.connect(lambda p: setattr(self.setting_manager.extension_func_setting, "recall", p))
+        self.enableRecallCheckBox.toggled.connect(
+            lambda p: setattr(self.setting_manager.extension_func_setting, "recall", p)
+        )
+
+        self.showEmoInTextCheckBox.toggled.connect(
+            lambda p: setattr(self.setting_manager.emo_setting, "show_in_text", p)
+        )
+        self.EmotionManagePushButton.clicked.conncet(lambda: self.emo_manager_widget.setVisible(True))
+        self.emo_manager_widget.changeEmotionSetting.connect(self.changeEmoSetting.emit)
 
     def scan_history_file(self):
         file_lists = os.listdir("history/")

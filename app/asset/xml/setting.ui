@@ -90,7 +90,7 @@
           <set>Qt::ImhNone</set>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="stackedWidgetUser">
           <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -297,8 +297,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <width>322</width>
+                <height>128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -360,7 +360,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>448</width>
                 <height>550</height>
                </rect>
               </property>
@@ -554,7 +554,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>524</width>
                 <height>531</height>
                </rect>
               </property>
@@ -771,8 +771,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <width>198</width>
+                <height>232</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1092,16 +1092,16 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="enableEmotionManageCheckBox">
+                <widget class="QPushButton" name="EmotionManagePushButton">
                  <property name="text">
-                  <string>启用表情差分</string>
+                  <string>启动表情差分管理界面</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="EmotionManagePushButton">
+                <widget class="QCheckBox" name="showEmoInTextCheckBox">
                  <property name="text">
-                  <string>启动表情差分管理界面</string>
+                  <string>出现表情标识符时在对话框中显示</string>
                  </property>
                 </widget>
                </item>

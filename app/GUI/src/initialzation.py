@@ -36,6 +36,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             TTS_setting(),
             chat_summary_setting(),
             extension_func_setting(),
+            emo_setting()
         )
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
