@@ -71,6 +71,7 @@ class emo_manager:
                 offset += end - start
             else:
                 extracted_emotion[start - offset] = -1
-                self.unconfirmed_emoji.append(substring)
+                if substring not in self.unconfirmed_emoji:
+                    self.unconfirmed_emoji.append(substring)
 
         return result_string, extracted_emotion, now_unconfirmed
