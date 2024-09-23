@@ -5,7 +5,7 @@ import sys
 
 from PyQt5.QtCore import QTimer, pyqtSignal
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from app.GUI.Ui.Ui_setting import Ui_MainWindow
 from app.GUI.src.image_preview import image_preview
@@ -88,7 +88,6 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # emo
         self.showEmoInTextCheckBox.setChecked(self.setting_manager.emo_setting.show_in_text)
         self.emo_manager_widget = emotionManagerWidget(self.emotion_manager)
-        self.emo_manager_widget.show()
         self.emo_manager_widget.setVisible(False)
 
     def initConnect(self):
@@ -165,7 +164,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.showEmoInTextCheckBox.toggled.connect(
             lambda p: setattr(self.setting_manager.emo_setting, "show_in_text", p)
         )
-        self.EmotionManagePushButton.clicked.conncet(lambda: self.emo_manager_widget.setVisible(True))
+        self.EmotionManagePushButton.clicked.connect(lambda: self.emo_manager_widget.setVisible(True))
         self.emo_manager_widget.changeEmotionSetting.connect(self.changeEmoSetting.emit)
 
     def scan_history_file(self):
@@ -207,6 +206,8 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
             self.image_preview_widget.hide()
 
     def save_setting(self):
+        if self.setting_manager.user != self.setting_manager_backup.user:# TODO 自动修改
+            reply = QMessageBox.warning(self, '警告', '你似乎更改了认知设置的某些项。你需要手动关闭程序后前往历史记录目录下(history/)修改相应的项后重启程序(自动修改还没做...)。否则可能会出现不可预知的结果。',QMessageBox.Ok, QMessageBox.Ok)
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
         self.changeSetting.emit(self.setting_manager)
         self.closeEvent(QCloseEvent())
