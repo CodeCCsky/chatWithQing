@@ -325,6 +325,7 @@ class mainWidget(QWidget):
 
     def change_emo_setting(self, emotion_setting: emo_manager):
         self.emo_manager = copy.deepcopy(emotion_setting)
+        self.emo_manager.write_yaml()
 
     ### 处理摸摸部分
     def progress_stroke(self, max_index: int):
