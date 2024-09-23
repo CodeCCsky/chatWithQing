@@ -178,9 +178,11 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
         self.on_item_clicked(self.categoryMenuListWidget.item(self.selected_class_i))
 
     def progress_add(self):
-        texts = [self.lineEdit.text(),]
+        texts = [
+            self.lineEdit.text(),
+        ]
         self.lineEdit.clear()
-        self.add_str_in_manager(self.selected_class_i,texts)
+        self.add_str_in_manager(self.selected_class_i, texts)
 
     def progress_OK(self):
         self.emotion_manager_copy = copy.deepcopy(self.emotion_manager)
@@ -193,6 +195,7 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, a0: QCloseEvent):
         self.setVisible(False)
+        self.emotion_manager = copy.deepcopy(self.emotion_manager_copy)
         a0.ignore()
 
     def del_str_in_manager(self, index: int, strs: list):
