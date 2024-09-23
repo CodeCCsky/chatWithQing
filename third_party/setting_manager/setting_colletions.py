@@ -32,6 +32,17 @@ class user_setting:
             unfilled_list.append("你的地址")
         return unfilled_list
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, user_setting):
+            return NotImplemented
+        return (self.user_name == other.user_name and
+                self.user_sex == other.user_sex and
+                self.favourite_food == other.favourite_food and
+                self.user_location == other.user_location)
+
+    def __ne__(self, other: object) -> bool:
+        return not self.__eq__(other)
+
 
 class deepseek_api_setting:
     def __init__(
