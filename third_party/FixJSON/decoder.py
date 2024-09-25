@@ -1,5 +1,7 @@
 import json
-
+import sys
+from tkinter import N
+from third_party.deepseek_api import deepseek_model
 
 class fixJSON:
     def __init__(self) -> None:
@@ -28,3 +30,27 @@ class fixJSON:
                 break
             pointer_pos -= 1
         return pointer_pos
+
+prompt = """请接受一个格式错误的JSON输入，并输出一个格式正确的JSON。输出的JSON必须包含"role_thoughts"和"role_response"项，并且不能更改原始JSON中存储的数据。请确保输出的JSON格式正确且易于解析。
+示例1:
+输入: 修复以下JSON: "{\"role_thoughts\": \"……好喜欢♥\"}\n{\"role_response\": \"(沉醉)**……最喜欢你的手了♥**\"}"
+输出: "{\"role_thoughts\": \"……好喜欢♥\",\"role_response\": \"(沉醉)**……最喜欢你的手了♥**\"}"
+"""
+
+class fixJSONwithLLM:
+    def __init__(self) -> None:
+        pass
+
+    @staticmethod
+    def loads(json_str: str, api_key: str):
+        sys_prompt = ""
+        try:
+            with open(r"system_prompt\FixJSON\prompt.txt", "r", encoding="utf-8") as f:
+                sys_prompt = f.read()
+        except OSError:
+            sys_prompt = prompt
+        finally:
+            interface = deepseek_model(api_key=api_key, system_prompt=sys_prompt)
+            request_data = [{"role":"user","content":json_str}]
+            response = interface.send_message(history=request_data)[0]
+        return response
