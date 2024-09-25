@@ -21,7 +21,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
     changeSetting = pyqtSignal(settingManager)
 
     def __init__(self) -> None:
-        super(initialzationWidget, self).__init__()
+        super().__init__()
         self.setupUi(self)
         self.setWindowTitle("初始化设置")
         self.initValue()

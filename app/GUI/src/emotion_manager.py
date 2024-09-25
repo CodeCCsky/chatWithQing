@@ -17,7 +17,7 @@ import copy
 
 class ListSelectionDialog(QDialog):
     def __init__(self, title, items, parent=None):
-        super(ListSelectionDialog, self).__init__(parent)
+        super().__init__(parent)
         self.setWindowTitle(title)
 
         self.list_widget = QListWidget(self)
@@ -48,7 +48,7 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
     changeEmotionSetting = pyqtSignal(emo_manager)
 
     def __init__(self, emo_manager_: emo_manager, parent=None) -> None:
-        super(emotionManagerWidget, self).__init__(parent)
+        super().__init__(parent)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
         self.emotion_manager_copy = copy.deepcopy(emo_manager_)
         self.emotion_manager = copy.deepcopy(emo_manager_)

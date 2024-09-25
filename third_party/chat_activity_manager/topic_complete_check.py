@@ -58,7 +58,7 @@ class topic_check_thread(QThread):
         self.history_manager = history_manager
         self.setting_manager = setting_manager
         self.prompt = get_prompt()
-        self.inference = deepseek_model(
+        self.interface = deepseek_model(
             api_key=self.setting_manager.get_api_key(), system_prompt=self.prompt, temperature=1
         )
 
@@ -84,8 +84,7 @@ class topic_check_thread(QThread):
             {"role": "system", "content": self.prompt},
             {"role": "user", "content": "\n".join(processed_history_list)},
         ]
-        self.inference.load_history(messages)
-        response = self.inference.send_message()[0]
+        response = self.interface.send_message(history=messages)[0]
 
         try:
             if "FALSE" in response.upper():
