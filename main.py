@@ -257,6 +257,23 @@ class mainWidget(QWidget):
             self.history_manager = historyManager()
             self.history_manager.set_user_name(self.setting.get_user_name())
             self.history_manager.load_from_file(self.setting.history_path)
+            # 处理是否继续上次对话
+            last_time = datetime.datetime.strptime(
+                self.history_manager.get_update_time_by_index(self.history_manager.get_last_index()),
+                "%Y-%m-%d %H:%M:%S",
+            )
+            twenty_min = datetime.timedelta(minutes=20)
+            current_time = datetime.datetime.now()
+            time_diff = current_time - last_time
+            if time_diff > twenty_min:
+                self.history_manager.create_new_chat()
+            else:
+                min_diff = time_diff.total_seconds() / 60
+                self.history_manager.add_user_message(
+                    user_input="",
+                    sys_input=f"{self.setting.get_user_name()}重新启动了程序。距上次关闭过去了{min_diff:.1f}分钟",
+                )
+
             if self.setting.chat_summary_setting.add_same_day_summary:
                 full_summary_str = ""
                 now_date = datetime.datetime.now()
@@ -267,8 +284,10 @@ class mainWidget(QWidget):
                         file_path = os.path.join(default_history_path, f"{current_date_str}.json")
                         if not os.path.exists(file_path):
                             continue
-                        summary = historyManager(user_name=self.setting.get_user_name(), history_path=file_path).get_overall_summary()
-                        
+                        summary = historyManager(
+                            user_name=self.setting.get_user_name(), history_path=file_path
+                        ).get_overall_summary()
+
                         full_summary_str += f"|{current_date.year}年{current_date.month}月{current_date.day}日对话记录总结: {summary}|\n"
                 if self.history_manager.current_history_index > 0:
                     full_summary_str += "|今日对话记录总结:"
@@ -455,7 +474,8 @@ class mainWidget(QWidget):
             self.user_try_to_quit()
 
     def say_goodbye(self):
-        pass
+        self.history_manager.add_user_message(user_input="", sys_input=f"{self.setting.get_user_name()}退出了程序。")
+        self.history_manager.save_history()
 
     def user_try_to_quit(self):
         pass
