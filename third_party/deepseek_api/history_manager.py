@@ -104,40 +104,51 @@ class chatManager:
 
 
 class historyManager:
-    def __init__(self, user_name: str, history_path: str = None, current_history_index: int = None) -> None:
-        logger.debug(f"尝试加载位于{history_path}的历史记录文件中...")
+    def __init__(self, user_name: str = None, history_path: str = None) -> None:
         self.historys: list[chatManager] = []
-        self.history_path = history_path
-        self.user_name = user_name
-        self.current_history_index = current_history_index
+        self.history_path = ""
+        self.user_name = ""
+        self.current_history_index = 0
         self.summary = None
+        if user_name:
+            self.set_user_name(user_name)
         if history_path:
-            try:
-                with open(history_path, "r", encoding="utf-8") as f:
-                    content = json.load(f)
-                    self.summary = content["summary"]
-                    historys = content["historys"]
-                    for _slice in historys:
-                        self.historys.append(chatManager(_slice, self.user_name))
-                        if self.historys[-1].is_empty():
-                            logger.debug(f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。")
-                            self.historys.pop()
-                    if self.current_history_index is None:
-                        self.historys.append(chatManager(chatManager.get_template_dict(), self.user_name))
-                        self.current_history_index = len(self.historys) - 1
-                        self.historys[self.current_history_index].init_create_time()
-                        self.save_history()
-            except FileNotFoundError as fe:
-                logger.warning(f"指定的对话历史文件未找到。Error:{fe}")
-                self.create_new_history_file()
-            except PermissionError as pe:
-                logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
-                self.create_new_history_file()
-            except Exception as e:
-                logger.error(f"发生了意料之外的错误。Error:{e}")
-                self.create_new_history_file()
-        else:
-            self.create_new_history_file()
+            self.load_from_file(history_path)
+
+    def set_user_name(self, name: str):
+        self.user_name = name
+
+    def load_from_file(self, path: str):
+        self.history_path = path
+        logger.debug(f"尝试加载位于{self.history_path}的历史记录文件中...")
+        try:
+            with open(self.history_path, "r", encoding="utf-8") as f:
+                content = json.load(f)
+                self.summary = content["summary"]
+                historys = content["historys"]
+                for _slice in historys:
+                    self.historys.append(chatManager(_slice, self.user_name))
+                    if self.historys[-1].is_empty():
+                        logger.debug(f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。")
+                        self.historys.pop()
+        except FileNotFoundError as fe:
+            logger.warning(f"指定的对话历史文件未找到。Error:{fe}")
+            # self.create_new_history_file()
+        except PermissionError as pe:
+            logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
+            # self.create_new_history_file()
+        except Exception as e:
+            logger.error(f"发生了意料之外的错误。Error:{e}")
+            # self.create_new_history_file()
+
+    def set_current_index(self, index: int):
+        self.current_history_index = index
+
+    def create_new_chat(self) -> int:
+        self.historys.append(chatManager(chatManager.get_template_dict(), self.user_name))
+        self.current_history_index = len(self.historys) - 1
+        self.historys[self.current_history_index].init_create_time()
+        return self.current_history_index
 
     def create_new_history_file(self) -> None:
         if os.path.exists(DEFAULT_PATH) is False:
@@ -146,15 +157,16 @@ class historyManager:
         now_time = current_time.strftime("%Y%m%d")
         filename = f"{now_time}.json"
         self.history_path = os.path.join(DEFAULT_PATH, filename)
-        self.historys.append(chatManager(chatManager.get_template_dict(), self.user_name))
-        self.current_history_index = len(self.historys) - 1
-        self.historys[self.current_history_index].init_create_time()
+        self.create_new_chat()
         self.save_history()
         logger.debug(f"创建了新的历史对话文件在{self.history_path}")
 
+    def get_last_index(self) -> int:
+        return len(self.historys) - 1
+
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.historys[self.current_history_index].add_user_message(user_input, sys_input)
-        self.save_history()
+        # self.save_history()
 
     @staticmethod
     def get_user_message_template(user_name: str, user_input: str, sys_input: str = None) -> str:
@@ -165,11 +177,9 @@ class historyManager:
 
     def add_assistant_message(self, assistant_response: str) -> None:
         self.historys[self.current_history_index].add_assistant_message(assistant_response)
-        self.save_history()
 
     def add_tool_message(self, tool_msg: str) -> None:
         self.historys[self.current_history_index].add_tool_message(tool_msg)
-        self.save_history()
 
     def get_create_time_by_index(self, index: int) -> str:
         return self.historys[index].create_time
@@ -186,20 +196,20 @@ class historyManager:
     def get_summary_by_index(self, index: int) -> str:
         return self.historys[index].summary
 
+    def get_overall_summary(self) -> str:
+        return self.summary
+
     def set_current_summaried_history(self, summaried_history: str) -> None:
         self.historys[self.current_history_index].set_summaried_history(summaried_history)
 
     def set_summary_by_index(self, index: int, summary: str) -> None:
         self.historys[index].summary = summary
-        self.save_history()
 
     def set_current_summary(self, summary: str) -> None:
         self.historys[self.current_history_index].summary = summary
-        self.save_history()
 
     def set_overall_summary(self, summary: str) -> None:
         self.summary = summary
-        self.save_history()
 
     def get_full_data(self) -> dict:
         historys = []

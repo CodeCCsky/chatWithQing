@@ -19,6 +19,7 @@ class PyQt_deepseek_request_thread(QThread):
     def run(self) -> None:
         self.response, self.finish_reason, _ = self.model.send_message()
         self.history_manager.add_assistant_message(self.response)
+        self.history_manager.save_history()
         self.finish_signal.emit(self.finish_reason)
 
     def get_status(self) -> Union[str, None]:

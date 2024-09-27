@@ -253,9 +253,9 @@ class mainWidget(QWidget):
     def check_summary_thread_pool(self):
         if self.summary_threadpool.activeThreadCount() == 0:
             self.init_timer.stop()
-            self.history_manager = historyManager(
-                user_name=self.setting.get_user_name(), history_path=self.setting.history_path
-            )
+            self.history_manager = historyManager()
+            self.history_manager.set_user_name(self.setting.get_user_name())
+            self.history_manager.load_from_file(self.setting.history_path)
             if self.setting.chat_summary_setting.add_same_day_summary:
                 full_summary_str = ""
                 now_date = datetime.datetime.now()
@@ -266,7 +266,8 @@ class mainWidget(QWidget):
                         file_path = os.path.join(default_history_path, f"{current_date_str}.json")
                         if not os.path.exists(file_path):
                             continue
-                        summary = historyManager(user_name=self.setting.get_user_name(), history_path=file_path).summary
+                        summary = historyManager(user_name=self.setting.get_user_name(), history_path=file_path).get_overall_summary()
+                        
                         full_summary_str += f"|{current_date.year}年{current_date.month}月{current_date.day}日对话记录总结: {summary}|\n"
                 if self.history_manager.current_history_index > 0:
                     full_summary_str += "|今日对话记录总结:"
@@ -359,6 +360,7 @@ class mainWidget(QWidget):
         # TODO 更多系统提示
         sys_input = self.progress_sys_msg(sys)
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
+        self.history_manager.save_history()
         self.llm_inference.load_history(self.history_manager.get_current_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_inference, self.history_manager)
         self.llm_thread.start()
