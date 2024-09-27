@@ -53,11 +53,12 @@ class deepseek_api_setting:
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
 
-    def use_setting(self, _deepseek_model: deepseek_model) -> None:
+    def use_setting(self, _deepseek_model: deepseek_model, sys_prompt: str) -> None:
         _deepseek_model.set_api_key(self.api_key)
         _deepseek_model.set_temperature(self.temperature)
         _deepseek_model.set_frequency_penalty(self.frequency_penalty)
         _deepseek_model.set_presence_penalty(self.presence_penalty)
+        _deepseek_model.system_prompt = sys_prompt
 
     def check(self) -> list:
         unfilled_list = []

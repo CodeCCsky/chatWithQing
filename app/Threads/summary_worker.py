@@ -18,6 +18,7 @@ class summaryWorker(QRunnable):
         self.history_manager = historyManager()
         self.history_manager.set_user_name(user_name)
         self.history_manager.load_from_file(history_path)
+        self.history_manager.set_current_index(self.history_manager.get_last_index())
         self.interface = deepseek_summary(api_key, user_name)
         self.generate_day_summary = generate_day_summary
         self.signals = self.Signals()

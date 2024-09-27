@@ -85,7 +85,7 @@ class mainWidget(QWidget):
         self.init_stroke()
         self.init_chat_activity_manager()
         self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_interface)
+        self.setting.deepseek_model.use_setting(self.llm_interface, self.setting.get_system_prompt())
 
     ### 初始化部分
     def init_resource(self):
@@ -212,9 +212,9 @@ class mainWidget(QWidget):
 
     def init_llm(self):
         # summary_interface = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
+        self.summary_threadpool = QThreadPool()
         if self.setting.chat_summary_setting.add_same_day_summary:
             logger.info("加载历史记录中")
-            self.summary_threadpool = QThreadPool()
             today_summary_worker = summaryWorker(
                 api_key=self.setting.get_api_key(),
                 user_name=self.setting.get_user_name(),
@@ -248,7 +248,7 @@ class mainWidget(QWidget):
                     worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
                     self.summary_threadpool.start(worker)
             self.load_widget.show()
-            self.init_timer.timeout.connect(self.check_summary_thread_pool)
+        self.init_timer.timeout.connect(self.check_summary_thread_pool)
         self.init_timer.start(100)
 
     def check_summary_thread_pool(self):
@@ -334,10 +334,12 @@ class mainWidget(QWidget):
 
     ### 更换设置
     def change_setting(self, setting_manager: settingManager):
-        self.setting = setting_manager
-        self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_interface)
+        logger.info("已更新设置")
+        self.setting = copy.deepcopy(setting_manager)
         self.setting.load_system_prompt_main()
+        # TODO 认知更改后处理
+        self.setting.tts_setting.use_setting(self.tts_model)
+        self.setting.deepseek_model.use_setting(self.llm_interface, self.setting.get_system_prompt())
         self.desktop_pet.resize(
             int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
         )
@@ -395,9 +397,10 @@ class mainWidget(QWidget):
         try:
             self.response_content = fixJSON.loads(response)
             self.talk_bubble.update_text(self.response_content["role_thoughts"], is_thinking=True)
-            self.response_content["role_response"] = self.emo_manager.process_string(
-                self.response_content["role_response"]
-            )
+            if not self.setting.emo_setting.show_in_text:
+                self.response_content["role_response"] = self.emo_manager.process_string(
+                    self.response_content["role_response"]
+                )
             self.emo_manager.write_yaml()
             if self.setting.tts_setting.use_tts:
                 self.tts_thread = tts_thread(self.tts_model, self.response_content["role_response"])
