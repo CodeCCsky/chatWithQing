@@ -16,7 +16,7 @@ class inputLabel(opacity_controller, Ui_Form):
     requestSend = pyqtSignal(str)
 
     def __init__(self, parent=None, is_calc_token=True, update_token_time=1000):
-        super(inputLabel, self).__init__(parent)
+        super().__init__(parent)
         self.input_font_size = 14
         self.button_font_size = 14
         self.keep_opacity_time = 5000

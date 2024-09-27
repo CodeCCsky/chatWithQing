@@ -2,7 +2,7 @@ import copy
 import logging
 import time
 import random
-from typing import Dict, List, Union
+from typing import Union
 
 from openai import OpenAI, APIError
 
@@ -81,7 +81,7 @@ class deepseek_model:
     def get_api_key(self) -> str:
         return self.api_key
 
-    def load_history(self, history: List[Dict]) -> None:
+    def load_history(self, history: list[dict]) -> None:
         if not isinstance(history, list):
             raise ValueError("History must be a list of dictionaries")
         if history[0]["role"] == "system":
@@ -90,7 +90,9 @@ class deepseek_model:
             self.history = copy.deepcopy(history)
         self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
-    def send_message(self, is_prefix: bool = False) -> tuple[str, str, dict]:
+    def send_message(self, history: list[dict] = None, is_prefix: bool = False) -> tuple[str, str, dict]:
+        if history is not None:
+            self.load_history(history)
         if is_prefix:
             self.history[-1]["prefix"] = True
         for _ in range(self.max_retries):

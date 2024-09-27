@@ -21,7 +21,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
     changeSetting = pyqtSignal(settingManager)
 
     def __init__(self) -> None:
-        super(initialzationWidget, self).__init__()
+        super().__init__()
         self.setupUi(self)
         self.setWindowTitle("初始化设置")
         self.initValue()
@@ -36,6 +36,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             TTS_setting(),
             chat_summary_setting(),
             extension_func_setting(),
+            emo_setting()
         )
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 

@@ -90,7 +90,7 @@
           <set>Qt::ImhNone</set>
          </property>
          <property name="currentIndex">
-          <number>6</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="stackedWidgetUser">
           <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -297,8 +297,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <width>322</width>
+                <height>128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -360,7 +360,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>448</width>
                 <height>550</height>
                </rect>
               </property>
@@ -554,7 +554,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
+                <width>524</width>
                 <height>531</height>
                </rect>
               </property>
@@ -569,7 +569,7 @@
                <item>
                 <widget class="QLabel" name="TTSIntroducing">
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;启用 TTS 需要同时运行 GPT-SoVITS-Inference&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;若未部署，查看部署教程：&lt;/span&gt;&lt;a href=&quot;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;在未启动 GPT-SoVITS-Inference 的情况下启用此功能会报错！&lt;/span&gt;&lt;/p&gt;&lt;p&gt;(暂时没时间去做检测了..等以后吧)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;项目地址：&lt;/span&gt;&lt;a href=&quot;https://github.com/X-T-E-R/GPT-SoVITS-Inference&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/X-T-E-R/GPT-SoVITS-Inference&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;启用 TTS 需要同时运行 GPT-SoVITS-interface&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;若未部署，查看部署教程：&lt;/span&gt;&lt;a href=&quot;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;在未启动 GPT-SoVITS-interface 的情况下启用此功能会报错！&lt;/span&gt;&lt;/p&gt;&lt;p&gt;(暂时没时间去做检测了..等以后吧)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;项目地址：&lt;/span&gt;&lt;a href=&quot;https://github.com/X-T-E-R/GPT-SoVITS-interface&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/X-T-E-R/GPT-SoVITS-interface&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="openExternalLinks">
                   <bool>true</bool>
@@ -771,8 +771,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>315</height>
+                <width>198</width>
+                <height>232</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1092,16 +1092,16 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="enableEmotionManageCheckBox">
+                <widget class="QPushButton" name="EmotionManagePushButton">
                  <property name="text">
-                  <string>启用表情差分</string>
+                  <string>启动表情差分管理界面</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="EmotionManagePushButton">
+                <widget class="QCheckBox" name="showEmoInTextCheckBox">
                  <property name="text">
-                  <string>启动表情差分管理界面</string>
+                  <string>出现表情标识符时在对话框中显示</string>
                  </property>
                 </widget>
                </item>

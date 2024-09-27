@@ -12,7 +12,7 @@ from app.GUI.Ui.Ui_load import Ui_Form
 
 class loadWidget(QWidget, Ui_Form):
     def __init__(self, all_task_num: int, text: str = "少女祈祷中") -> None:
-        super(loadWidget, self).__init__()
+        super().__init__()
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         self.setFont(QFont("荆南波波黑", 14, QFont.Bold))

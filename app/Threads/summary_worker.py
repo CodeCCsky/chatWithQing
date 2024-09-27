@@ -18,7 +18,7 @@ class summaryWorker(QRunnable):
         self.history_manager = historyManager()
         self.history_manager.set_user_name(user_name)
         self.history_manager.load_from_file(history_path)
-        self.inference = deepseek_summary(api_key, user_name)
+        self.interface = deepseek_summary(api_key, user_name)
         self.generate_day_summary = generate_day_summary
         self.signals = self.Signals()
 
@@ -32,7 +32,7 @@ class summaryWorker(QRunnable):
             if not self.history_manager.get_summary_by_index(i):
                 logger.debug(f"处理{self.history_path}的子线程 - 第{i}项未检测到总结，生成中")
                 self.history_manager.set_summary_by_index(
-                    i, self.inference.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0]
+                    i, self.interface.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0]
                 )
                 self.history_manager.save_history()
             crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")
@@ -45,7 +45,7 @@ class summaryWorker(QRunnable):
         if self.generate_day_summary and not self.history_manager.summary:
             logger.debug(f"处理{self.history_path}的子线程 - 未检测到当天总结，生成中")
             self.history_manager.set_overall_summary(
-                self.inference.get_day_summary(self.history_manager.get_full_data())[0]
+                self.interface.get_day_summary(self.history_manager.get_full_data())[0]
             )
             self.history_manager.save_history()
         logger.debug(f"处理{self.history_path}的子线程 处理完成")
