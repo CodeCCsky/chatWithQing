@@ -2,19 +2,20 @@ import copy
 import datetime
 import yaml
 
-FOCUS_DEFAULT_PATH = r"/setting/focus_memory.yaml"
+FOCUS_DEFAULT_PATH = r"setting/focus_memory.yaml"
 
 TIME_FORMAT = "%Y-%m-%d"
 
-class MemoryFocusManager:# TODO test
+
+class MemoryFocusManager:  # TODO test
     def __init__(self, path: str = FOCUS_DEFAULT_PATH, cache_clear_time: int = 14) -> None:
         self.important_memory: list[str] = []
-        self.cache_memory: dict[str,list[str]] = {}
+        self.cache_memory: dict[str, list[str]] = {}
         self.cache_memory_clear_time = cache_clear_time
         self.file_path = ""
         self.load_from_file(path)
 
-    def progress_cache_clear(self):
+    def update_cache_clear(self):
         current_time = datetime.datetime.now()
         clear_time = datetime.timedelta(days=self.cache_memory_clear_time)
         cache_memory_copy = copy.deepcopy(self.cache_memory)
@@ -37,7 +38,7 @@ class MemoryFocusManager:# TODO test
     def set_important_memory(self, memory: list):
         self.important_memory = copy.deepcopy(memory)
 
-    def set_cache_memory(self, memory: list):
+    def set_cache_memory(self, memory: dict):
         self.cache_memory = copy.deepcopy(memory)
 
     def get_important_memory(self) -> list[str]:
@@ -58,8 +59,5 @@ class MemoryFocusManager:# TODO test
 
     def save_file(self):
         with open(self.file_path, "w", encoding="utf-8") as f:
-            data = {
-                "important" : self.important_memory,
-                "cache" : self.cache_memory
-            }
+            data = {"important": self.important_memory, "cache": self.cache_memory}
             yaml.dump(data=data, stream=f, allow_unicode=True)

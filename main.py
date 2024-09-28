@@ -34,6 +34,7 @@ from third_party.tts import TTSAudio
 from third_party.FixJSON import fixJSON
 from third_party.chat_activity_manager import chat_activity_manager
 from third_party.emo_manager import emo_manager
+from third_party.memory_focus_manager import MemoryFocusManager
 
 # setting = settingManager()
 tts_cache_path = r"cache/"
@@ -254,25 +255,44 @@ class mainWidget(QWidget):
     def check_summary_thread_pool(self):
         if self.summary_threadpool.activeThreadCount() == 0:
             self.init_timer.stop()
+            self.focus_memory_manager = MemoryFocusManager()
             self.history_manager = historyManager()
             self.history_manager.set_user_name(self.setting.get_user_name())
             self.history_manager.load_from_file(self.setting.history_path)
+
             # 处理是否继续上次对话
-            last_time = datetime.datetime.strptime(
-                self.history_manager.get_update_time_by_index(self.history_manager.get_last_index()),
-                "%Y-%m-%d %H:%M:%S",
-            )
-            twenty_min = datetime.timedelta(minutes=20)
-            current_time = datetime.datetime.now()
-            time_diff = current_time - last_time
-            if time_diff > twenty_min:
-                self.history_manager.create_new_chat()
-            else:
-                min_diff = time_diff.total_seconds() / 60
-                self.history_manager.add_user_message(
-                    user_input="",
-                    sys_input=f"{self.setting.get_user_name()}重新启动了程序。距上次关闭过去了{min_diff:.1f}分钟",
+            if self.history_manager.get_last_index() != -1:
+                last_time = datetime.datetime.strptime(
+                    self.history_manager.get_update_time_by_index(self.history_manager.get_last_index()),
+                    "%Y-%m-%d %H:%M:%S",
                 )
+                twenty_min = datetime.timedelta(minutes=20)
+                current_time = datetime.datetime.now()
+                time_diff = current_time - last_time
+                if time_diff > twenty_min:
+                    self.history_manager.create_new_chat()
+                else:
+                    self.history_manager.set_current_index(self.history_manager.get_last_index())
+                    self.history_manager.set_current_summary(None)
+                    min_diff = time_diff.total_seconds() / 60
+                    self.history_manager.add_user_message(
+                        user_input="",
+                        sys_input=f"{self.setting.get_user_name()}重新启动了程序。距上次关闭过去了{min_diff:.1f}分钟",
+                    )
+            else:
+                self.history_manager.create_new_chat()
+
+            self.focus_memory_manager.update_cache_clear()
+            if self.focus_memory_manager.get_important_memory() != []:
+                self.history_manager.add_user_message(
+                    "", f"加载的历史重要记忆:{'|'.join(self.focus_memory_manager.get_important_memory())}"
+                )
+            if self.focus_memory_manager.get_cache_memory() != {}:
+                list_of_cache_memeory = []
+                for key, value in self.focus_memory_manager.get_cache_memory().items():
+                    list_of_cache_memeory.append(f"{key}: {'# '.join(value)}")
+                joined_cache_memory = "\n".join(list_of_cache_memeory)
+                self.history_manager.add_user_message("", f"加载的部分历史缓存记忆:{joined_cache_memory}")
 
             if self.setting.chat_summary_setting.add_same_day_summary:
                 full_summary_str = ""
@@ -335,6 +355,26 @@ class mainWidget(QWidget):
     ### 更换设置
     def change_setting(self, setting_manager: settingManager):
         logger.info("已更新设置")
+        if setting_manager.user != self.setting.user:
+            diff_list = []
+            for (key1, value1), (key2, value2) in zip(
+                self.setting.user.get_dict().items(), setting_manager.user.get_dict().items()
+            ):
+                diff_list.append(f"{key1}:{value1}->{value2}")
+            self.history_manager.add_user_message(
+                "", f"检测到对{self.setting.get_user_name()}认知设置变更: {', '.join(diff_list)}"
+            )
+
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            cache_memory = self.focus_memory_manager.get_cache_memory()
+            value_list = cache_memory.get(current_date, [])
+            if value_list != []:
+                value_list = [value for value in value_list if not value.startswith(f"认知设置变更: ")]
+            value_list.append(f"认知设置变更: {', '.join(diff_list)}")
+            cache_memory[current_date] = value_list
+            self.focus_memory_manager.set_cache_memory(cache_memory)
+
+            self.focus_memory_manager.save_file()
         self.setting = copy.deepcopy(setting_manager)
         self.setting.load_system_prompt_main()
         # TODO 认知更改后处理
@@ -494,7 +534,6 @@ def main():
 
 def set_setting(_setting: settingManager):
     _setting.load_system_prompt_main()
-    global setting
     setting = copy.deepcopy(_setting)
     state = setting.write_yaml()
     logger.info(f"设置写入状态：{state}")
