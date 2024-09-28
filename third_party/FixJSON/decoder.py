@@ -13,7 +13,6 @@ class fixJSON:
             try:
                 return json.loads(json_str)
             except json.JSONDecodeError as e:
-                print(e.pos, json_str[e.pos - 2 : e.pos + 2])
                 pointer = fixJSON._jump_pointer(json_str, e.pos - 1)
                 if json_str[pointer] == '"':
                     json_str = json_str[:pointer] + '\\"' + json_str[pointer + 1 :]
