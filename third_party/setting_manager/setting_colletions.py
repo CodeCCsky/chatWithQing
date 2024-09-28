@@ -6,11 +6,14 @@ SYS_PROMPT_MAIN_PATH = r"system_prompt\main\system_prompt_main.txt"
 
 
 class user_setting:
-    def __init__(self, user_name: str, user_sex: str, favourite_food: str, user_location: str) -> None:
+    def __init__(
+        self, user_name: str, user_sex: str, favourite_food: str, user_location: str, user_birthday: str
+    ) -> None:
         self.user_sex = user_sex
         self.user_name = user_name
         self.favourite_food = favourite_food
         self.user_location = user_location
+        self.user_birthday = user_birthday
 
     def get_full_system_prompt(self, sys_prompt: str):
         return sys_prompt.format(
@@ -18,6 +21,7 @@ class user_setting:
             user_sex=self.user_sex,
             favourite_food=self.favourite_food,
             user_location=self.user_location,
+            user_birthday=self.user_birthday,
         )
 
     def check(self) -> list:
@@ -30,18 +34,32 @@ class user_setting:
             unfilled_list.append("你喜欢的食物")
         if not self.user_location:
             unfilled_list.append("你的地址")
+        if not self.user_birthday:
+            unfilled_list.append("你的生日")
         return unfilled_list
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, user_setting):
             return NotImplemented
-        return (self.user_name == other.user_name and
-                self.user_sex == other.user_sex and
-                self.favourite_food == other.favourite_food and
-                self.user_location == other.user_location)
+        return (
+            self.user_name == other.user_name
+            and self.user_sex == other.user_sex
+            and self.favourite_food == other.favourite_food
+            and self.user_location == other.user_location
+            and self.user_birthday == other.user_birthday
+        )
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
+
+    def get_dict(self) -> dict:
+        return {
+            "name": self.user_name,
+            "sex": self.user_sex,
+            "favourite_food": self.favourite_food,
+            "location": self.user_location,
+            "birthday": self.user_birthday,
+        }
 
 
 class deepseek_api_setting:
@@ -189,6 +207,7 @@ class settingManager:
                 user_sex=user["sex"],
                 favourite_food=user["favourite_food"],
                 user_location=user["location"],
+                user_birthday=user["birthday"],
             )
 
             # Deepseek settings
@@ -243,6 +262,7 @@ class settingManager:
                     "sex": self.user.user_sex,
                     "favourite_food": self.user.favourite_food,
                     "location": self.user.user_location,
+                    "birthday": self.user.user_birthday,
                 },
                 "deepseek": {
                     "api_key": self.deepseek_model.api_key,
