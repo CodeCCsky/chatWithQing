@@ -170,3 +170,4 @@ history/*
 write_system_prompt_private.py
 *.log.*
 package_to_exe.py
+focus_memory.yaml
