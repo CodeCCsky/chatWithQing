@@ -101,7 +101,9 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.yourFavouriteFood.textChanged.connect(lambda p: setattr(self.setting_manager.user, "favourite_food", p))
         self.yourAddressEdit.textChanged.connect(lambda p: setattr(self.setting_manager.user, "user_location", p))
         self.yourSexComboBox.currentIndexChanged.connect(self.progress_user_sex)
-        self.birthdayDateEdit.dateChanged.connect(lambda p: setattr(self.setting_manager.user, "user_birthday", p.toString(self.date_format)))
+        self.birthdayDateEdit.dateChanged.connect(
+            lambda p: setattr(self.setting_manager.user, "user_birthday", p.toString(self.date_format))
+        )
 
         # deepseek
         self.lAPIEdit.textChanged.connect(lambda p: setattr(self.setting_manager.deepseek_model, "api_key", p))
