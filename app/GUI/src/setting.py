@@ -3,7 +3,7 @@ import copy
 import os
 import sys
 
-from PyQt5.QtCore import QTimer, pyqtSignal
+from PyQt5.QtCore import QTimer, pyqtSignal, QDate
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
@@ -13,12 +13,12 @@ from app.GUI.src.image_preview import image_preview
 from app.GUI.src.emotion_manager import emotionManagerWidget
 from third_party.setting_manager import settingManager
 from third_party.emo_manager import emo_manager
+
 # from Ui_setting import Ui_MainWindow
 
 
-
-
 class SettingWidget(QMainWindow, Ui_MainWindow):
+    date_format = "yyyy-MM-dd"
     changeSetting = pyqtSignal(settingManager)
     changeEmoSetting = pyqtSignal(emo_manager)
 
@@ -32,7 +32,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.setting_manager = settingManager()
         result = self.setting_manager.load_from_file()
         if result[0] != 0:
-            raise ValueError("设置错误")
+            raise ValueError(f"设置错误. error: {result}")
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
         self.emotion_manager = emo_manager()
 
@@ -40,6 +40,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.yourNameEdit.setText(self.setting_manager.user.user_name)
         self.yourAddressEdit.setText(self.setting_manager.user.user_location)
         self.yourFavouriteFood.setText(self.setting_manager.user.favourite_food)
+        self.birthdayDateEdit.setDate(QDate.fromString(self.setting_manager.user.user_birthday, self.date_format))
         if self.setting_manager.user.user_sex == "男":
             self.yourSexComboBox.setCurrentIndex(0)
             self.yourSexEdit.setEnabled(False)
@@ -100,6 +101,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.yourFavouriteFood.textChanged.connect(lambda p: setattr(self.setting_manager.user, "favourite_food", p))
         self.yourAddressEdit.textChanged.connect(lambda p: setattr(self.setting_manager.user, "user_location", p))
         self.yourSexComboBox.currentIndexChanged.connect(self.progress_user_sex)
+        self.birthdayDateEdit.dateChanged.connect(lambda p: setattr(self.setting_manager.user, "user_birthday", p.toString(self.date_format)))
 
         # deepseek
         self.lAPIEdit.textChanged.connect(lambda p: setattr(self.setting_manager.deepseek_model, "api_key", p))
@@ -217,8 +219,8 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
                 QMessageBox.Ok,
                 QMessageBox.Ok,
             )
-            #test = historyComparisonDialog(self.setting_manager,self)
-            #test.exec_()
+            # test = historyComparisonDialog(self.setting_manager,self)
+            # test.exec_()
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
         self.changeSetting.emit(self.setting_manager)
         self.closeEvent(QCloseEvent())

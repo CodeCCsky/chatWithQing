@@ -18,6 +18,7 @@ from third_party.setting_manager import *
 
 
 class initialzationWidget(QMainWindow, Ui_MainWindow):
+    date_format = "yyyy-MM-dd"
     changeSetting = pyqtSignal(settingManager)
 
     def __init__(self) -> None:
@@ -30,13 +31,13 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
     def initValue(self):
         self.setting_manager = settingManager()
         self.setting_manager.load_from_parameter(
-            user_setting(None, "男", None, None),
+            user_setting(None, "男", None, None, "2024-01-14"),
             deepseek_api_setting(None),
             show_setting(),
             TTS_setting(),
             chat_summary_setting(),
             extension_func_setting(),
-            emo_setting()
+            emo_setting(),
         )
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
 
@@ -79,7 +80,6 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
 
         # extension_func
-        print(self.setting_manager.extension_func_setting)
         self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
 
     def initConnect(self):
@@ -89,6 +89,9 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.yourFavouriteFood.textChanged.connect(lambda p: setattr(self.setting_manager.user, "favourite_food", p))
         self.yourAddressEdit.textChanged.connect(lambda p: setattr(self.setting_manager.user, "user_location", p))
         self.yourSexComboBox.currentIndexChanged.connect(self.progress_user_sex)
+        self.birthdayDateEdit.dateChanged.connect(
+            lambda p: setattr(self.setting_manager.user, "user_birthday", p.toString(self.date_format))
+        )
 
         # deepseek
         self.lAPIEdit.textChanged.connect(lambda p: setattr(self.setting_manager.deepseek_model, "api_key", p))
@@ -122,11 +125,11 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedSpinBox.valueChanged.connect(self.progress_text_gap)
         self.imageShowSlider.valueChanged.connect(lambda p: self.imageShowZoomPercentLabel.setText(str(p) + "%"))
         self.imageShowSlider.valueChanged.connect(
-            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p)/100.0)
+            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p) / 100.0)
         )
-        self.imageShowSlider.valueChanged.connect(lambda p:self.image_preview_widget.resize_(float(p)/100.0))
+        self.imageShowSlider.valueChanged.connect(lambda p: self.image_preview_widget.resize_(float(p) / 100.0))
         self.imageShowPreviewCheckBox.toggled.connect(self.progress_image_preview)
-        self.image_preview_widget.closeSignal.connect(lambda : self.imageShowPreviewCheckBox.setChecked(False))
+        self.image_preview_widget.closeSignal.connect(lambda: self.imageShowPreviewCheckBox.setChecked(False))
 
         # history
         # self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'history_path',os.path.join('./history',p)))
