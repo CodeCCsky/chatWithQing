@@ -7,30 +7,35 @@ FOCUS_DEFAULT_PATH = r"setting/focus_memory.yaml"
 TIME_FORMAT = "%Y-%m-%d"
 
 
-class MemoryFocusManager:  # TODO test
-    def __init__(self, path: str = FOCUS_DEFAULT_PATH, cache_clear_time: int = 14) -> None:
+class MemoryFocusManager:
+    def __init__(self, path: str = FOCUS_DEFAULT_PATH, cache_clear_time: int = 7) -> None:
         self.important_memory: list[str] = []
-        self.cache_memory: dict[str, list[str]] = {}
+        self.cache_memory: dict[str, list[tuple[str, int]]] = {}
         self.cache_memory_clear_time = cache_clear_time
         self.file_path = ""
         self.load_from_file(path)
 
     def update_cache_clear(self):
         current_time = datetime.datetime.now()
-        clear_time = datetime.timedelta(days=self.cache_memory_clear_time)
         cache_memory_copy = copy.deepcopy(self.cache_memory)
-        for key, _ in self.cache_memory.items():
-            cache_time = datetime.datetime.strptime(key, TIME_FORMAT)
-            if current_time - cache_time > clear_time:
+        for key, cache_list in self.cache_memory.items():
+            list_copy = copy.deepcopy(cache_list)
+            for index, (content, del_time) in enumerate(cache_list):
+                clear_time = datetime.timedelta(days=del_time)
+                cache_time = datetime.datetime.strptime(key, TIME_FORMAT)
+                if current_time - cache_time > clear_time:
+                    list_copy.pop(index)
+            cache_memory_copy[key] = list_copy
+            if list_copy == []:
                 cache_memory_copy.pop(key)
-        self.cache_memory = copy.deepcopy(cache_memory_copy)
+        self.cache_memory = cache_memory_copy
 
-    def add_new_cache_memory(self, content: str):
+    def add_new_cache_memory(self, content: str, cache_day: int):
         current_time = datetime.datetime.now()
         time_str = current_time.strftime(TIME_FORMAT)
         if self.cache_memory.get(time_str, None) == None:
             self.cache_memory[time_str] = []
-        self.cache_memory[time_str].append(content)
+        self.cache_memory[time_str].append((content, cache_day))
 
     def add_new_important_memory(self, content: str):
         self.important_memory.append(content)
@@ -44,7 +49,7 @@ class MemoryFocusManager:  # TODO test
     def get_important_memory(self) -> list[str]:
         return copy.deepcopy(self.important_memory)
 
-    def get_cache_memory(self) -> dict[str, list[str]]:
+    def get_cache_memory(self) -> dict[str, list[tuple[str, int]]]:
         return copy.deepcopy(self.cache_memory)
 
     def load_from_file(self, path: str):

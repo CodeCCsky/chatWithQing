@@ -41,6 +41,24 @@ class chatManager:
         self.update_update_time()
         # TODO
 
+    def change_name(self, new_name: str):
+        origin_history_copy = copy.deepcopy(self.origin_history)
+        for index, item in enumerate(self.origin_history):
+            if isinstance(item["content"],dict) and self.user_name in item["content"]:
+                for key, value in item["content"].items():
+                    if key == self.user_name:
+                        origin_history_copy[index]["content"][new_name] = origin_history_copy[index]["content"].pop(self.user_name)
+        self.origin_history = origin_history_copy
+
+        progressed_history_copy = copy.deepcopy(self.progressed_history)
+        for index, item in enumerate(self.progressed_history):
+            if isinstance(item["content"],dict) and self.user_name in item["content"]:
+                for key, value in item["content"].items():
+                    if key == self.user_name:
+                        progressed_history_copy[index]["content"][new_name] = progressed_history_copy[index]["content"].pop(self.user_name)
+
+        self.user_name = new_name
+
     def get_current_history(self) -> list:
         processed_history = copy.deepcopy(self.origin_history)  # TODO
         for i in range(len(processed_history)):
@@ -163,6 +181,11 @@ class historyManager:
 
     def get_last_index(self) -> int:
         return len(self.historys) - 1
+
+    def change_user_name(self, name: str):
+        self.user_name = name
+        for history in self.historys:
+            history.change_name(self.user_name)
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
         self.historys[self.current_history_index].add_user_message(user_input, sys_input)

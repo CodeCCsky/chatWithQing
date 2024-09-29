@@ -290,7 +290,7 @@ class mainWidget(QWidget):
             if self.focus_memory_manager.get_cache_memory() != {}:
                 list_of_cache_memeory = []
                 for key, value in self.focus_memory_manager.get_cache_memory().items():
-                    list_of_cache_memeory.append(f"{key}: {'# '.join(value)}")
+                    list_of_cache_memeory.append(f"{key}: {'# '.join([content for content, _ in value])}")
                 joined_cache_memory = "\n".join(list_of_cache_memeory)
                 self.history_manager.add_user_message("", f"加载的部分历史缓存记忆:{joined_cache_memory}")
 
@@ -369,12 +369,13 @@ class mainWidget(QWidget):
             cache_memory = self.focus_memory_manager.get_cache_memory()
             value_list = cache_memory.get(current_date, [])
             if value_list != []:
-                value_list = [value for value in value_list if not value.startswith(f"认知设置变更: ")]
-            value_list.append(f"认知设置变更: {', '.join(diff_list)}")
+                value_list = [value for value in value_list if not value[0].startswith(f"认知设置变更: ")]
+            value_list.append((f"认知设置变更: {', '.join(diff_list)}", int(self.setting.chat_summary_setting.value_of_x_day_ago)))
             cache_memory[current_date] = value_list
             self.focus_memory_manager.set_cache_memory(cache_memory)
-
             self.focus_memory_manager.save_file()
+            if self.setting.get_user_name() != setting_manager.get_user_name():
+                self.history_manager.change_user_name(setting_manager.get_user_name())
         self.setting = copy.deepcopy(setting_manager)
         self.setting.load_system_prompt_main()
         # TODO 认知更改后处理
