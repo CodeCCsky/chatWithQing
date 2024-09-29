@@ -213,6 +213,15 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
             self.image_preview_widget.hide()
 
     def save_setting(self):
+        if self.setting_manager.get_user_name() == "晴" or self.setting_manager.get_user_name() == "晴小姐" or self.setting_manager.get_user_name() == "sys":
+            reply = QMessageBox.warning(
+                self,
+                "非法起名",
+                f"不能使用{self.setting_manager.get_user_name()}作为用户名，这会导致不可预知的错误。\n请重新输入。",
+                QMessageBox.Ok,
+                QMessageBox.Ok,
+            )
+            return
         if self.setting_manager.user != self.setting_manager_backup.user:  # TODO 自动修改
             reply = QMessageBox.warning(
                 self,
@@ -236,6 +245,7 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.stackedWidget.setCurrentIndex(index.row())
 
     def closeEvent(self, a0: QCloseEvent):
+        self.setting_manager = copy.deepcopy(self.setting_manager_backup)
         self.setVisible(False)
         self.image_preview_widget.hide()
         self.imageShowPreviewCheckBox.setChecked(False)

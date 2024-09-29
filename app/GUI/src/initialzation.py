@@ -195,6 +195,15 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             self.setting_manager.user.user_sex = sex
 
     def save_setting(self):
+        if self.setting_manager.get_user_name() == "晴" or self.setting_manager.get_user_name() == "晴小姐" or self.setting_manager.get_user_name() == "sys":
+            reply = QMessageBox.warning(
+                self,
+                "非法起名",
+                f"不能使用{self.setting_manager.get_user_name()}作为用户名，这会导致不可预知的错误。\n请重新输入。",
+                QMessageBox.Ok,
+                QMessageBox.Ok,
+            )
+            return
         check = self.setting_manager.check()
         if check == []:
             self.setting_manager_backup = copy.deepcopy(self.setting_manager)
@@ -215,7 +224,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         reply = QMessageBox.warning(
             self,
             "退出",
-            "确认要直接退出程序吗？若已经保存过，则按保存的设置启动主程序；若未保存，则会直接退出程序。",
+            "确认要直接退出程序吗？\n若已经保存过，则按保存的设置启动主程序；若未保存，则会直接退出程序。",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
