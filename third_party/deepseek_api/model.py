@@ -21,8 +21,8 @@ class deepseek_model:
         system_prompt: str,
         tools: ds_tool = ds_tool(),
         temperature: float = 1.5,
-        frequency_penalty: float = 0.3,
-        presence_penalty: float = 0.3,
+        frequency_penalty: float = 0.8,
+        presence_penalty: float = 0.8,
         output_json: bool = False,
         max_retries: int = 3,
         retry_delay: int = 5,
@@ -33,9 +33,9 @@ class deepseek_model:
             api_key (str): 你的 deepseek api key.
             system_prompt (str): 系统提示词.
             tools (ds_tool, optional): 可用工具, 传入ds_tool实例 (这个功能还没开始做). Defaults to ds_tool().
-            temperature (float, optional): 模型温度 (0 ~ 2), 越高的温度输出越随机. Defaults to 1.1.
-            frequency_penalty (float, optional): 频率惩罚 (-2 ~ 2), 0 以上时越高的频率惩罚会使模型输出相同内容的可能越小. Defaults to 0.3.
-            presence_penalty (float, optional): 存在惩罚 (-2 ~ 2), 0 以上时越高的存在惩罚会使模型谈论新话题的可能性越大. Defaults to 0.1.
+            temperature (float, optional): 模型温度 (0 ~ 2), 越高的温度输出越随机. Defaults to 1.5.
+            frequency_penalty (float, optional): 频率惩罚 (-2 ~ 2), 0 以上时越高的频率惩罚会使模型输出相同内容的可能越小. Defaults to 0.8.
+            presence_penalty (float, optional): 存在惩罚 (-2 ~ 2), 0 以上时越高的存在惩罚会使模型谈论新话题的可能性越大. Defaults to 0.8.
             output_json (bool, optional): 要求大模型严格使用json格式回复. 该项不建议设置为True, 经测试会有不给出回复的问题. Defaults to False.
             max_retries (int, optional): 请求出错时重试次数. Defaults to 3.
             retry_delay (int, optional): 请求出错时重试等待时间. Defaults to 5.

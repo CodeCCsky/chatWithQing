@@ -64,7 +64,7 @@ class user_setting:
 
 class deepseek_api_setting:
     def __init__(
-        self, api_key: str, temperature: float = 1.5, frequency_penalty: float = 0.3, presence_penalty: float = 0.3
+        self, api_key: str, temperature: float = 1.5, frequency_penalty: float = 0.8, presence_penalty: float = 0.8
     ) -> None:
         self.api_key = api_key
         self.temperature = temperature
@@ -215,8 +215,8 @@ class settingManager:
             self.deepseek_model = deepseek_api_setting(
                 api_key=deepseek["api_key"],
                 temperature=deepseek.get("temperature", 1.5),
-                frequency_penalty=deepseek.get("frequency_penalty", 0.3),
-                presence_penalty=deepseek.get("presence_penalty", 0.3),
+                frequency_penalty=deepseek.get("frequency_penalty", 0.8),
+                presence_penalty=deepseek.get("presence_penalty", 0.8),
             )
 
             # TTS settings
