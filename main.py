@@ -47,7 +47,7 @@ SPEAK_GAP = 50
 TIMESENDGAP = 3
 
 file_handler = logging.handlers.TimedRotatingFileHandler(
-    "log/app.log", when="midnight", backupCount=10, encoding="utf8"
+    "log/app.log", when="midnight", backupCount=3, encoding="utf8"
 )
 stream_hanlder = logging.StreamHandler()
 logging.basicConfig(
@@ -59,6 +59,11 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, Exception):
+        logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+sys.excepthook = handle_exception
 
 class mainWidget(QWidget):
     S_NORMAL = 0
@@ -535,8 +540,7 @@ def main():
 
 def set_setting(_setting: settingManager):
     _setting.load_system_prompt_main()
-    setting = copy.deepcopy(_setting)
-    state = setting.write_yaml()
+    state = _setting.write_yaml()
     logger.info(f"设置写入状态：{state}")
 
 
@@ -545,12 +549,14 @@ def initize():
     init.changeSetting.connect(set_setting)
     init.show()
     main_app.exec_()
-    setting_check = setting.check()
-    if setting_check == []:
+    time.sleep(1) #保证设置写入成功
+    init_setting = settingManager()
+    state = init_setting.load_from_file()
+    if state[0] == 0:
         logger.info("成功加载设置")
         main()
     else:
-        logger.warning(f'设置加载失败：存在未填入的值：{"，".join(setting_check)}')
+        logger.error(f'设置加载失败', exc_info=state)
         sys.exit()
 
 

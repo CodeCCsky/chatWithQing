@@ -18,6 +18,8 @@ class chatManager:
         self.progressed_history: list = history_data["progressed_history"]
         self.user_name: str = user_name
         self.summaried_history: str = None
+        if os.path.exists(DEFAULT_PATH) is False:
+            os.makedirs(DEFAULT_PATH)
 
     def set_summaried_history(self, summaried_history: str):
         self.summaried_history = summaried_history
