@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\workspace\CGMO\chatWIthQing\app\asset\ui\setting.ui'
+# Form implementation generated from reading ui file 'c:\Users\Administrator\Desktop\workspace\chatWithQing\app\asset\ui\setting.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
         self.userScrollArea.setWidgetResizable(True)
         self.userScrollArea.setObjectName("userScrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -152, 531, 467))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 531, 467))
         self.scrollAreaWidgetContents.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.scrollAreaWidgetContents.setStyleSheet("")
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
         self.scrollArea_6.setWidgetResizable(True)
         self.scrollArea_6.setObjectName("scrollArea_6")
         self.scrollAreaWidgetAPI = QtWidgets.QWidget()
-        self.scrollAreaWidgetAPI.setGeometry(QtCore.QRect(0, 0, 322, 128))
+        self.scrollAreaWidgetAPI.setGeometry(QtCore.QRect(0, 0, 548, 315))
         self.scrollAreaWidgetAPI.setObjectName("scrollAreaWidgetAPI")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetAPI)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -190,7 +190,7 @@ class Ui_MainWindow(object):
         self.scrollArea_7.setWidgetResizable(True)
         self.scrollArea_7.setObjectName("scrollArea_7")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 448, 550))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 531, 550))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout_17.setObjectName("verticalLayout_17")
@@ -279,7 +279,7 @@ class Ui_MainWindow(object):
         self.scrollArea_8.setWidgetResizable(True)
         self.scrollArea_8.setObjectName("scrollArea_8")
         self.scrollAreaWidgetContents_7 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_7.setGeometry(QtCore.QRect(0, 0, 524, 531))
+        self.scrollAreaWidgetContents_7.setGeometry(QtCore.QRect(0, -216, 531, 531))
         self.scrollAreaWidgetContents_7.setObjectName("scrollAreaWidgetContents_7")
         self.verticalLayout_19 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_7)
         self.verticalLayout_19.setObjectName("verticalLayout_19")
@@ -376,7 +376,7 @@ class Ui_MainWindow(object):
         self.scrollArea_9.setWidgetResizable(True)
         self.scrollArea_9.setObjectName("scrollArea_9")
         self.scrollAreaWidgetTextShow = QtWidgets.QWidget()
-        self.scrollAreaWidgetTextShow.setGeometry(QtCore.QRect(0, 0, 198, 232))
+        self.scrollAreaWidgetTextShow.setGeometry(QtCore.QRect(0, 0, 548, 315))
         self.scrollAreaWidgetTextShow.setObjectName("scrollAreaWidgetTextShow")
         self.verticalLayout_21 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetTextShow)
         self.verticalLayout_21.setObjectName("verticalLayout_21")
@@ -453,7 +453,7 @@ class Ui_MainWindow(object):
         self.scrollArea_10.setWidgetResizable(True)
         self.scrollArea_10.setObjectName("scrollArea_10")
         self.scrollAreaWidgetContents_8 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_8.setGeometry(QtCore.QRect(0, 0, 515, 206))
+        self.scrollAreaWidgetContents_8.setGeometry(QtCore.QRect(0, 0, 548, 315))
         self.scrollAreaWidgetContents_8.setObjectName("scrollAreaWidgetContents_8")
         self.verticalLayout_23 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_8)
         self.verticalLayout_23.setObjectName("verticalLayout_23")
@@ -524,7 +524,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetEmotionManage = QtWidgets.QWidget()
-        self.scrollAreaWidgetEmotionManage.setGeometry(QtCore.QRect(0, 0, 221, 78))
+        self.scrollAreaWidgetEmotionManage.setGeometry(QtCore.QRect(0, 0, 548, 315))
         self.scrollAreaWidgetEmotionManage.setObjectName("scrollAreaWidgetEmotionManage")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetEmotionManage)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -613,7 +613,7 @@ class Ui_MainWindow(object):
         self.imageShowLabel_2.setText(_translate("MainWindow", "缩放"))
         self.imageShowZoomPercentLabel.setText(_translate("MainWindow", "100%"))
         self.imageShowPreviewCheckBox.setText(_translate("MainWindow", "预览"))
-        self.talkSettingTopLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">对话设置</span></p></body></html>"))
+        self.talkSettingTopLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">对话设置</span></p><p><span style=\" font-weight:600; color:#ff5500;\">调整此项设置后需要重启才能生效！</span></p></body></html>"))
         self.addSameDayHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前都添加当天所有对话的总结（可能会造成 token 大量消耗！）"))
         self.addXDayAgoHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）(功能未完成）"))
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>x的值:</p></body></html>"))
