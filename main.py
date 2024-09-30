@@ -397,7 +397,7 @@ class mainWidget(QWidget):
 
     ### '显示组件'选项部分
     def show_setting_window_event(self):
-        self.setting_widget.setVisible(True)
+        self.setting_widget.show_window()
 
     def show_talk_bubble_event(self):
         self.talk_bubble.show_window()
