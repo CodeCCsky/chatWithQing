@@ -634,7 +634,7 @@ def main():
 
 def set_setting(__setting: settingManager):
     __setting.load_system_prompt_main()
-    state = _setting.write_yaml()
+    state = __setting.write_yaml()
     logger.info(f"设置写入状态：{state}")
 
 
