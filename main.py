@@ -189,7 +189,11 @@ class mainWidget(QWidget):
 
     def init_setting(self, history_path: str):
         self.setting = settingManager()
-        self.setting.load_from_file()
+        status = self.setting.load_from_file()
+        if status[0] != 0:
+            logger.error("设置加载失败",exc_info=(status))
+            reply = QMessageBox.critical(None, "设置加载错误", "设置加载失败，请尝试重新启动本程序或尝试手动修改位于setting文件夹的private_setting.yaml。\n若问题不能解决，欢迎向作者反馈。(联系方式在'README.md'或'请先读我.pdf'中)")
+            sys.exit(-1)
         self.setting.history_path = history_path
         self.setting_widget = SettingWidget()
         self.setting_widget.setting_manager.history_path = history_path
@@ -490,7 +494,7 @@ class mainWidget(QWidget):
         self.current_time_counter = (self.current_time_counter + 1) % TIMESENDGAP
         # status_bar_hint = ''
         if self.pet_part is not None:
-            sys_input += f"{setting.get_user_name()}摸了摸你的{self.pet_part}|"
+            sys_input += f"{self.setting.get_user_name()}摸了摸你的{self.pet_part}|"
             if clear_pet_state:
                 self.pet_part = None
         return sys_input
@@ -628,8 +632,8 @@ def main():
     sys.exit(main_app.exec_())
 
 
-def set_setting(_setting: settingManager):
-    _setting.load_system_prompt_main()
+def set_setting(__setting: settingManager):
+    __setting.load_system_prompt_main()
     state = _setting.write_yaml()
     logger.info(f"设置写入状态：{state}")
 
@@ -653,8 +657,8 @@ def initize():
 if __name__ == "__main__":
     logger.info("程序启动")
     main_app = QApplication(sys.argv)
-    setting = settingManager()
-    state_num = setting.load_from_file()
+    _setting = settingManager()
+    state_num = _setting.load_from_file()
     if state_num[0] == 0:
         logger.info("成功加载设置")
         main()
