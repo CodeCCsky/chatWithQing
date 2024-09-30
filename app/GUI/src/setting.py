@@ -25,16 +25,19 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
-        self.initValue()
-        self.initConnect()
-
-    def initValue(self):
+        self.emotion_manager = emo_manager()
+        self.emo_manager_widget = emotionManagerWidget(self.emotion_manager)
         self.setting_manager = settingManager()
         result = self.setting_manager.load_from_file()
         if result[0] != 0:
             raise ValueError(f"设置错误. error: {result}")
         self.setting_manager_backup = copy.deepcopy(self.setting_manager)
-        self.emotion_manager = emo_manager()
+        self.show_gap_timer = QTimer()
+        self.initValue()
+        self.initConnect()
+
+    def initValue(self):
+        self.emotion_manager.read_yaml()
 
         # user
         self.yourNameEdit.setText(self.setting_manager.user.user_name)
@@ -86,8 +89,8 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.textShowSpeedSpinBox.setValue(
             self.setting_manager.show_setting.text_show_gap
         )
-        self.show_gap_timer = QTimer()
-        self.show_gap_timer.timeout.connect(self.progress_example)
+        if self.show_gap_timer.receivers(self.show_gap_timer.timeout) == 0:
+            self.show_gap_timer.timeout.connect(self.progress_example)
         self.example_text = "这个显示速度还可以吗？"
         self.example_pointer = 0
         self.progress_text_gap(self.setting_manager.show_setting.text_show_gap)
@@ -119,7 +122,6 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.showEmoInTextCheckBox.setChecked(
             self.setting_manager.emo_setting.show_in_text
         )
-        self.emo_manager_widget = emotionManagerWidget(self.emotion_manager)
         self.emo_manager_widget.setVisible(False)
 
     def initConnect(self):
@@ -328,6 +330,10 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
     def cancel_save(self):
         self.setting_manager = copy.deepcopy(self.setting_manager_backup)
         self.closeEvent(QCloseEvent())
+
+    def show_window(self) -> None:
+        self.setVisible(True)
+        self.initValue()
 
     def sideListWidgetClicked(self, item):
         index = self.listWidget.indexFromItem(item)
