@@ -29,14 +29,18 @@ class Ui_Dialog(object):
         self.listWidget.setObjectName("listWidget")
         self.horizontalLayout.addWidget(self.listWidget)
         self.rightBaseWidget = QtWidgets.QWidget(self.widget)
-        self.rightBaseWidget.setStyleSheet("#rightBaseWidget{border: 2px dashed black;}")
+        self.rightBaseWidget.setStyleSheet(
+            "#rightBaseWidget{border: 2px dashed black;}"
+        )
         self.rightBaseWidget.setObjectName("rightBaseWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.rightBaseWidget)
         self.verticalLayout_2.setContentsMargins(6, 6, 6, 6)
         self.verticalLayout_2.setSpacing(3)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.widget_2 = QtWidgets.QWidget(self.rightBaseWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.widget_2.sizePolicy().hasHeightForWidth())
@@ -52,7 +56,9 @@ class Ui_Dialog(object):
         self.forceReplaceButton = QtWidgets.QPushButton(self.widget_2)
         self.forceReplaceButton.setObjectName("forceReplaceButton")
         self.horizontalLayout_3.addWidget(self.forceReplaceButton)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.horizontalLayout_3.addItem(spacerItem)
         self.cancelButton = QtWidgets.QPushButton(self.widget_2)
         self.cancelButton.setObjectName("cancelButton")
@@ -97,13 +103,15 @@ class Ui_Dialog(object):
         self.verticalLayout.addWidget(self.widget)
         self.confirmButtonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.confirmButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.confirmButtonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.confirmButtonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok
+        )
         self.confirmButtonBox.setObjectName("confirmButtonBox")
         self.verticalLayout.addWidget(self.confirmButtonBox)
 
         self.retranslateUi(Dialog)
-        self.confirmButtonBox.accepted.connect(Dialog.accept) # type: ignore
-        self.confirmButtonBox.rejected.connect(Dialog.reject) # type: ignore
+        self.confirmButtonBox.accepted.connect(Dialog.accept)  # type: ignore
+        self.confirmButtonBox.rejected.connect(Dialog.reject)  # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):

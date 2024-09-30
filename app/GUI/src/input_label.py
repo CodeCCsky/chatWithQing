@@ -20,11 +20,15 @@ class inputLabel(opacity_controller, Ui_Form):
         self.input_font_size = 14
         self.button_font_size = 14
         self.keep_opacity_time = 5000
-        self.setup_opacity_controller(opacity_next_mode_list={"normal": "await", "await": "await", "hide": "hide"})
+        self.setup_opacity_controller(
+            opacity_next_mode_list={"normal": "await", "await": "await", "hide": "hide"}
+        )
         self.initUI()
 
     def initUI(self):
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
+        self.setWindowFlags(
+            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow
+        )
 
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")

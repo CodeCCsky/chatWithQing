@@ -67,7 +67,9 @@ class emo_manager:
             if matching_keys:
                 chosen_key = random.choice(matching_keys)
                 extracted_emotion[start - offset] = chosen_key
-                result_string = result_string[: start - offset] + result_string[end - offset :]
+                result_string = (
+                    result_string[: start - offset] + result_string[end - offset :]
+                )
                 offset += end - start
             else:
                 extracted_emotion[start - offset] = -1

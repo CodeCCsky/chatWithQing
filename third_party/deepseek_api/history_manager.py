@@ -25,7 +25,9 @@ class chatManager:
         self.summaried_history = summaried_history
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
-        self.origin_history.append({"role": "user", "content": {self.user_name: user_input}})
+        self.origin_history.append(
+            {"role": "user", "content": {self.user_name: user_input}}
+        )
         if sys_input:
             self.origin_history[-1]["content"]["sys"] = sys_input
         self.update_update_time()
@@ -36,7 +38,9 @@ class chatManager:
             self.origin_history.append({"role": "assistant", "content": content})
         except ValueError:
             logger.error("模型返回格式有误，历史对话文件将直接存储原始字符串")
-            self.origin_history.append({"role": "assistant", "content": assistant_response})
+            self.origin_history.append(
+                {"role": "assistant", "content": assistant_response}
+            )
         self.update_update_time()
 
     def add_tool_message(self, tool_msg: str) -> None:
@@ -46,18 +50,24 @@ class chatManager:
     def change_name(self, new_name: str):
         origin_history_copy = copy.deepcopy(self.origin_history)
         for index, item in enumerate(self.origin_history):
-            if isinstance(item["content"],dict) and self.user_name in item["content"]:
+            if isinstance(item["content"], dict) and self.user_name in item["content"]:
                 for key, value in item["content"].items():
                     if key == self.user_name:
-                        origin_history_copy[index]["content"][new_name] = origin_history_copy[index]["content"].pop(self.user_name)
+                        origin_history_copy[index]["content"][new_name] = (
+                            origin_history_copy[index]["content"].pop(self.user_name)
+                        )
         self.origin_history = origin_history_copy
 
         progressed_history_copy = copy.deepcopy(self.progressed_history)
         for index, item in enumerate(self.progressed_history):
-            if isinstance(item["content"],dict) and self.user_name in item["content"]:
+            if isinstance(item["content"], dict) and self.user_name in item["content"]:
                 for key, value in item["content"].items():
                     if key == self.user_name:
-                        progressed_history_copy[index]["content"][new_name] = progressed_history_copy[index]["content"].pop(self.user_name)
+                        progressed_history_copy[index]["content"][new_name] = (
+                            progressed_history_copy[index]["content"].pop(
+                                self.user_name
+                            )
+                        )
 
         self.user_name = new_name
 
@@ -65,13 +75,18 @@ class chatManager:
         processed_history = copy.deepcopy(self.origin_history)  # TODO
         for i in range(len(processed_history)):
             if isinstance(processed_history[i]["content"], dict):
-                processed_history[i]["content"] = json.dumps(self.origin_history[i]["content"], ensure_ascii=False)
+                processed_history[i]["content"] = json.dumps(
+                    self.origin_history[i]["content"], ensure_ascii=False
+                )
         if self.summaried_history:
             processed_history.insert(
                 0,
                 {
                     "role": "user",
-                    "content": json.dumps({self.user_name: "", "sys": self.summaried_history}, ensure_ascii=False),
+                    "content": json.dumps(
+                        {self.user_name: "", "sys": self.summaried_history},
+                        ensure_ascii=False,
+                    ),
                 },
             )
         # print(processed_history)
@@ -149,13 +164,17 @@ class historyManager:
                 for _slice in historys:
                     self.historys.append(chatManager(_slice, self.user_name))
                     if self.historys[-1].is_empty():
-                        logger.debug(f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。")
+                        logger.debug(
+                            f"检测到创建时间为{self.historys[-1].create_time}的空对话记录，已自动删除。"
+                        )
                         self.historys.pop()
         except FileNotFoundError as fe:
             logger.warning(f"指定的对话历史文件未找到。Error:{fe}")
             # self.create_new_history_file()
         except PermissionError as pe:
-            logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
+            logger.error(
+                f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}"
+            )
             # self.create_new_history_file()
         except Exception as e:
             logger.error(f"发生了意料之外的错误。Error:{e}")
@@ -165,7 +184,9 @@ class historyManager:
         self.current_history_index = index
 
     def create_new_chat(self) -> int:
-        self.historys.append(chatManager(chatManager.get_template_dict(), self.user_name))
+        self.historys.append(
+            chatManager(chatManager.get_template_dict(), self.user_name)
+        )
         self.current_history_index = len(self.historys) - 1
         self.historys[self.current_history_index].init_create_time()
         return self.current_history_index
@@ -190,18 +211,24 @@ class historyManager:
             history.change_name(self.user_name)
 
     def add_user_message(self, user_input: str, sys_input: str = None) -> None:
-        self.historys[self.current_history_index].add_user_message(user_input, sys_input)
+        self.historys[self.current_history_index].add_user_message(
+            user_input, sys_input
+        )
         # self.save_history()
 
     @staticmethod
-    def get_user_message_template(user_name: str, user_input: str, sys_input: str = None) -> str:
+    def get_user_message_template(
+        user_name: str, user_input: str, sys_input: str = None
+    ) -> str:
         msg = {user_name: user_input}
         if sys_input:
             msg["sys"] = sys_input
         return json.dumps(msg)
 
     def add_assistant_message(self, assistant_response: str) -> None:
-        self.historys[self.current_history_index].add_assistant_message(assistant_response)
+        self.historys[self.current_history_index].add_assistant_message(
+            assistant_response
+        )
 
     def add_tool_message(self, tool_msg: str) -> None:
         self.historys[self.current_history_index].add_tool_message(tool_msg)
@@ -225,7 +252,9 @@ class historyManager:
         return self.summary
 
     def set_current_summaried_history(self, summaried_history: str) -> None:
-        self.historys[self.current_history_index].set_summaried_history(summaried_history)
+        self.historys[self.current_history_index].set_summaried_history(
+            summaried_history
+        )
 
     def set_summary_by_index(self, index: int, summary: str) -> None:
         self.historys[index].summary = summary
@@ -247,4 +276,9 @@ class historyManager:
             historys = []
             for _slice in self.historys:
                 historys.append(_slice.get_full_fomatted_data())
-            json.dump({"summary": self.summary, "historys": historys}, f, indent=4, ensure_ascii=False)
+            json.dump(
+                {"summary": self.summary, "historys": historys},
+                f,
+                indent=4,
+                ensure_ascii=False,
+            )

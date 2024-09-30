@@ -31,18 +31,26 @@ class chat_activity_manager(QObject):
 
     def start_timer(self):
         logger.info("自激活模块开启")
-        self.wait_timer.start(int(self.wakeup_time[self.current_wait_index] * 60 * 1000))
+        self.wait_timer.start(
+            int(self.wakeup_time[self.current_wait_index] * 60 * 1000)
+        )
 
     def reset_wakeup(self, *args) -> None:
         self.wait_timer.stop()
         self.current_wait_index = 0
-        self.wait_timer.start(int(self.wakeup_time[self.current_wait_index] * 60 * 1000))
+        self.wait_timer.start(
+            int(self.wakeup_time[self.current_wait_index] * 60 * 1000)
+        )
 
     def start_check_complete_topic(self) -> None:
-        logger.info(f"自激活时间节点到达 {self.current_wait_index+1}/{len(self.wakeup_time)}")
+        logger.info(
+            f"自激活时间节点到达 {self.current_wait_index+1}/{len(self.wakeup_time)}"
+        )
         self.wait_timer.stop()
         if self.current_wait_index == 0:
-            self.check_thread = topic_check_thread(self.history_manager, self.setting_manager)
+            self.check_thread = topic_check_thread(
+                self.history_manager, self.setting_manager
+            )
             self.check_thread.result.connect(self.progress_wakeup)
             self.check_thread.start()
         else:
@@ -52,7 +60,9 @@ class chat_activity_manager(QObject):
         self.is_complete_topic = is_complete_topic
         wait_time = sum(self.wakeup_time[: self.current_wait_index + 1])
         if self.current_wait_index == len(self.wakeup_time) - 2:
-            logger.info("自激活中...已达最大自激活次数，在这次自激活后将关闭该模块。下次需要输入文本来重启自激活模块")
+            logger.info(
+                "自激活中...已达最大自激活次数，在这次自激活后将关闭该模块。下次需要输入文本来重启自激活模块"
+            )
             self.chatActivityTimeout.emit(-1)
             return None
         self.current_wait_index += 1
@@ -63,4 +73,6 @@ class chat_activity_manager(QObject):
         else:
             logger.info("自激活中")
             self.chatActivityTimeout.emit(wait_time)
-        self.wait_timer.start(int(self.wakeup_time[self.current_wait_index] * 60 * 1000))
+        self.wait_timer.start(
+            int(self.wakeup_time[self.current_wait_index] * 60 * 1000)
+        )

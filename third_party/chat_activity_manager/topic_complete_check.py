@@ -53,13 +53,20 @@ logger = logging.getLogger(__name__)
 class topic_check_thread(QThread):
     result = pyqtSignal(bool)
 
-    def __init__(self, history_manager: historyManager, setting_manager: settingManager, parent=None) -> None:
+    def __init__(
+        self,
+        history_manager: historyManager,
+        setting_manager: settingManager,
+        parent=None,
+    ) -> None:
         super().__init__(parent)
         self.history_manager = history_manager
         self.setting_manager = setting_manager
         self.prompt = get_prompt()
         self.interface = deepseek_model(
-            api_key=self.setting_manager.get_api_key(), system_prompt=self.prompt, temperature=1
+            api_key=self.setting_manager.get_api_key(),
+            system_prompt=self.prompt,
+            temperature=1,
         )
 
     def run(self):
@@ -74,9 +81,13 @@ class topic_check_thread(QThread):
                 )
             elif item["role"] == "assistant":
                 try:
-                    processed_history_list.append(f"晴:{item['content']['role_response']}")
+                    processed_history_list.append(
+                        f"晴:{item['content']['role_response']}"
+                    )
                 except (KeyError, ValueError, TypeError):
-                    processed_history_list.append(f"{self.setting_manager.get_user_name()}:{item['content']}")
+                    processed_history_list.append(
+                        f"{self.setting_manager.get_user_name()}:{item['content']}"
+                    )
         if processed_history_list == []:
             logger.info("判断话题结束线程 - 无历史记录，默认返回结束")
             self.result.emit(True)
@@ -94,17 +105,25 @@ class topic_check_thread(QThread):
                 logger.info(f"判断话题结束线程 - 返回:话题结束 - 返回值:{response}")
                 self.result.emit(True)
             else:
-                logger.warning(f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}")
+                logger.warning(
+                    f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}"
+                )
                 self.result.emit(True)
         except Exception:
-            logger.warning(f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}")
+            logger.warning(
+                f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}"
+            )
             self.result.emit(True)
 
 
 def get_prompt() -> str:
     prompt = PROMPT
     try:
-        with open(r"system_prompt\chat_acitvity_manager\topic_complete_check_prompt.txt", "r", encoding="utf-8") as f:
+        with open(
+            r"system_prompt\chat_acitvity_manager\topic_complete_check_prompt.txt",
+            "r",
+            encoding="utf-8",
+        ) as f:
             prompt = f.read()
     except OSError:
         pass

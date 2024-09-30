@@ -46,16 +46,28 @@ class PetGraphicsView(QGraphicsView):
 
         self.show_state = {"body": 0, "eyes": self.EYE_NORMAL, "mouth": 0, "hand": 0}
 
-        self.parts = {"body": self.body, "eyes": self.eyes, "mouth": self.mouth_say, "hand": self.hand}
+        self.parts = {
+            "body": self.body,
+            "eyes": self.eyes,
+            "mouth": self.mouth_say,
+            "hand": self.hand,
+        }
 
         self.img_items = {
             "body": QGraphicsPixmapItem(self.parts["body"][self.show_state["body"]][0]),
             "eyes": QGraphicsPixmapItem(self.parts["eyes"][self.show_state["eyes"]][0]),
-            "mouth": QGraphicsPixmapItem(self.parts["mouth"][self.show_state["mouth"]][0]),
+            "mouth": QGraphicsPixmapItem(
+                self.parts["mouth"][self.show_state["mouth"]][0]
+            ),
             "hand": QGraphicsPixmapItem(self.parts["hand"][self.show_state["hand"]][0]),
         }
 
-        self.positions = {"body": (0, 0), "eyes": (200, 600), "mouth": (535, 995), "hand": (300, 890)}
+        self.positions = {
+            "body": (0, 0),
+            "eyes": (200, 600),
+            "mouth": (535, 995),
+            "hand": (300, 890),
+        }
 
         self.current_indices = {"body": 0, "eyes": 0, "mouth": 0, "hand": 0}
 
@@ -72,7 +84,12 @@ class PetGraphicsView(QGraphicsView):
         self.img_items["mouth"].setZValue(3)
         self.img_items["hand"].setZValue(4)
 
-        self.timers = {"body": QTimer(), "eyes": QTimer(), "mouth": QTimer(), "hand": QTimer()}
+        self.timers = {
+            "body": QTimer(),
+            "eyes": QTimer(),
+            "mouth": QTimer(),
+            "hand": QTimer(),
+        }
         # 说话时长倒计时
         self.speak_time = QTimer()
         self.speak_time.timeout.connect(self.stop_speak)
@@ -91,13 +108,28 @@ class PetGraphicsView(QGraphicsView):
 
     def init_resources(self) -> None:
         self.eyes = (
-            (QPixmap(":/image/eye-1a.png"), QPixmap(":/image/eye-1b.png")),  # normal - 0
-            (QPixmap(":/image/eye-2a.png"), QPixmap(":/image/eye-2b.png")),  # intense - 1
-            (QPixmap(":/image/eye-4a.png"), QPixmap(":/image/eye-4b.png")),  # surprise - 2
-            (QPixmap(":/image/eye-12a.png"), QPixmap(":/image/eye-12b.png")),  # half_closed - 3
+            (
+                QPixmap(":/image/eye-1a.png"),
+                QPixmap(":/image/eye-1b.png"),
+            ),  # normal - 0
+            (
+                QPixmap(":/image/eye-2a.png"),
+                QPixmap(":/image/eye-2b.png"),
+            ),  # intense - 1
+            (
+                QPixmap(":/image/eye-4a.png"),
+                QPixmap(":/image/eye-4b.png"),
+            ),  # surprise - 2
+            (
+                QPixmap(":/image/eye-12a.png"),
+                QPixmap(":/image/eye-12b.png"),
+            ),  # half_closed - 3
             (QPixmap(":/image/eye-13a.png"),),  # close_normal - 4
             (QPixmap(":/image/eye-3a.png"),),  # close_with_depress - 5
-            (QPixmap(":/image/eye-5a.png"), QPixmap(":/image/eye-5b.png")),  # close_with_smile - 6
+            (
+                QPixmap(":/image/eye-5a.png"),
+                QPixmap(":/image/eye-5b.png"),
+            ),  # close_with_smile - 6
         )
         self.mouth_say = (
             (
@@ -162,7 +194,9 @@ class PetGraphicsView(QGraphicsView):
         """更新组件"""
         current_index = self.current_indices[part]
         next_index = (current_index + 1) % len(self.parts[part][self.show_state[part]])
-        self.img_items[part].setPixmap(self.parts[part][self.show_state[part]][next_index])
+        self.img_items[part].setPixmap(
+            self.parts[part][self.show_state[part]][next_index]
+        )
         self.current_indices[part] = next_index
 
     def change_emo(self, index: int, add_lock: bool = False) -> bool:
@@ -179,7 +213,11 @@ class PetGraphicsView(QGraphicsView):
             # self.stop_image_change_timer()
             self.show_state["eyes"] = index
             self.current_indices["eyes"] = 0
-            self.img_items["eyes"].setPixmap(self.parts["eyes"][self.show_state["eyes"]][self.current_indices["eyes"]])
+            self.img_items["eyes"].setPixmap(
+                self.parts["eyes"][self.show_state["eyes"]][
+                    self.current_indices["eyes"]
+                ]
+            )
             # self.restart_image_change_timer()
         else:
             return False
@@ -214,12 +252,21 @@ class PetGraphicsView(QGraphicsView):
     def resizeEvent(self, event):
         """让所有立绘部分跟随组件缩放"""
         scale_factor = min(
-            self.width() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].width(),
-            self.height() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].height(),
+            self.width()
+            / self.parts["body"][self.show_state["body"]][
+                self.current_indices["body"]
+            ].width(),
+            self.height()
+            / self.parts["body"][self.show_state["body"]][
+                self.current_indices["body"]
+            ].height(),
         )
         for part, item in self.img_items.items():
             item.setScale(scale_factor)
-            item.setPos(self.positions[part][0] * scale_factor, self.positions[part][1] * scale_factor)
+            item.setPos(
+                self.positions[part][0] * scale_factor,
+                self.positions[part][1] * scale_factor,
+            )
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from  app.GUI.src.pet_view import PetGraphicsView
+from app.GUI.src.pet_view import PetGraphicsView
 
 
 class Ui_MainWindow(object):
@@ -39,25 +39,37 @@ class Ui_MainWindow(object):
         self.line.setObjectName("line")
         self.verticalLayout_3.addWidget(self.line)
         self.categoryMenuListWidget = QtWidgets.QListWidget(self.widget_5)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.categoryMenuListWidget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.categoryMenuListWidget.sizePolicy().hasHeightForWidth()
+        )
         self.categoryMenuListWidget.setSizePolicy(sizePolicy)
         self.categoryMenuListWidget.setMinimumSize(QtCore.QSize(140, 200))
         self.categoryMenuListWidget.setMaximumSize(QtCore.QSize(140, 16777215))
         self.categoryMenuListWidget.setStyleSheet("")
         self.categoryMenuListWidget.setFrameShape(QtWidgets.QFrame.Panel)
         self.categoryMenuListWidget.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.categoryMenuListWidget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.categoryMenuListWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustIgnored)
+        self.categoryMenuListWidget.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff
+        )
+        self.categoryMenuListWidget.setSizeAdjustPolicy(
+            QtWidgets.QAbstractScrollArea.AdjustIgnored
+        )
         self.categoryMenuListWidget.setObjectName("categoryMenuListWidget")
         item = QtWidgets.QListWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
         font.setPointSize(12)
         item.setFont(font)
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled)
+        item.setFlags(
+            QtCore.Qt.ItemIsSelectable
+            | QtCore.Qt.ItemIsUserCheckable
+            | QtCore.Qt.ItemIsEnabled
+        )
         self.categoryMenuListWidget.addItem(item)
         item = QtWidgets.QListWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
@@ -131,7 +143,9 @@ class Ui_MainWindow(object):
         self.delButton = QtWidgets.QPushButton(self.widget_2)
         self.delButton.setObjectName("delButton")
         self.horizontalLayout.addWidget(self.delButton)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout.addWidget(self.widget_2)
         self.strShowListWidget = QtWidgets.QListWidget(self.widget)
@@ -163,7 +177,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.previewWidget)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.label_2 = QtWidgets.QLabel(self.previewWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
@@ -176,12 +192,16 @@ class Ui_MainWindow(object):
         self.graphicsView.setMaximumSize(QtCore.QSize(300, 400))
         self.graphicsView.setObjectName("graphicsView")
         self.verticalLayout_4.addWidget(self.graphicsView)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 321, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            20, 321, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_4.addItem(spacerItem1)
         self.horizontalLayout_2.addWidget(self.previewWidget)
         self.verticalLayout_2.addWidget(self.widget_4)
         self.ensureButtonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
-        self.ensureButtonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.ensureButtonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok
+        )
         self.ensureButtonBox.setObjectName("ensureButtonBox")
         self.verticalLayout_2.addWidget(self.ensureButtonBox)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -192,7 +212,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "表情差分标识管理"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">表情差分标识 分类</span></p></body></html>"))
+        self.label.setText(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p><span style=" font-size:12pt; font-weight:600;">表情差分标识 分类</span></p></body></html>',
+            )
+        )
         __sortingEnabled = self.categoryMenuListWidget.isSortingEnabled()
         self.categoryMenuListWidget.setSortingEnabled(False)
         item = self.categoryMenuListWidget.item(0)
@@ -218,4 +243,9 @@ class Ui_MainWindow(object):
         self.copyButton.setText(_translate("MainWindow", "复制到.."))
         self.delButton.setText(_translate("MainWindow", "删除"))
         self.addItemButton.setText(_translate("MainWindow", "添加"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt;\">当前表情预览</span></p></body></html>"))
+        self.label_2.setText(
+            _translate(
+                "MainWindow",
+                '<html><head/><body><p><span style=" font-size:10pt;">当前表情预览</span></p></body></html>',
+            )
+        )

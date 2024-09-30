@@ -11,7 +11,15 @@ import random
 
 from PyQt5.QtCore import Qt, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon, QFontDatabase, QCloseEvent
-from PyQt5.QtWidgets import QWidget, QApplication, QAction, QSystemTrayIcon, QMenu, QStyleFactory, QMessageBox
+from PyQt5.QtWidgets import (
+    QWidget,
+    QApplication,
+    QAction,
+    QSystemTrayIcon,
+    QMenu,
+    QStyleFactory,
+    QMessageBox,
+)
 
 
 from app.GUI import (
@@ -59,11 +67,17 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 def handle_exception(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, Exception):
-        logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+        logging.error(
+            "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
+        )
     sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+
 sys.excepthook = handle_exception
+
 
 class mainWidget(QWidget):
     S_NORMAL = 0
@@ -91,7 +105,9 @@ class mainWidget(QWidget):
         self.init_stroke()
         self.init_chat_activity_manager()
         self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_interface, self.setting.get_system_prompt())
+        self.setting.deepseek_model.use_setting(
+            self.llm_interface, self.setting.get_system_prompt()
+        )
 
     ### 初始化部分
     def init_resource(self):
@@ -161,7 +177,8 @@ class mainWidget(QWidget):
         self.desktop_pet = DesktopPet(use_tts=self.setting.tts_setting.use_tts)
         self.desktop_pet.closeEvent = self.closeEvent
         self.desktop_pet.resize(
-            int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
+            int(300 * self.setting.show_setting.img_show_zoom),
+            int(400 * self.setting.show_setting.img_show_zoom),
         )
         self.desktop_pet.move(
             int(self.screen().geometry().width() * 0.95 - self.desktop_pet.width()),
@@ -189,7 +206,9 @@ class mainWidget(QWidget):
         self.input_label.move(
             int(
                 min(
-                    self.desktop_pet.x() + self.desktop_pet.width() / 2 - self.input_label.width() / 2,
+                    self.desktop_pet.x()
+                    + self.desktop_pet.width() / 2
+                    - self.input_label.width() / 2,
                     self.screen().geometry().width() - self.input_label.width(),
                 )
             ),
@@ -206,7 +225,9 @@ class mainWidget(QWidget):
         self.talk_bubble.show()
         self.input_label.show()
         # TTS
-        self.tts_model = TTSAudio(cache_path=tts_cache_path, is_play=True)  # TODO EMOTION
+        self.tts_model = TTSAudio(
+            cache_path=tts_cache_path, is_play=True
+        )  # TODO EMOTION
         self.tts_thread: tts_thread = None
         # no TTS
         self.no_tts_sound_path = no_tts_sound_path
@@ -231,10 +252,14 @@ class mainWidget(QWidget):
             if self.setting.chat_summary_setting.add_x_day_ago_summary:
                 now_date = datetime.datetime.now()
                 list_of_worker: list[summaryWorker] = []
-                for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                for i in range(
+                    1, self.setting.chat_summary_setting.value_of_x_day_ago + 1
+                ):
                     current_date = now_date - datetime.timedelta(days=i)
                     current_date_str = current_date.strftime("%Y%m%d")
-                    file_path = os.path.join(default_history_path, f"{current_date_str}.json")
+                    file_path = os.path.join(
+                        default_history_path, f"{current_date_str}.json"
+                    )
                     if not os.path.exists(file_path):
                         continue
                     current_date_worker = summaryWorker(
@@ -247,7 +272,9 @@ class mainWidget(QWidget):
                     list_of_worker.append(current_date_worker)
 
             self.load_widget = loadWidget(total_task_num)
-            today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
+            today_summary_worker.signals.finish_a_task.connect(
+                self.load_widget.finish_a_task
+            )
             self.summary_threadpool.start(today_summary_worker)
             if self.setting.chat_summary_setting.add_x_day_ago_summary:
                 for worker in list_of_worker:
@@ -268,7 +295,9 @@ class mainWidget(QWidget):
             # 处理是否继续上次对话
             if self.history_manager.get_last_index() != -1:
                 last_time = datetime.datetime.strptime(
-                    self.history_manager.get_update_time_by_index(self.history_manager.get_last_index()),
+                    self.history_manager.get_update_time_by_index(
+                        self.history_manager.get_last_index()
+                    ),
                     "%Y-%m-%d %H:%M:%S",
                 )
                 twenty_min = datetime.timedelta(minutes=20)
@@ -277,7 +306,9 @@ class mainWidget(QWidget):
                 if time_diff > twenty_min:
                     self.history_manager.create_new_chat()
                 else:
-                    self.history_manager.set_current_index(self.history_manager.get_last_index())
+                    self.history_manager.set_current_index(
+                        self.history_manager.get_last_index()
+                    )
                     self.history_manager.set_current_summary(None)
                     min_diff = time_diff.total_seconds() / 60
                     self.history_manager.add_user_message(
@@ -290,27 +321,37 @@ class mainWidget(QWidget):
             self.focus_memory_manager.update_cache_clear()
             if self.focus_memory_manager.get_important_memory() != []:
                 self.history_manager.add_user_message(
-                    "", f"加载的历史重要记忆:{'|'.join(self.focus_memory_manager.get_important_memory())}"
+                    "",
+                    f"加载的历史重要记忆:{'|'.join(self.focus_memory_manager.get_important_memory())}",
                 )
             if self.focus_memory_manager.get_cache_memory() != {}:
                 list_of_cache_memeory = []
                 for key, value in self.focus_memory_manager.get_cache_memory().items():
-                    list_of_cache_memeory.append(f"{key}: {'# '.join([content for content, _ in value])}")
+                    list_of_cache_memeory.append(
+                        f"{key}: {'# '.join([content for content, _ in value])}"
+                    )
                 joined_cache_memory = "\n".join(list_of_cache_memeory)
-                self.history_manager.add_user_message("", f"加载的部分历史缓存记忆:{joined_cache_memory}")
+                self.history_manager.add_user_message(
+                    "", f"加载的部分历史缓存记忆:{joined_cache_memory}"
+                )
 
             if self.setting.chat_summary_setting.add_same_day_summary:
                 full_summary_str = ""
                 now_date = datetime.datetime.now()
                 if self.setting.chat_summary_setting.add_x_day_ago_summary:
-                    for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                    for i in range(
+                        1, self.setting.chat_summary_setting.value_of_x_day_ago + 1
+                    ):
                         current_date = now_date - datetime.timedelta(days=i)
                         current_date_str = current_date.strftime("%Y%m%d")
-                        file_path = os.path.join(default_history_path, f"{current_date_str}.json")
+                        file_path = os.path.join(
+                            default_history_path, f"{current_date_str}.json"
+                        )
                         if not os.path.exists(file_path):
                             continue
                         summary = historyManager(
-                            user_name=self.setting.get_user_name(), history_path=file_path
+                            user_name=self.setting.get_user_name(),
+                            history_path=file_path,
                         ).get_overall_summary()
 
                         full_summary_str += f"|{current_date.year}年{current_date.month}月{current_date.day}日对话记录总结: {summary}|\n"
@@ -318,17 +359,21 @@ class mainWidget(QWidget):
                     full_summary_str += "|今日对话记录总结:"
                     for i in range(self.history_manager.current_history_index):
                         crt_time = datetime.datetime.strptime(
-                            self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S"
+                            self.history_manager.get_create_time_by_index(i),
+                            "%Y-%m-%d %H:%M:%S",
                         )
                         upd_time = datetime.datetime.strptime(
-                            self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S"
+                            self.history_manager.get_update_time_by_index(i),
+                            "%Y-%m-%d %H:%M:%S",
                         )
                         full_summary_str += f"\n{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.setting.get_user_name()}对话历史总结:{self.history_manager.get_summary_by_index(i)}"
                     full_summary_str += "|"
                 self.history_manager.set_current_summaried_history(full_summary_str)
             self.load_widget.close()
             self.load_widget = None
-            self.llm_interface = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
+            self.llm_interface = deepseek_model(
+                self.setting.get_api_key(), self.setting.get_system_prompt()
+            )
             self.response_content = {}
             self.llm_thread = None
             self.init_2()
@@ -341,7 +386,9 @@ class mainWidget(QWidget):
         )
         self.chat_activity_manager.chatActivityTimeout.connect(self.progress_wakeup)
         self.input_label.requestSend.connect(self.chat_activity_manager.reset_wakeup)
-        self.input_label.input_edit.textChanged.connect(self.chat_activity_manager.reset_wakeup)
+        self.input_label.input_edit.textChanged.connect(
+            self.chat_activity_manager.reset_wakeup
+        )
         self.chat_activity_manager.start_timer()
 
     ### '显示组件'选项部分
@@ -363,19 +410,30 @@ class mainWidget(QWidget):
         if setting_manager.user != self.setting.user:
             diff_list = []
             for (key1, value1), (key2, value2) in zip(
-                self.setting.user.get_dict().items(), setting_manager.user.get_dict().items()
+                self.setting.user.get_dict().items(),
+                setting_manager.user.get_dict().items(),
             ):
                 diff_list.append(f"{key1}:{value1}->{value2}")
             self.history_manager.add_user_message(
-                "", f"检测到对{self.setting.get_user_name()}认知设置变更: {', '.join(diff_list)}"
+                "",
+                f"检测到对{self.setting.get_user_name()}认知设置变更: {', '.join(diff_list)}",
             )
 
             current_date = datetime.datetime.now().strftime("%Y-%m-%d")
             cache_memory = self.focus_memory_manager.get_cache_memory()
             value_list = cache_memory.get(current_date, [])
             if value_list != []:
-                value_list = [value for value in value_list if not value[0].startswith(f"认知设置变更: ")]
-            value_list.append((f"认知设置变更: {', '.join(diff_list)}", int(self.setting.chat_summary_setting.value_of_x_day_ago)))
+                value_list = [
+                    value
+                    for value in value_list
+                    if not value[0].startswith(f"认知设置变更: ")
+                ]
+            value_list.append(
+                (
+                    f"认知设置变更: {', '.join(diff_list)}",
+                    int(self.setting.chat_summary_setting.value_of_x_day_ago),
+                )
+            )
             cache_memory[current_date] = value_list
             self.focus_memory_manager.set_cache_memory(cache_memory)
             self.focus_memory_manager.save_file()
@@ -385,9 +443,12 @@ class mainWidget(QWidget):
         self.setting.load_system_prompt_main()
         # TODO 认知更改后处理
         self.setting.tts_setting.use_setting(self.tts_model)
-        self.setting.deepseek_model.use_setting(self.llm_interface, self.setting.get_system_prompt())
+        self.setting.deepseek_model.use_setting(
+            self.llm_interface, self.setting.get_system_prompt()
+        )
         self.desktop_pet.resize(
-            int(300 * self.setting.show_setting.img_show_zoom), int(400 * self.setting.show_setting.img_show_zoom)
+            int(300 * self.setting.show_setting.img_show_zoom),
+            int(400 * self.setting.show_setting.img_show_zoom),
         )
         self.setting.write_yaml()
 
@@ -400,7 +461,9 @@ class mainWidget(QWidget):
         matching_dict = {0: "头", 1: "胡萝卜发卡", 2: "头发", 3: "头发", 4: "脸"}
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
-            self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+            self.input_label.statusBar.showMessage(
+                f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带."
+            )
 
     ### 处理自激活部分
 
@@ -419,7 +482,11 @@ class mainWidget(QWidget):
     def progress_sys_msg(self, sys: str, clear_pet_state: bool = True) -> str:
         sys = str(sys)
         _time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        sys_input = f"|当前时间{_time}(24时制)|{sys}" if self.current_time_counter == 0 else f"|{sys}"
+        sys_input = (
+            f"|当前时间{_time}(24时制)|{sys}"
+            if self.current_time_counter == 0
+            else f"|{sys}"
+        )
         self.current_time_counter = (self.current_time_counter + 1) % TIMESENDGAP
         # status_bar_hint = ''
         if self.pet_part is not None:
@@ -431,10 +498,14 @@ class mainWidget(QWidget):
     def start_talk(self, input_text: str, sys: str = ""):
         # TODO 更多系统提示
         sys_input = self.progress_sys_msg(sys)
-        self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
+        self.history_manager.add_user_message(
+            user_input=input_text, sys_input=sys_input
+        )
         self.history_manager.save_history()
         self.llm_interface.load_history(self.history_manager.get_current_history())
-        self.llm_thread = PyQt_deepseek_request_thread(self.llm_interface, self.history_manager)
+        self.llm_thread = PyQt_deepseek_request_thread(
+            self.llm_interface, self.history_manager
+        )
         self.llm_thread.start()
         self.llm_thread.finish_signal.connect(self.progress_thinking)
 
@@ -442,14 +513,20 @@ class mainWidget(QWidget):
         response = self.llm_thread.get_response()
         try:
             self.response_content = fixJSON.loads(response)
-            self.talk_bubble.update_text(self.response_content["role_thoughts"], is_thinking=True)
+            self.talk_bubble.update_text(
+                self.response_content["role_thoughts"], is_thinking=True
+            )
             if not self.setting.emo_setting.show_in_text:
-                self.response_content["role_response"] = self.emo_manager.process_string(
-                    self.response_content["role_response"]
+                self.response_content["role_response"] = (
+                    self.emo_manager.process_string(
+                        self.response_content["role_response"]
+                    )
                 )
             self.emo_manager.write_yaml()
             if self.setting.tts_setting.use_tts:
-                self.tts_thread = tts_thread(self.tts_model, self.response_content["role_response"])
+                self.tts_thread = tts_thread(
+                    self.tts_model, self.response_content["role_response"]
+                )
                 self.tts_thread.start()
                 self.tts_thread.startSpeak.connect(self.start_typing)
             else:
@@ -472,18 +549,27 @@ class mainWidget(QWidget):
     def process_typing_effect(self):
         try:
             if not self.setting.tts_setting.use_tts and re.match(
-                r"[\d\u4e00-\u9fff]", self.response_content["role_response"][0][self.on_read_text]
+                r"[\d\u4e00-\u9fff]",
+                self.response_content["role_response"][0][self.on_read_text],
             ):
                 self.no_tts_sound_manager.play_audio()
-            vaild_emo_key = [key for key in self.response_content["role_response"][1] if key <= self.on_read_text]
+            vaild_emo_key = [
+                key
+                for key in self.response_content["role_response"][1]
+                if key <= self.on_read_text
+            ]
             if not vaild_emo_key:
                 current_emo = 0
             else:
-                current_emo = self.response_content["role_response"][1][max(vaild_emo_key)]
+                current_emo = self.response_content["role_response"][1][
+                    max(vaild_emo_key)
+                ]
                 current_emo = current_emo if current_emo != -1 else 0
             self.desktop_pet.change_emo(current_emo)
             self.on_read_text += 1
-            self.talk_bubble.update_text(self.response_content["role_response"][0][: self.on_read_text])
+            self.talk_bubble.update_text(
+                self.response_content["role_response"][0][: self.on_read_text]
+            )
             if self.on_read_text > len(self.response_content["role_response"][0]):
                 self.finish_this_round_of_talk()
         except IndexError:
@@ -523,7 +609,9 @@ class mainWidget(QWidget):
             self.user_try_to_quit()
 
     def say_goodbye(self):
-        self.history_manager.add_user_message(user_input="", sys_input=f"{self.setting.get_user_name()}退出了程序。")
+        self.history_manager.add_user_message(
+            user_input="", sys_input=f"{self.setting.get_user_name()}退出了程序。"
+        )
         self.history_manager.save_history()
 
     def user_try_to_quit(self):
@@ -534,7 +622,9 @@ def main():
     current_time = datetime.datetime.now()
     current_time = current_time.strftime("%Y%m%d")
     logger.info("设置加载完成，启动主程序中")
-    pet = mainWidget(history_path=os.path.join(default_history_path, f"{current_time}.json"))
+    pet = mainWidget(
+        history_path=os.path.join(default_history_path, f"{current_time}.json")
+    )
     sys.exit(main_app.exec_())
 
 
@@ -549,14 +639,14 @@ def initize():
     init.changeSetting.connect(set_setting)
     init.show()
     main_app.exec_()
-    time.sleep(1) #保证设置写入成功
+    time.sleep(1)  # 保证设置写入成功
     init_setting = settingManager()
     state = init_setting.load_from_file()
     if state[0] == 0:
         logger.info("成功加载设置")
         main()
     else:
-        logger.error(f'设置加载失败', exc_info=state)
+        logger.error(f"设置加载失败", exc_info=state)
         sys.exit()
 
 

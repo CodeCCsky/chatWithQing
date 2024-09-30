@@ -38,19 +38,31 @@ class strokeArea(QObject):
             (0, 210),
         ]
         head_point = [
-            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.head
+            QPoint(
+                int(x * (width / self.BASIC_WIDTH)),
+                int(y * (height / self.BASIC_HEIGHT)),
+            )
+            for x, y in self.head
         ]
         self.head_poly = QPolygon(head_point)
 
         self.carrot = [(175, 170), (200, 165), (200, 190), (175, 195)]
         carrot_point = [
-            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.carrot
+            QPoint(
+                int(x * (width / self.BASIC_WIDTH)),
+                int(y * (height / self.BASIC_HEIGHT)),
+            )
+            for x, y in self.carrot
         ]
         self.carrot_poly = QPolygon(carrot_point)
 
         self.hair_l = [(0, 211), (75, 200), (90, 305), (55, 355)]
         hair_l_point = [
-            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.hair_l
+            QPoint(
+                int(x * (width / self.BASIC_WIDTH)),
+                int(y * (height / self.BASIC_HEIGHT)),
+            )
+            for x, y in self.hair_l
         ]
         self.hair_l_poly = QPolygon(hair_l_point)
 
@@ -64,7 +76,11 @@ class strokeArea(QObject):
             (300, 140),
         ]
         hair_r_point = [
-            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.hair_r
+            QPoint(
+                int(x * (width / self.BASIC_WIDTH)),
+                int(y * (height / self.BASIC_HEIGHT)),
+            )
+            for x, y in self.hair_r
         ]
         self.hair_r_poly = QPolygon(hair_r_point)
 
@@ -77,7 +93,11 @@ class strokeArea(QObject):
             (90, 265),
         ]
         face_point = [
-            QPoint(int(x * (width / self.BASIC_WIDTH)), int(y * (height / self.BASIC_HEIGHT))) for x, y in self.face
+            QPoint(
+                int(x * (width / self.BASIC_WIDTH)),
+                int(y * (height / self.BASIC_HEIGHT)),
+            )
+            for x, y in self.face
         ]
         self.face_poly = QPolygon(face_point)
 
@@ -112,7 +132,13 @@ class strokeArea(QObject):
                     self.last_point[i] = QPoint(0, 0)
                 elif self.last_point[i].isNull() is False:
                     last_pos = self.last_point[i]
-                    dis = pow((pow((pos.x() - last_pos.x()), 2) + pow((pos.y() - last_pos.y()), 2)), 0.5)
+                    dis = pow(
+                        (
+                            pow((pos.x() - last_pos.x()), 2)
+                            + pow((pos.y() - last_pos.y()), 2)
+                        ),
+                        0.5,
+                    )
                     self.dis[i] += dis
                     self.last_point[i] = pos
                 else:
@@ -125,7 +151,9 @@ class strokeArea(QObject):
         max_rate = 0
         max_index = 0
         for i in range(5):
-            move_rate = pow(self.dis[i], 2) / self.extent[i] / (current_time - self.last_time)
+            move_rate = (
+                pow(self.dis[i], 2) / self.extent[i] / (current_time - self.last_time)
+            )
             if move_rate > max_rate:
                 max_rate = move_rate
                 max_index = i
@@ -220,7 +248,9 @@ class DesktopPet(QWidget):
         """初始化窗体
         窗口属性：无标题栏、保持在最上层、透明背景
         """
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
+        self.setWindowFlags(
+            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow
+        )
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background:transparent; border: none;")
         self.setAutoFillBackground(False)
@@ -237,7 +267,12 @@ class DesktopPet(QWidget):
         self.layout().addWidget(self.portraitView)
         screen = QDesktopWidget().screenGeometry()
         self.adjustSize()
-        self.move(QPoint(int(screen.width() * 0.95 - self.width()), int(screen.height() * 0.95 - self.height())))
+        self.move(
+            QPoint(
+                int(screen.width() * 0.95 - self.width()),
+                int(screen.height() * 0.95 - self.height()),
+            )
+        )
 
     def show_window(self):
         self.is_hide = False

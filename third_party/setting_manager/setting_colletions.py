@@ -7,7 +7,12 @@ SYS_PROMPT_MAIN_PATH = r"system_prompt\main\system_prompt_main.txt"
 
 class user_setting:
     def __init__(
-        self, user_name: str, user_sex: str, favourite_food: str, user_location: str, user_birthday: str
+        self,
+        user_name: str,
+        user_sex: str,
+        favourite_food: str,
+        user_location: str,
+        user_birthday: str,
     ) -> None:
         self.user_sex = user_sex
         self.user_name = user_name
@@ -64,7 +69,11 @@ class user_setting:
 
 class deepseek_api_setting:
     def __init__(
-        self, api_key: str, temperature: float = 1.5, frequency_penalty: float = 0.8, presence_penalty: float = 0.8
+        self,
+        api_key: str,
+        temperature: float = 1.5,
+        frequency_penalty: float = 0.8,
+        presence_penalty: float = 0.8,
     ) -> None:
         self.api_key = api_key
         self.temperature = temperature
@@ -130,7 +139,10 @@ class show_setting:
 
 class chat_summary_setting:
     def __init__(
-        self, add_same_day_summary: bool = True, add_x_day_ago_summary: bool = False, value_of_x_day_ago: int = 5
+        self,
+        add_same_day_summary: bool = True,
+        add_x_day_ago_summary: bool = False,
+        value_of_x_day_ago: int = 5,
     ) -> None:
         self.add_same_day_summary = add_same_day_summary
         self.add_x_day_ago_summary = add_x_day_ago_summary
@@ -231,7 +243,8 @@ class settingManager:
             # Show settings
             show_s: dict = res["show"]
             self.show_setting = show_setting(
-                text_show_gap=show_s.get("text_show_gap", 200), img_show_zoom=show_s.get("img_show_zoom", 1.0)
+                text_show_gap=show_s.get("text_show_gap", 200),
+                img_show_zoom=show_s.get("img_show_zoom", 1.0),
             )
 
             # Chat summary settings
@@ -244,7 +257,9 @@ class settingManager:
 
             # extension_func settings
             func: dict = res.get("extension_func", {})
-            self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
+            self.extension_func_setting = extension_func_setting(
+                recall=func.get("recall", False)
+            )
 
             # emo setting
             emo: dict = res.get("emo", {})
@@ -302,4 +317,9 @@ class settingManager:
         return self.deepseek_model.api_key
 
     def check(self) -> bool:
-        return self.user.check() + self.deepseek_model.check() + self.show_setting.check() + self.tts_setting.check()
+        return (
+            self.user.check()
+            + self.deepseek_model.check()
+            + self.show_setting.check()
+            + self.tts_setting.check()
+        )

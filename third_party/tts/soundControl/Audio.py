@@ -96,7 +96,11 @@ class responseStreamAudio:
         self.stop_event = threading.Event()
 
     def play_stream(
-        self, wav_generator: Response, rate: int = pms.RATE, channels: int = pms.CHANNELS, width_format=pms.WIDTH_FORMAT
+        self,
+        wav_generator: Response,
+        rate: int = pms.RATE,
+        channels: int = pms.CHANNELS,
+        width_format=pms.WIDTH_FORMAT,
     ) -> None:
         logger.info("Load stream wav")
 

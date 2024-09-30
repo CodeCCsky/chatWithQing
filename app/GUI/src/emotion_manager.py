@@ -26,7 +26,9 @@ class ListSelectionDialog(QDialog):
         for item in items:
             self.list_widget.addItem(item)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self
+        )
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
 
@@ -92,18 +94,25 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
             self.graphicsView.unlock_facial_expr()
             self.graphicsView.change_emo(0)
         else:
-            for sub_item in self.emotion_manager.confirmed_emoji[self.selected_class_i - 1]:
+            for sub_item in self.emotion_manager.confirmed_emoji[
+                self.selected_class_i - 1
+            ]:
                 list_item = QListWidgetItem(sub_item)
                 list_item.setFlags(list_item.flags() | Qt.ItemIsUserCheckable)
                 list_item.setCheckState(Qt.Unchecked)
                 self.strShowListWidget.addItem(list_item)
             self.graphicsView.unlock_facial_expr()
-            self.graphicsView.change_emo(self.selected_class_i - 1, self.selected_class_i != 1)
+            self.graphicsView.change_emo(
+                self.selected_class_i - 1, self.selected_class_i != 1
+            )
 
     # BUG 勾选框可点击无反应
 
     def on_sub_item_clicked(self, item):
-        if item.text() == "全选" and self.strShowListWidget.indexFromItem(item).row() == 0:
+        if (
+            item.text() == "全选"
+            and self.strShowListWidget.indexFromItem(item).row() == 0
+        ):
             # 处理 "全选" 项的文字部分点击事件
             if item.checkState() == Qt.Checked:
                 item.setCheckState(Qt.Unchecked)
@@ -117,7 +126,10 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
                 item.setCheckState(Qt.Checked)
 
         # 处理 "全选" 项的勾选状态变化
-        if item.text() == "全选" and self.strShowListWidget.indexFromItem(item).row() == 0:
+        if (
+            item.text() == "全选"
+            and self.strShowListWidget.indexFromItem(item).row() == 0
+        ):
             if item.checkState() == Qt.Checked:
                 for i in range(1, self.strShowListWidget.count()):
                     self.strShowListWidget.item(i).setCheckState(Qt.Checked)
@@ -134,7 +146,10 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
         if selected_items == [] or selected_items == ["全选"]:
             QMessageBox.warning(self, "警告", "没有选中任何项")
             return
-        target_list = [self.categoryMenuListWidget.item(i).text() for i in range(self.categoryMenuListWidget.count())]
+        target_list = [
+            self.categoryMenuListWidget.item(i).text()
+            for i in range(self.categoryMenuListWidget.count())
+        ]
         dialog = ListSelectionDialog("移动到...", target_list)
         if dialog.exec_() == QDialog.Accepted:
             selected_targets = dialog.selected_items()
@@ -153,7 +168,10 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
         if selected_items == [] or selected_items == ["全选"]:
             QMessageBox.warning(self, "警告", "没有选中任何项")
             return
-        target_list = [self.categoryMenuListWidget.item(i).text() for i in range(self.categoryMenuListWidget.count())]
+        target_list = [
+            self.categoryMenuListWidget.item(i).text()
+            for i in range(self.categoryMenuListWidget.count())
+        ]
         dialog = ListSelectionDialog("复制到...", target_list)
         if dialog.exec_() == QDialog.Accepted:
             selected_targets = dialog.selected_items()
@@ -171,7 +189,9 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
         if selected_items == [] or selected_items == ["全选"]:
             QMessageBox.warning(self, "警告", "没有选中任何项")
             return
-        reply = QMessageBox.question(self, "确认删除", "确定要删除选中的项吗？", QMessageBox.Yes | QMessageBox.No)
+        reply = QMessageBox.question(
+            self, "确认删除", "确定要删除选中的项吗？", QMessageBox.Yes | QMessageBox.No
+        )
         if reply == QMessageBox.Yes:
             self.del_str_in_manager(self.selected_class_i, selected_items)
         # 刷新
