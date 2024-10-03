@@ -8,6 +8,8 @@ import re
 import sys
 import time
 import random
+now_dir = os.getcwd()
+sys.path.insert(0, now_dir)
 
 from PyQt5.QtCore import Qt, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon, QFontDatabase, QCloseEvent
