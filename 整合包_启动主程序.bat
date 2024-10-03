@@ -1,8 +1,5 @@
 chcp 65001
 @echo off
-
-call .\runtime\Scripts\activate.bat
-
+set path=%path%;%cd%\runtime;
 python main.py
-
 pause
