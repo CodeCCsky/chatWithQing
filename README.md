@@ -1,4 +1,3 @@
-
 # chatWithQing
 
 chatWithQing 是一个基于大模型的二创桌宠项目。
@@ -8,17 +7,6 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 - 由于本人技术能力、精力有限，项目开发进度可能会较缓慢，敬请谅解。
 
 ##### **当前整合包处于测试阶段，有可能会有许多bug，遇到bug欢迎向作者反应**
-
-## 目录
-
-1. [功能](#功能)
-2. [更新历史](#更新历史)
-3. [部署教程](#部署教程)
-4. [联系信息](#联系信息)
-5. [贡献指南](#贡献指南)
-6. [许可证](#许可证)
-7. [隐私政策](#隐私政策)
-8. [鸣谢](#鸣谢)
 
 ## 功能
 
@@ -80,21 +68,24 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 
 ## 部署教程
 
-##### 整合包方式下载的可以忽略此项
+### 整合包方式
+
+1. 下载整合包并解压
+2. 双击 `整合包_启动主程序.bat` 启动主程序
+
+### 仓库克隆方式
 
 > 本项目推荐在 python 3.9 环境下运行。
 
 1. 克隆仓库
 
    ```
-
    git clone https://github.com/CodeCCsky/chatWithQing.git
 
    ```
 2. 进入项目目录
 
    ```
-
    cd chatWithQing
 
    ```
@@ -103,16 +94,13 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
    推荐使用 `conda`、`venv` 等包管理器管理环境。以下是使用 `conda` 安装的一个示例。
 
    ```
-
    conda create -n chatWithQing python=3.9
 
    conda activate chatWithQing
-
    ```
 4. 安装依赖项
 
    ```
-
    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
    ```
@@ -122,9 +110,7 @@ chatWithQing 是一个基于大模型的二创桌宠项目。
 6. 启动主程序
 
    ```
-
    python main.py
-
    ```
 
 ## 联系信息
