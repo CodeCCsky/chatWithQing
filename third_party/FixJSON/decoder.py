@@ -1,6 +1,4 @@
 import json
-import sys
-from tkinter import N
 from third_party.deepseek_api import deepseek_model
 
 
