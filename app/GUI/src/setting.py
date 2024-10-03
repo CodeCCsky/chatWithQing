@@ -60,19 +60,19 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # deepseek
         self.lAPIEdit.setText(self.setting_manager.deepseek_model.api_key)
         self.temperatureSlider.setValue(
-            self.setting_manager.deepseek_model.temperature * 10
+            int(self.setting_manager.deepseek_model.temperature * 10)
         )
         self.temperatureShowLabel.setText(
             str(self.setting_manager.deepseek_model.temperature)
         )
         self.frequencyPenaltySlider.setValue(
-            self.setting_manager.deepseek_model.frequency_penalty * 10
+            int(self.setting_manager.deepseek_model.frequency_penalty * 10)
         )
         self.frequencyPenaltyShowLabel.setText(
             str(self.setting_manager.deepseek_model.frequency_penalty)
         )
         self.presencePenaltylSlider.setValue(
-            self.setting_manager.deepseek_model.presence_penalty * 10
+            int(self.setting_manager.deepseek_model.presence_penalty * 10)
         )
         self.presencePenaltyShowLabel.setText(
             str(self.setting_manager.deepseek_model.presence_penalty)

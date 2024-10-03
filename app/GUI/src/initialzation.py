@@ -48,19 +48,19 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         # deepseek
         self.lAPIEdit.setText(self.setting_manager.deepseek_model.api_key)
         self.temperatureSlider.setValue(
-            self.setting_manager.deepseek_model.temperature * 10
+            int(self.setting_manager.deepseek_model.temperature * 10)
         )
         self.temperatureShowLabel.setText(
             str(self.setting_manager.deepseek_model.temperature)
         )
         self.frequencyPenaltySlider.setValue(
-            self.setting_manager.deepseek_model.frequency_penalty * 10
+            int(self.setting_manager.deepseek_model.frequency_penalty * 10)
         )
         self.frequencyPenaltyShowLabel.setText(
             str(self.setting_manager.deepseek_model.frequency_penalty)
         )
         self.presencePenaltylSlider.setValue(
-            self.setting_manager.deepseek_model.presence_penalty * 10
+            int(self.setting_manager.deepseek_model.presence_penalty * 10)
         )
         self.presencePenaltyShowLabel.setText(
             str(self.setting_manager.deepseek_model.presence_penalty)
@@ -75,7 +75,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         # show
         self.textShowSpeedSpinBox.setMaximum(1000)
         self.textShowSpeedSpinBox.setValue(
-            self.setting_manager.show_setting.text_show_gap
+            int(self.setting_manager.show_setting.text_show_gap)
         )
         self.show_gap_timer = QTimer()
         self.show_gap_timer.timeout.connect(self.progress_example)
@@ -98,7 +98,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             self.setting_manager.chat_summary_setting.add_x_day_ago_summary
         )
         self.addXDayAgoHisSummarySpinBox.setValue(
-            self.setting_manager.chat_summary_setting.value_of_x_day_ago
+            int(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
         )
 
         # extension_func
