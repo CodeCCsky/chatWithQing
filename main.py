@@ -648,6 +648,7 @@ def initize():
     state = init_setting.load_from_file()
     if state[0] == 0:
         logger.info("成功加载设置")
+        reply = QMessageBox.information(None, "测试版提示", "当前版本为测试版。由于作者实力不足，可能会有许多未知的bug，欢迎向作者反馈(反馈方式见'请先读我.pdf')\ntips: 现在这个ai晴小姐没有关于爱之巢游戏本体内容的记忆...以后会想个办法解决的")
         main()
     else:
         logger.error(f"设置加载失败", exc_info=state)
