@@ -780,7 +780,7 @@ class Ui_MainWindow(object):
         self.addXDayAgoHisSummaryCheckBox.setText(
             _translate(
                 "MainWindow",
-                "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）(功能未完成）",
+                "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）",
             )
         )
         self.label_3.setText(

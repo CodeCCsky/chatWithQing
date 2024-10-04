@@ -1049,7 +1049,7 @@
                <item>
                 <widget class="QCheckBox" name="addXDayAgoHisSummaryCheckBox">
                  <property name="text">
-                  <string>每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）(功能未完成）</string>
+                  <string>每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）</string>
                  </property>
                 </widget>
                </item>
