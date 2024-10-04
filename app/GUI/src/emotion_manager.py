@@ -203,6 +203,9 @@ class emotionManagerWidget(QMainWindow, Ui_MainWindow):
         ]
         self.lineEdit.clear()
         self.add_str_in_manager(self.selected_class_i, texts)
+        # 刷新
+        self.on_item_clicked(self.categoryMenuListWidget.item(self.selected_class_i))
+
 
     def progress_OK(self):
         self.emotion_manager_copy = copy.deepcopy(self.emotion_manager)
