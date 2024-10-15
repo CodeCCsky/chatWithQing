@@ -37,6 +37,7 @@ from app.Threads import (
     no_tts_sound_manager,
     summaryWorker,
     tts_thread,
+    fixJSONThread,
 )
 from third_party.deepseek_api import deepseek_model, historyManager
 from third_party.setting_manager import settingManager
@@ -222,7 +223,7 @@ class mainWidget(QWidget):
         )
         self.input_label.closeEvent = self.closeEvent
         self.input_label.requestSend.connect(self.start_talk)
-        # 链接信号和槽
+        self.fix_json_interface: fixJSONThread = None
         self.text_update_timer = QTimer()
         self.text_update_timer.timeout.connect(self.process_typing_effect)
         self.wait_until_start_talking = QTimer()
@@ -513,36 +514,45 @@ class mainWidget(QWidget):
             self.llm_interface, self.history_manager
         )
         self.llm_thread.start()
-        self.llm_thread.finish_signal.connect(self.progress_thinking)
+        self.llm_thread.finish_signal.connect(self.progress_decode_response)
 
-    def progress_thinking(self, finish_state: str):
+    def progress_decode_response(self, finish_state: str):
         response = self.llm_thread.get_response()
         try:
             self.response_content = fixJSON.loads(response)
-            self.talk_bubble.update_text(
-                self.response_content["role_thoughts"], is_thinking=True
+            self.progress_thinking()
+        except (ValueError, KeyError):
+            self.talk_bubble._setTextLabel("","返回格式有误，尝试修复中")
+            self.fix_json_interface = fixJSONThread(response, self.setting.get_api_key())
+            self.fix_json_interface.isFixed.connect(self.progress_failed_auto_json_fix)
+            self.fix_json_interface.start()
+
+    def progress_thinking(self):
+        self.talk_bubble.update_text(
+            self.response_content["role_thoughts"], is_thinking=True
+        )
+        if not self.setting.emo_setting.show_in_text:
+            self.response_content["role_response"] = (
+                self.emo_manager.process_string(
+                    self.response_content["role_response"]
+                )
             )
-            if not self.setting.emo_setting.show_in_text:
-                self.response_content["role_response"] = (
-                    self.emo_manager.process_string(
-                        self.response_content["role_response"]
-                    )
-                )
-            self.emo_manager.write_yaml()
-            if self.setting.tts_setting.use_tts:
-                self.tts_thread = tts_thread(
-                    self.tts_model, self.response_content["role_response"]
-                )
-                self.tts_thread.start()
-                self.tts_thread.startSpeak.connect(self.start_typing)
-            else:
-                self.wait_until_start_talking.start(2000)
-        except ValueError:
-            self.talk_bubble.update_text(response)
-            self.finish_this_round_of_talk()
-        except KeyError:
-            self.talk_bubble.update_text(response)
-            self.finish_this_round_of_talk()
+        self.emo_manager.write_yaml()
+        if self.setting.tts_setting.use_tts:
+            self.tts_thread = tts_thread(
+                self.tts_model, self.response_content["role_response"]
+            )
+            self.tts_thread.start()
+            self.tts_thread.startSpeak.connect(self.start_typing)
+        self.wait_until_start_talking.start(2000)
+
+    def progress_failed_auto_json_fix(self, is_fixed: bool):
+        self.response_content = self.fix_json_interface.get_response()
+        if is_fixed:
+            self.progress_thinking()
+        else:
+            self.talk_bubble.update_text()
+        self.finish_this_round_of_talk()
 
     def start_typing(self):
         if self.setting.tts_setting.use_tts:
