@@ -38,22 +38,14 @@ class summaryWorker(QRunnable):
         current_day_summary_list = []
         for i in range(self.history_manager.get_last_index()):
             if not self.history_manager.get_summary_by_index(i):
-                logger.debug(
-                    f"处理{self.history_path}的子线程 - 第{i}项未检测到总结，生成中"
-                )
+                logger.debug(f"处理{self.history_path}的子线程 - 第{i}项未检测到总结，生成中")
                 self.history_manager.set_summary_by_index(
                     i,
-                    self.interface.get_chat_summary(
-                        self.history_manager.get_history_dict_by_index(i)
-                    )[0],
+                    self.interface.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0],
                 )
                 self.history_manager.save_history()
-            crt_time = datetime.datetime.strptime(
-                self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S"
-            )
-            upd_time = datetime.datetime.strptime(
-                self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S"
-            )
+            crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")
+            upd_time = datetime.datetime.strptime(self.history_manager.get_update_time_by_index(i), "%Y-%m-%d %H:%M:%S")
             current_day_summary_list.append(
                 f"|{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.user_name}对话历史总结:{self.history_manager.get_summary_by_index(i)}|"
             )

@@ -257,9 +257,7 @@ class settingManager:
 
             # extension_func settings
             func: dict = res.get("extension_func", {})
-            self.extension_func_setting = extension_func_setting(
-                recall=func.get("recall", False)
-            )
+            self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
 
             # emo setting
             emo: dict = res.get("emo", {})
@@ -317,9 +315,4 @@ class settingManager:
         return self.deepseek_model.api_key
 
     def check(self) -> bool:
-        return (
-            self.user.check()
-            + self.deepseek_model.check()
-            + self.show_setting.check()
-            + self.tts_setting.check()
-        )
+        return self.user.check() + self.deepseek_model.check() + self.show_setting.check() + self.tts_setting.check()

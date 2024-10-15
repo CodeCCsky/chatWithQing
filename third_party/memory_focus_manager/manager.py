@@ -8,9 +8,7 @@ TIME_FORMAT = "%Y-%m-%d"
 
 
 class MemoryFocusManager:
-    def __init__(
-        self, path: str = FOCUS_DEFAULT_PATH, cache_clear_time: int = 7
-    ) -> None:
+    def __init__(self, path: str = FOCUS_DEFAULT_PATH, cache_clear_time: int = 7) -> None:
         self.important_memory: list[str] = []
         self.cache_memory: dict[str, list[tuple[str, int]]] = {}
         self.cache_memory_clear_time = cache_clear_time

@@ -90,9 +90,7 @@ class deepseek_model:
             self.history = copy.deepcopy(history)
         self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
-    def send_message(
-        self, history: list[dict] = None, is_prefix: bool = False
-    ) -> tuple[str, str, dict]:
+    def send_message(self, history: list[dict] = None, is_prefix: bool = False) -> tuple[str, str, dict]:
         if history is not None:
             self.load_history(history)
         if is_prefix:

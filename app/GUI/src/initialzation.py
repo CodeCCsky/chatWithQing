@@ -47,24 +47,12 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
 
         # deepseek
         self.lAPIEdit.setText(self.setting_manager.deepseek_model.api_key)
-        self.temperatureSlider.setValue(
-            int(self.setting_manager.deepseek_model.temperature * 10)
-        )
-        self.temperatureShowLabel.setText(
-            str(self.setting_manager.deepseek_model.temperature)
-        )
-        self.frequencyPenaltySlider.setValue(
-            int(self.setting_manager.deepseek_model.frequency_penalty * 10)
-        )
-        self.frequencyPenaltyShowLabel.setText(
-            str(self.setting_manager.deepseek_model.frequency_penalty)
-        )
-        self.presencePenaltylSlider.setValue(
-            int(self.setting_manager.deepseek_model.presence_penalty * 10)
-        )
-        self.presencePenaltyShowLabel.setText(
-            str(self.setting_manager.deepseek_model.presence_penalty)
-        )
+        self.temperatureSlider.setValue(int(self.setting_manager.deepseek_model.temperature * 10))
+        self.temperatureShowLabel.setText(str(self.setting_manager.deepseek_model.temperature))
+        self.frequencyPenaltySlider.setValue(int(self.setting_manager.deepseek_model.frequency_penalty * 10))
+        self.frequencyPenaltyShowLabel.setText(str(self.setting_manager.deepseek_model.frequency_penalty))
+        self.presencePenaltylSlider.setValue(int(self.setting_manager.deepseek_model.presence_penalty * 10))
+        self.presencePenaltyShowLabel.setText(str(self.setting_manager.deepseek_model.presence_penalty))
 
         # TTS
         self.EnableTTScheckBox.setChecked(self.setting_manager.tts_setting.use_tts)
@@ -74,124 +62,74 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
 
         # show
         self.textShowSpeedSpinBox.setMaximum(1000)
-        self.textShowSpeedSpinBox.setValue(
-            int(self.setting_manager.show_setting.text_show_gap)
-        )
+        self.textShowSpeedSpinBox.setValue(int(self.setting_manager.show_setting.text_show_gap))
         self.show_gap_timer = QTimer()
         self.show_gap_timer.timeout.connect(self.progress_example)
         self.example_text = "这个显示速度还可以吗？"
         self.example_pointer = 0
         self.progress_text_gap(self.setting_manager.show_setting.text_show_gap)
-        self.imageShowSlider.setValue(
-            int(self.setting_manager.show_setting.img_show_zoom * 100)
-        )
+        self.imageShowSlider.setValue(int(self.setting_manager.show_setting.img_show_zoom * 100))
         self.imageShowPreviewCheckBox.setChecked(False)
 
         # history
         # self.scan_history_file()
 
         # summary
-        self.addSameDayHisSummaryCheckBox.setChecked(
-            self.setting_manager.chat_summary_setting.add_same_day_summary
-        )
-        self.addXDayAgoHisSummaryCheckBox.setChecked(
-            self.setting_manager.chat_summary_setting.add_x_day_ago_summary
-        )
-        self.addXDayAgoHisSummarySpinBox.setValue(
-            int(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
-        )
+        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
+        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
+        self.addXDayAgoHisSummarySpinBox.setValue(int(self.setting_manager.chat_summary_setting.value_of_x_day_ago))
 
         # extension_func
-        self.enableRecallCheckBox.setChecked(
-            self.setting_manager.extension_func_setting.recall
-        )
+        self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
 
     def initConnect(self):
         # user
         self.listWidget.itemClicked.connect(self.sideListWidgetClicked)
-        self.yourNameEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.user, "user_name", p)
-        )
-        self.yourFavouriteFood.textChanged.connect(
-            lambda p: setattr(self.setting_manager.user, "favourite_food", p)
-        )
-        self.yourAddressEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.user, "user_location", p)
-        )
+        self.yourNameEdit.textChanged.connect(lambda p: setattr(self.setting_manager.user, "user_name", p))
+        self.yourFavouriteFood.textChanged.connect(lambda p: setattr(self.setting_manager.user, "favourite_food", p))
+        self.yourAddressEdit.textChanged.connect(lambda p: setattr(self.setting_manager.user, "user_location", p))
         self.yourSexComboBox.currentIndexChanged.connect(self.progress_user_sex)
         self.birthdayDateEdit.dateChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.user, "user_birthday", p.toString(self.date_format)
-            )
+            lambda p: setattr(self.setting_manager.user, "user_birthday", p.toString(self.date_format))
         )
 
         # deepseek
-        self.lAPIEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.deepseek_model, "api_key", p)
-        )
+        self.lAPIEdit.textChanged.connect(lambda p: setattr(self.setting_manager.deepseek_model, "api_key", p))
         self.temperatureSlider.valueChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.deepseek_model, "temperature", float(p) / 10
-            )
+            lambda p: setattr(self.setting_manager.deepseek_model, "temperature", float(p) / 10)
         )
         self.temperatureSlider.valueChanged.connect(
             lambda p: self.temperatureShowLabel.setText(str(round(float(p) / 10, 1)))
         )
         self.frequencyPenaltySlider.valueChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.deepseek_model, "frequency_penalty", float(p) / 10
-            )
+            lambda p: setattr(self.setting_manager.deepseek_model, "frequency_penalty", float(p) / 10)
         )
         self.frequencyPenaltySlider.valueChanged.connect(
-            lambda p: self.frequencyPenaltyShowLabel.setText(
-                str(round(float(p) / 10, 1))
-            )
+            lambda p: self.frequencyPenaltyShowLabel.setText(str(round(float(p) / 10, 1)))
         )
         self.presencePenaltylSlider.valueChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.deepseek_model, "presence_penalty", float(p) / 10
-            )
+            lambda p: setattr(self.setting_manager.deepseek_model, "presence_penalty", float(p) / 10)
         )
         self.presencePenaltylSlider.valueChanged.connect(
-            lambda p: self.presencePenaltyShowLabel.setText(
-                str(round(float(p) / 10, 1))
-            )
+            lambda p: self.presencePenaltyShowLabel.setText(str(round(float(p) / 10, 1)))
         )
 
         # TTS
-        self.EnableTTScheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.tts_setting, "use_tts", p)
-        )
-        self.TTSUrlEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.tts_setting, "url", p)
-        )
-        self.TTSCharacterEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.tts_setting, "character", p)
-        )
-        self.lTTSEmotionEdit.textChanged.connect(
-            lambda p: setattr(self.setting_manager.tts_setting, "emotion", p)
-        )
+        self.EnableTTScheckBox.toggled.connect(lambda p: setattr(self.setting_manager.tts_setting, "use_tts", p))
+        self.TTSUrlEdit.textChanged.connect(lambda p: setattr(self.setting_manager.tts_setting, "url", p))
+        self.TTSCharacterEdit.textChanged.connect(lambda p: setattr(self.setting_manager.tts_setting, "character", p))
+        self.lTTSEmotionEdit.textChanged.connect(lambda p: setattr(self.setting_manager.tts_setting, "emotion", p))
 
         # show
-        self.image_preview_widget = image_preview(
-            zoom_factor=self.setting_manager.show_setting.img_show_zoom
-        )
+        self.image_preview_widget = image_preview(zoom_factor=self.setting_manager.show_setting.img_show_zoom)
         self.textShowSpeedSpinBox.valueChanged.connect(self.progress_text_gap)
+        self.imageShowSlider.valueChanged.connect(lambda p: self.imageShowZoomPercentLabel.setText(str(p) + "%"))
         self.imageShowSlider.valueChanged.connect(
-            lambda p: self.imageShowZoomPercentLabel.setText(str(p) + "%")
+            lambda p: setattr(self.setting_manager.show_setting, "img_show_zoom", float(p) / 100.0)
         )
-        self.imageShowSlider.valueChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.show_setting, "img_show_zoom", float(p) / 100.0
-            )
-        )
-        self.imageShowSlider.valueChanged.connect(
-            lambda p: self.image_preview_widget.resize_(float(p) / 100.0)
-        )
+        self.imageShowSlider.valueChanged.connect(lambda p: self.image_preview_widget.resize_(float(p) / 100.0))
         self.imageShowPreviewCheckBox.toggled.connect(self.progress_image_preview)
-        self.image_preview_widget.closeSignal.connect(
-            lambda: self.imageShowPreviewCheckBox.setChecked(False)
-        )
+        self.image_preview_widget.closeSignal.connect(lambda: self.imageShowPreviewCheckBox.setChecked(False))
 
         # history
         # self.chooseHistoryComboBox.currentTextChanged.connect(lambda p:setattr(self.setting_manager,'history_path',os.path.join('./history',p)))
@@ -203,22 +141,14 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
 
         # summary
         self.addSameDayHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(
-                self.setting_manager.chat_summary_setting, "add_same_day_summary", p
-            )
+            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_same_day_summary", p)
         )
         self.addXDayAgoHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(
-                self.setting_manager.chat_summary_setting, "add_x_day_ago_summary", p
-            )
+            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_x_day_ago_summary", p)
         )
-        self.addSameDayHisSummaryCheckBox.toggled.connect(
-            self.addXDayAgoHisSummaryCheckBox.setCheckable
-        )
+        self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummarySpinBox.valueChanged.connect(
-            lambda p: setattr(
-                self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p
-            )
+            lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
         )
 
         # extension_func
@@ -230,15 +160,11 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         file_lists = os.listdir("history/")
         self.chooseHistoryComboBox.clear()
         self.chooseHistoryComboBox.addItems(file_lists)
-        self.chooseHistoryComboBox.setCurrentIndex(
-            self.chooseHistoryComboBox.count() - 1
-        )
+        self.chooseHistoryComboBox.setCurrentIndex(self.chooseHistoryComboBox.count() - 1)
         if self.setting_manager.history_path is None:
             self.setting_manager.history_path = os.path.join(
                 "./history",
-                self.chooseHistoryComboBox.itemText(
-                    self.chooseHistoryComboBox.count() - 1
-                ),
+                self.chooseHistoryComboBox.itemText(self.chooseHistoryComboBox.count() - 1),
             )
 
     def progress_text_gap(self, gap: int):
@@ -246,9 +172,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         self.setting_manager.show_setting.text_show_gap = gap
 
     def progress_example(self):
-        self.textShowSpeedExampleLabel.setText(
-            self.example_text[: self.example_pointer]
-        )
+        self.textShowSpeedExampleLabel.setText(self.example_text[: self.example_pointer])
         self.example_pointer = (self.example_pointer + 1) % (len(self.example_text) + 1)
 
     def progress_image_preview(self, is_show: bool):
@@ -289,13 +213,9 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         if check == []:
             self.setting_manager_backup = copy.deepcopy(self.setting_manager)
             self.changeSetting.emit(self.setting_manager)
-            QMessageBox.information(
-                self, "已保存", "已保存当前设置。关闭当前窗口以启动主程序。"
-            )
+            QMessageBox.information(self, "已保存", "已保存当前设置。关闭当前窗口以启动主程序。")
         else:
-            QMessageBox.warning(
-                self, "出错", f'保存失败。存在尚未填入的值：{"，".join(check)}'
-            )
+            QMessageBox.warning(self, "出错", f'保存失败。存在尚未填入的值：{"，".join(check)}')
 
     def cancel_save(self):
         # self.setting_manager = copy.deepcopy(self.setting_manager_backup)

@@ -56,9 +56,7 @@ class PetGraphicsView(QGraphicsView):
         self.img_items = {
             "body": QGraphicsPixmapItem(self.parts["body"][self.show_state["body"]][0]),
             "eyes": QGraphicsPixmapItem(self.parts["eyes"][self.show_state["eyes"]][0]),
-            "mouth": QGraphicsPixmapItem(
-                self.parts["mouth"][self.show_state["mouth"]][0]
-            ),
+            "mouth": QGraphicsPixmapItem(self.parts["mouth"][self.show_state["mouth"]][0]),
             "hand": QGraphicsPixmapItem(self.parts["hand"][self.show_state["hand"]][0]),
         }
 
@@ -194,9 +192,7 @@ class PetGraphicsView(QGraphicsView):
         """更新组件"""
         current_index = self.current_indices[part]
         next_index = (current_index + 1) % len(self.parts[part][self.show_state[part]])
-        self.img_items[part].setPixmap(
-            self.parts[part][self.show_state[part]][next_index]
-        )
+        self.img_items[part].setPixmap(self.parts[part][self.show_state[part]][next_index])
         self.current_indices[part] = next_index
 
     def change_emo(self, index: int, add_lock: bool = False) -> bool:
@@ -213,11 +209,7 @@ class PetGraphicsView(QGraphicsView):
             # self.stop_image_change_timer()
             self.show_state["eyes"] = index
             self.current_indices["eyes"] = 0
-            self.img_items["eyes"].setPixmap(
-                self.parts["eyes"][self.show_state["eyes"]][
-                    self.current_indices["eyes"]
-                ]
-            )
+            self.img_items["eyes"].setPixmap(self.parts["eyes"][self.show_state["eyes"]][self.current_indices["eyes"]])
             # self.restart_image_change_timer()
         else:
             return False
@@ -252,14 +244,8 @@ class PetGraphicsView(QGraphicsView):
     def resizeEvent(self, event):
         """让所有立绘部分跟随组件缩放"""
         scale_factor = min(
-            self.width()
-            / self.parts["body"][self.show_state["body"]][
-                self.current_indices["body"]
-            ].width(),
-            self.height()
-            / self.parts["body"][self.show_state["body"]][
-                self.current_indices["body"]
-            ].height(),
+            self.width() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].width(),
+            self.height() / self.parts["body"][self.show_state["body"]][self.current_indices["body"]].height(),
         )
         for part, item in self.img_items.items():
             item.setScale(scale_factor)

@@ -133,10 +133,7 @@ class strokeArea(QObject):
                 elif self.last_point[i].isNull() is False:
                     last_pos = self.last_point[i]
                     dis = pow(
-                        (
-                            pow((pos.x() - last_pos.x()), 2)
-                            + pow((pos.y() - last_pos.y()), 2)
-                        ),
+                        (pow((pos.x() - last_pos.x()), 2) + pow((pos.y() - last_pos.y()), 2)),
                         0.5,
                     )
                     self.dis[i] += dis
@@ -151,9 +148,7 @@ class strokeArea(QObject):
         max_rate = 0
         max_index = 0
         for i in range(5):
-            move_rate = (
-                pow(self.dis[i], 2) / self.extent[i] / (current_time - self.last_time)
-            )
+            move_rate = pow(self.dis[i], 2) / self.extent[i] / (current_time - self.last_time)
             if move_rate > max_rate:
                 max_rate = move_rate
                 max_index = i
@@ -248,9 +243,7 @@ class DesktopPet(QWidget):
         """初始化窗体
         窗口属性：无标题栏、保持在最上层、透明背景
         """
-        self.setWindowFlags(
-            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow
-        )
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background:transparent; border: none;")
         self.setAutoFillBackground(False)

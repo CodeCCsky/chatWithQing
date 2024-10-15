@@ -4,8 +4,10 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from third_party.FixJSON import fixJSONwithLLM, fixJSON
 
+
 class fixJSONThread(QThread):
     isFixed = pyqtSignal(bool)
+
     def __init__(self, json_str: str, api_key: str) -> None:
         super().__init__()
         self.json_str = json_str

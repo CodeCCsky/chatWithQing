@@ -32,16 +32,12 @@ class loadWidget(QWidget, Ui_Form):
     def finish_a_task(self) -> None:
         if self.finished_task_num < self.all_task_num:
             self.finished_task_num += 1
-            self.progressBar.setValue(
-                int(self.finished_task_num * 100 / self.all_task_num)
-            )
+            self.progressBar.setValue(int(self.finished_task_num * 100 / self.all_task_num))
 
     def set_finish_task_num(self, value: int) -> None:
         if self.finished_task_num < self.all_task_num:
             self.finished_task_num = value
-            self.progressBar.setValue(
-                int(self.finished_task_num * 100 / self.all_task_num)
-            )
+            self.progressBar.setValue(int(self.finished_task_num * 100 / self.all_task_num))
 
 
 if __name__ == "__main__":

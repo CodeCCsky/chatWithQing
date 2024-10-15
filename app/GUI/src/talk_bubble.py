@@ -49,13 +49,9 @@ class talkBubble(opacity_controller):
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         screen = QDesktopWidget().screenGeometry()
-        self.setGeometry(
-            int(screen.width() * 0.5 - 800 / 2), int(screen.height() * 0.7), 800, 200
-        )
+        self.setGeometry(int(screen.width() * 0.5 - 800 / 2), int(screen.height() * 0.7), 800, 200)
 
-        self.setWindowFlags(
-            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow
-        )
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
         self.setAttribute(Qt.WA_TranslucentBackground)
         # self.setStyleSheet("background:transparent; border: none;")
         self.setAutoFillBackground(False)
@@ -67,52 +63,38 @@ class talkBubble(opacity_controller):
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
         self.verticalLayout.setObjectName("verticalLayout")
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 16, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 16, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.widget = QtWidgets.QWidget(self)
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem1 = QtWidgets.QSpacerItem(
-            53, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(53, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.widget_2 = QtWidgets.QWidget(self.widget)
         self.widget_2.setObjectName("widget_2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget_2)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem2)
         self.name_area = QtWidgets.QLabel(self.widget_2)
         self.name_area.setAlignment(QtCore.Qt.AlignCenter)
         self.name_area.setObjectName("name_area")
         self.verticalLayout_3.addWidget(self.name_area)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 47, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(20, 47, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem3)
         self.verticalLayout_3.setStretch(0, 1)
         self.verticalLayout_3.setStretch(1, 1)
         self.verticalLayout_3.setStretch(2, 3)
         self.horizontalLayout.addWidget(self.widget_2)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.text_area = QtWidgets.QTextEdit(self.widget)
         self.text_area.setObjectName("text_area")
-        self.text_area.setSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding
-        )
+        self.text_area.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         self.text_area.setFixedWidth(int(self.width() * 27 / 42))
         self.horizontalLayout.addWidget(self.text_area)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem5)
         self.horizontalLayout.setStretch(0, 4)
         self.horizontalLayout.setStretch(1, 4)
@@ -120,9 +102,7 @@ class talkBubble(opacity_controller):
         self.horizontalLayout.setStretch(3, 25)
         self.horizontalLayout.setStretch(4, 8)
         self.verticalLayout.addWidget(self.widget)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem6)
         self.verticalLayout.setStretch(0, 5)
         self.verticalLayout.setStretch(1, 7)
@@ -161,14 +141,8 @@ class talkBubble(opacity_controller):
     def update_rand(self) -> None:
         self.border_round = 5
         self.points_of_path = []
-        self.points_of_path.append(
-            get_square_with_noise(self.width(), self.height(), 2, 0.01, 0.85)
-        )
-        self.points_of_path.append(
-            get_square_with_noise(
-                self.width(), self.height(), self.border_round, 0.03, 0.87
-            )
-        )
+        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), 2, 0.01, 0.85))
+        self.points_of_path.append(get_square_with_noise(self.width(), self.height(), self.border_round, 0.03, 0.87))
         self.update()
 
     def update_text(self, text, is_thinking: bool = False):
@@ -280,15 +254,11 @@ class talkBubble(opacity_controller):
         border_path.closeSubpath()
 
         # 绘画背景和边框
-        painter.setPen(
-            QPen(QColor(0, 0, 0, 220), 8, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        )
+        painter.setPen(QPen(QColor(0, 0, 0, 220), 8, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
         # painter.setBrush(QBrush(QColor(0, 0, 0), Qt.SolidPattern))
         painter.fillPath(bg_path, QColor(0, 0, 0))
         # painter.setBrush(QBrush())
-        painter.setPen(
-            QPen(QColor(252, 58, 170, 255), 5, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        )
+        painter.setPen(QPen(QColor(252, 58, 170, 255), 5, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
         painter.drawPath(border_path)
 
     def mousePressEvent(self, event):
@@ -343,9 +313,7 @@ def font_size_in_pixels(font_size_pt: int) -> int:
     return font_size_px
 
 
-def get_square_with_noise(
-    a: int, b: int, _round: int, noise_level: float, zoom_factor: float
-):
+def get_square_with_noise(a: int, b: int, _round: int, noise_level: float, zoom_factor: float):
     points = []
     corner = [(a / 2, b / 2), (-a / 2, b / 2), (-a / 2, -b / 2), (a / 2, -b / 2)]
     start_num = random.randint(0, 3)
@@ -356,17 +324,9 @@ def get_square_with_noise(
             for i in range(0, 3):
                 noise_x = 1 + (random.random() * 2 - 1) * noise_level
                 noise_y = 1 + (random.random() * 2 - 1) * noise_level
-                x = (
-                    (corner[current_cr][0] * (3 - i) / 3 + corner[next_cr][0] * i / 3)
-                    * noise_x
-                    * zoom_factor
-                )
+                x = (corner[current_cr][0] * (3 - i) / 3 + corner[next_cr][0] * i / 3) * noise_x * zoom_factor
                 x = x + a / 2
-                y = (
-                    (corner[current_cr][1] * (3 - i) / 3 + corner[next_cr][1] * i / 3)
-                    * noise_y
-                    * zoom_factor
-                )
+                y = (corner[current_cr][1] * (3 - i) / 3 + corner[next_cr][1] * i / 3) * noise_y * zoom_factor
                 y = y + b / 2
                 points.append((x, y))
     return points

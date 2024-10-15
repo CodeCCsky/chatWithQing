@@ -36,8 +36,10 @@ prompt = """请接受一个格式错误的JSON输入，并输出一个格式正�
 """
 
 
-#from third_party.deepseek_api import deepseek_model
+# from third_party.deepseek_api import deepseek_model
 from openai import OpenAI
+
+
 class fixJSONwithLLM:
     def __init__(self) -> None:
         pass
@@ -46,7 +48,7 @@ class fixJSONwithLLM:
     def loads(json_str: str, api_key: str):
         # 调用deepseek_model会造成循环引用...我恨循环引用...
         client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-        
+
         sys_prompt = ""
         try:
             with open(r"system_prompt\FixJSON\prompt.txt", "r", encoding="utf-8") as f:
@@ -54,14 +56,15 @@ class fixJSONwithLLM:
         except OSError:
             sys_prompt = prompt
         finally:
-            
-            request_data = [{"role" :"system","content":sys_prompt},{"role": "user", "content": json_str}]
+
+            request_data = [
+                {"role": "system", "content": sys_prompt},
+                {"role": "user", "content": json_str},
+            ]
             response = client.chat.completions.create(
                 model="deepseek-chat",
                 messages=request_data,
-                response_format={
-                    'type': 'json_object'
-                },
-                stream=False
+                response_format={"type": "json_object"},
+                stream=False,
             )
         return response.choices[0].message.content
