@@ -16,7 +16,7 @@ class chat_activity_manager(QObject):
         self,
         history_manager: historyManager,
         setting_manager: settingManager,
-        wakeup_time: list = [5, 5, 10, 10, 15, 15, 20, 20, 20],
+        wakeup_time: list = [5, 5, 10, 10, 15, 15, 20, 20, 20],  # TODO 手动规划自激活时间
         parent=None,
     ) -> None:
         super().__init__(parent)
@@ -32,6 +32,11 @@ class chat_activity_manager(QObject):
     def start_timer(self):
         logger.info("自激活模块开启")
         self.wait_timer.start(int(self.wakeup_time[self.current_wait_index] * 60 * 1000))
+
+    def stop_timer(self):
+        logger.info("自激活模块关闭")
+        self.reset_wakeup()
+        self.wait_timer.stop()
 
     def reset_wakeup(self, *args) -> None:
         self.wait_timer.stop()

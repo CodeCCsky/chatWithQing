@@ -35,7 +35,7 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
             deepseek_api_setting(None),
             show_setting(),
             TTS_setting(),
-            chat_summary_setting(),
+            chatting_setting(),
             extension_func_setting(),
             emo_setting(),
         )
@@ -74,10 +74,11 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
         # history
         # self.scan_history_file()
 
-        # summary
-        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
-        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
-        self.addXDayAgoHisSummarySpinBox.setValue(int(self.setting_manager.chat_summary_setting.value_of_x_day_ago))
+        # chatting
+        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chatting_setting.add_same_day_summary)
+        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chatting_setting.add_x_day_ago_summary)
+        self.addXDayAgoHisSummarySpinBox.setValue(int(self.setting_manager.chatting_setting.value_of_x_day_ago))
+        self.selfActivcationCheckBox.setChecked(self.setting_manager.chatting_setting.enable_self_activation)
 
         # extension_func
         self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
@@ -141,14 +142,17 @@ class initialzationWidget(QMainWindow, Ui_MainWindow):
 
         # summary
         self.addSameDayHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_same_day_summary", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "add_same_day_summary", p)
         )
         self.addXDayAgoHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_x_day_ago_summary", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "add_x_day_ago_summary", p)
         )
         self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummarySpinBox.valueChanged.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "value_of_x_day_ago", p)
+        )
+        self.selfActivcationCheckBox.toggled.connect(
+            lambda p: setattr(self.setting_manager.chatting_setting, "enable_self_activation", p)
         )
 
         # extension_func

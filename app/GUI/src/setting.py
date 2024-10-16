@@ -84,10 +84,11 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         # history
         # self.scan_history_file()
 
-        # summary
-        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_same_day_summary)
-        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chat_summary_setting.add_x_day_ago_summary)
-        self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chat_summary_setting.value_of_x_day_ago)
+        # chatting
+        self.addSameDayHisSummaryCheckBox.setChecked(self.setting_manager.chatting_setting.add_same_day_summary)
+        self.addXDayAgoHisSummaryCheckBox.setChecked(self.setting_manager.chatting_setting.add_x_day_ago_summary)
+        self.addXDayAgoHisSummarySpinBox.setValue(self.setting_manager.chatting_setting.value_of_x_day_ago)
+        self.selfActivcationCheckBox.setChecked(self.setting_manager.chatting_setting.enable_self_activation)
 
         # extension_func
         self.enableRecallCheckBox.setChecked(self.setting_manager.extension_func_setting.recall)
@@ -153,16 +154,19 @@ class SettingWidget(QMainWindow, Ui_MainWindow):
         self.SaveButtonBox.accepted.connect(self.save_setting)
         self.SaveButtonBox.rejected.connect(self.cancel_save)
 
-        # summary
+        # chatting
         self.addSameDayHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_same_day_summary", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "add_same_day_summary", p)
         )
         self.addSameDayHisSummaryCheckBox.toggled.connect(self.addXDayAgoHisSummaryCheckBox.setCheckable)
         self.addXDayAgoHisSummaryCheckBox.toggled.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "add_x_day_ago_summary", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "add_x_day_ago_summary", p)
         )
         self.addXDayAgoHisSummarySpinBox.valueChanged.connect(
-            lambda p: setattr(self.setting_manager.chat_summary_setting, "value_of_x_day_ago", p)
+            lambda p: setattr(self.setting_manager.chatting_setting, "value_of_x_day_ago", p)
+        )
+        self.selfActivcationCheckBox.toggled.connect(
+            lambda p: setattr(self.setting_manager.chatting_setting, "enable_self_activation", p)
         )
 
         # extension_func

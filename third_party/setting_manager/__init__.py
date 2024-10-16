@@ -5,6 +5,6 @@ from third_party.setting_manager.setting_colletions import (
     TTS_setting,
     show_setting,
     extension_func_setting,
-    chat_summary_setting,
+    chatting_setting,
     emo_setting,
 )

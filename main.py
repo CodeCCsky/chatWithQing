@@ -242,7 +242,7 @@ class mainWidget(QWidget):
     def init_llm(self):
         # summary_interface = deepseek_summary(self.setting.get_api_key(),self.setting.get_user_name())
         self.summary_threadpool = QThreadPool()
-        if self.setting.chat_summary_setting.add_same_day_summary:
+        if self.setting.chatting_setting.add_same_day_summary:
             logger.info("加载历史记录中")
             today_summary_worker = summaryWorker(
                 api_key=self.setting.get_api_key(),
@@ -251,10 +251,10 @@ class mainWidget(QWidget):
                 generate_day_summary=False,
             )
             total_task_num = today_summary_worker.get_task_num()
-            if self.setting.chat_summary_setting.add_x_day_ago_summary:
+            if self.setting.chatting_setting.add_x_day_ago_summary:
                 now_date = datetime.datetime.now()
                 list_of_worker: list[summaryWorker] = []
-                for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                for i in range(1, self.setting.chatting_setting.value_of_x_day_ago + 1):
                     current_date = now_date - datetime.timedelta(days=i)
                     current_date_str = current_date.strftime("%Y%m%d")
                     file_path = os.path.join(default_history_path, f"{current_date_str}.json")
@@ -272,7 +272,7 @@ class mainWidget(QWidget):
             self.load_widget = loadWidget(total_task_num)
             today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
             self.summary_threadpool.start(today_summary_worker)
-            if self.setting.chat_summary_setting.add_x_day_ago_summary:
+            if self.setting.chatting_setting.add_x_day_ago_summary:
                 for worker in list_of_worker:
                     worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
                     self.summary_threadpool.start(worker)
@@ -323,11 +323,11 @@ class mainWidget(QWidget):
                 joined_cache_memory = "\n".join(list_of_cache_memeory)
                 self.history_manager.add_user_message("", f"加载的部分历史缓存记忆:{joined_cache_memory}")
 
-            if self.setting.chat_summary_setting.add_same_day_summary:
+            if self.setting.chatting_setting.add_same_day_summary:
                 full_summary_str = ""
                 now_date = datetime.datetime.now()
-                if self.setting.chat_summary_setting.add_x_day_ago_summary:
-                    for i in range(1, self.setting.chat_summary_setting.value_of_x_day_ago + 1):
+                if self.setting.chatting_setting.add_x_day_ago_summary:
+                    for i in range(1, self.setting.chatting_setting.value_of_x_day_ago + 1):
                         current_date = now_date - datetime.timedelta(days=i)
                         current_date_str = current_date.strftime("%Y%m%d")
                         file_path = os.path.join(default_history_path, f"{current_date_str}.json")
@@ -369,7 +369,8 @@ class mainWidget(QWidget):
         self.chat_activity_manager.chatActivityTimeout.connect(self.progress_wakeup)
         self.input_label.requestSend.connect(self.chat_activity_manager.reset_wakeup)
         self.input_label.input_edit.textChanged.connect(self.chat_activity_manager.reset_wakeup)
-        self.chat_activity_manager.start_timer()
+        if self.setting.chatting_setting.enable_self_activation:
+            self.chat_activity_manager.start_timer()
 
     ### '显示组件'选项部分
     def show_setting_window_event(self):
@@ -407,7 +408,7 @@ class mainWidget(QWidget):
             value_list.append(
                 (
                     f"认知设置变更: {', '.join(diff_list)}",
-                    int(self.setting.chat_summary_setting.value_of_x_day_ago),
+                    int(self.setting.chatting_setting.value_of_x_day_ago),
                 )
             )
             cache_memory[current_date] = value_list
@@ -415,6 +416,11 @@ class mainWidget(QWidget):
             self.focus_memory_manager.save_file()
             if self.setting.get_user_name() != setting_manager.get_user_name():
                 self.history_manager.change_user_name(setting_manager.get_user_name())
+        if (
+            not self.setting.chatting_setting.enable_self_activation
+            and setting_manager.chatting_setting.enable_self_activation
+        ):
+            self.chat_activity_manager.start_timer()
         self.setting = copy.deepcopy(setting_manager)
         self.setting.load_system_prompt_main()
         # TODO 认知更改后处理
