@@ -6,7 +6,7 @@ class fixJSON:
         pass
 
     @staticmethod
-    def loads(json_str: str, retry_time: int = 20) -> None:
+    def loads(json_str: str, retry_time: int = 20):
         for _ in range(retry_time):
             try:
                 return json.loads(json_str)

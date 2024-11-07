@@ -41,7 +41,7 @@ class summaryWorker(QRunnable):
                 logger.debug(f"处理{self.history_path}的子线程 - 第{i}项未检测到总结，生成中")
                 self.history_manager.set_summary_by_index(
                     i,
-                    self.interface.get_chat_summary(self.history_manager.get_history_dict_by_index(i))[0],
+                    self.interface.get_chat_summary(self.history_manager.get_history_list_by_index(i))[0],
                 )
                 self.history_manager.save_history()
             crt_time = datetime.datetime.strptime(self.history_manager.get_create_time_by_index(i), "%Y-%m-%d %H:%M:%S")

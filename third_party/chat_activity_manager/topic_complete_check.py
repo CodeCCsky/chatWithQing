@@ -72,7 +72,7 @@ class topic_check_thread(QThread):
     def run(self):
         logger.info("判断话题结束线程启动")
         processed_history_list = []
-        chat_history = self.history_manager.get_history_dict_by_index(-1)
+        chat_history = self.history_manager.get_history_list_by_index(-1)
         for item in chat_history:
             if item["role"] == "user":
                 # try:

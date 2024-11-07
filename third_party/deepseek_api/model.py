@@ -81,6 +81,9 @@ class deepseek_model:
     def get_api_key(self) -> str:
         return self.api_key
 
+    def get_system_prompt(self) -> str:
+        return self.system_prompt
+
     def load_history(self, history: list[dict]) -> None:
         if not isinstance(history, list):
             raise ValueError("History must be a list of dictionaries")
@@ -101,7 +104,7 @@ class deepseek_model:
                     model="deepseek-chat",
                     messages=self.history,
                     # tools=self.tools,  # TODO Implement tools functionality
-                    max_tokens=1024,
+                    # max_tokens=2048,
                     temperature=self.temperature,
                     frequency_penalty=self.frequency_penalty,
                     presence_penalty=self.presence_penalty,

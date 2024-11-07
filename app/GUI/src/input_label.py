@@ -14,6 +14,7 @@ from app.GUI.src.opacity_controller import opacity_controller
 
 class inputLabel(opacity_controller, Ui_Form):
     requestSend = pyqtSignal(str)
+    requestRetry = pyqtSignal()
 
     def __init__(self, parent=None, is_calc_token=True, update_token_time=1000):
         super().__init__(parent)
@@ -47,6 +48,8 @@ class inputLabel(opacity_controller, Ui_Form):
         self.clearButton.clicked.connect(self.clear_text)
         self.sendButton.setText("发送")
         self.sendButton.clicked.connect(self.send_text)
+        self.retryButton.clicked.connect(self.retry_send)
+        self.retryButton.setVisible(False)
 
         self.pushButton.setIcon(QIcon(":/Icon/minimize.png"))
         self.pushButton.setIconSize(self.pushButton.size())
@@ -55,6 +58,16 @@ class inputLabel(opacity_controller, Ui_Form):
 
     def clear_text(self):
         self.input_edit.setPlainText("")
+
+    def show_retry_button(self):
+        self.retryButton.setVisible(True)
+
+    def retry_send(self):
+        self.sendButton.setEnabled(False)
+        self.input_edit.setEnabled(False)
+        self.retryButton.setVisible(False)
+        self.statusBar.showMessage("重试中...", 1000)
+        self.requestRetry.emit()
 
     def send_text(self):
         self.sendButton.setEnabled(False)
