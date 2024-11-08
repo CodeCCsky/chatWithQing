@@ -2,6 +2,7 @@ import copy
 import datetime
 import json
 from third_party.FixJSON import fixJSON
+from pydantic import BaseModel, model_validator
 import logging
 import os
 from typing import Union
@@ -11,12 +12,40 @@ DEFAULT_PATH = r"./history/"
 logger = logging.getLogger(__name__)
 
 
-class chatManager:
+class AssistantContentModel(BaseModel):
+    role_thoughts: str
+    role_response: str
+
+
+class HistoryItemModel(BaseModel):
+    role: str
+    content: Union[str, AssistantContentModel, dict]
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_content(cls, values):
+        role = values.get("role")
+        content = values.get("content")
+        if role == "assistant" and not isinstance(content, (AssistantContentModel, str)):
+            raise ValueError(f"content must be AssistantContentModel or str when role is 'assistant'， {content}")
+        return values
+
+
+class chatManager:  # TODO test
     def __init__(self, history_data: dict, user_name: str) -> None:
         self.create_time: str = history_data["create_time"]
         self.update_time: str = history_data["update_time"]
         self.summary: str = history_data["summary"]
-        self.origin_history: list = history_data["origin_history"]
+        self.origin_history = []
+        for item in history_data["origin_history"]:
+            if isinstance(item["content"], dict) and item["role"] == "assistant":
+                item_content = AssistantContentModel(**item["content"])
+            else:
+                item_content = item["content"]
+            self.origin_history.append(HistoryItemModel(role=item["role"], content=item_content))
+        # sself.origin_history: list[HistoryItemModel] = [
+        #    HistoryItemModel(**item) for item in history_data["origin_history"]
+        # ]
         self.progressed_history: list = history_data["progressed_history"]
         self.user_name: str = user_name
         self.summaried_history: str = None
@@ -27,13 +56,16 @@ class chatManager:
         self.summaried_history = summaried_history
 
     def add_user_message(self, user_input: str, sys_input: str = None, **kwargs) -> None:
-        self.origin_history.append({"role": "user", "content": {}})
-        if user_input:
-            self.origin_history[-1]["content"][self.user_name] = user_input
+        new_content = {self.user_name: user_input} if user_input else {}
+
+        # self.origin_history.append({"role": "user", "content": {}})
+        # if user_input:
+        #    self.origin_history[-1]["content"][self.user_name] = user_input
         if sys_input:
-            self.origin_history[-1]["content"]["sys"] = sys_input
+            new_content["sys"] = sys_input
         for key, value in kwargs.items():
-            self.origin_history[-1]["content"][key] = value
+            new_content[key] = value
+        self.origin_history.append(HistoryItemModel(role="user", content=new_content))
         self.update_update_time()
 
     @singledispatchmethod
@@ -42,17 +74,21 @@ class chatManager:
 
     @add_assistant_message.register(str)
     def add_ast_msg(self, assistant_response: str) -> None:
+        # print("str:\n", assistant_response)
+
         try:
             content = fixJSON.loads(assistant_response)
-            self.origin_history.append({"role": "assistant", "content": content})
+            self.origin_history.append(HistoryItemModel(role="assistant", content=AssistantContentModel(**content)))
         except ValueError:
             logger.error("模型返回格式有误，历史对话文件将直接存储原始字符串")
-            self.origin_history.append({"role": "assistant", "content": assistant_response})
+            self.origin_history.append(HistoryItemModel(role="assistant", content=assistant_response))
         self.update_update_time()
 
     @add_assistant_message.register(dict)
     def add_ast_msg(self, assistant_response: dict) -> None:
-        self.origin_history.append({"role": "assistant", "content": assistant_response})
+        self.origin_history.append(
+            HistoryItemModel(role="assistant", content=AssistantContentModel(**assistant_response))
+        )
 
     def add_tool_message(self, tool_msg: str) -> None:
         self.update_update_time()
@@ -84,33 +120,36 @@ class chatManager:
         self.user_name = new_name
 
     def get_current_history(self) -> list:
-        processed_history = copy.deepcopy(self.origin_history)  # TODO
-        for i in range(len(processed_history)):
-            if isinstance(processed_history[i]["content"], dict):
-                processed_history[i]["content"] = json.dumps(self.origin_history[i]["content"], ensure_ascii=False)
-        # if self.summaried_history:
-        #    processed_history.insert(
-        #        0,
-        #        {
-        #            "role": "user",
-        #            "content": json.dumps(
-        #                {self.user_name: "", "sys": self.summaried_history},
-        #                ensure_ascii=False,
-        #            ),
-        #        },
-        #    )
-        # print(processed_history)
-        return processed_history
+        processed_historys = []
+        for item in self.origin_history:
+            processed_item = {"role": item.role}
+            if isinstance(item.content, AssistantContentModel):
+                processed_item["content"] = item.content.model_dump_json()
+            elif isinstance(item.content, dict):
+                processed_item["content"] = json.dumps(item.content, ensure_ascii=False)
+            elif isinstance(item.content, str):
+                processed_item["content"] = item.content
+            processed_historys.append(processed_item)
+        return processed_historys
 
     def get_current_history_dict(self) -> list:
-        return copy.deepcopy(self.origin_history)
+        processed_historys = []
+        for item in self.origin_history:
+            processed_item = {"role": item.role}
+            if isinstance(item.content, AssistantContentModel):
+                processed_item["content"] = item.content.model_dump()
+            elif isinstance(item.content, (dict, str)):
+                processed_item["content"] = item.content
+            processed_historys.append(processed_item)
+
+        return processed_historys
 
     def get_full_fomatted_data(self) -> dict:
         return {
             "create_time": self.create_time,
             "update_time": self.update_time,
             "summary": self.summary,
-            "origin_history": self.origin_history,
+            "origin_history": self.get_current_history_dict(),
             "progressed_history": self.progressed_history,
         }
 
@@ -186,9 +225,9 @@ class historyManager:
         except PermissionError as pe:
             logger.error(f"指定的对话历史文件拒绝访问，请检查文件读取权限和是否被占用。Error:{pe}")
             # self.create_new_history_file()
-        except Exception as e:
-            logger.error(f"发生了意料之外的错误。Error:{e}")
-            # self.create_new_history_file()
+        # except Exception as e:
+        # logger.error(f"发生了意料之外的错误。Error:{e}")
+        # self.create_new_history_file()
 
     def set_current_index(self, index: int):
         self.current_history_index = index
@@ -233,7 +272,7 @@ class historyManager:
             msg[key] = value
         return json.dumps(msg)
 
-    def add_assistant_message(self, assistant_response: str) -> None:
+    def add_assistant_message(self, assistant_response: Union[str, dict]) -> None:
         self.historys[self.current_history_index].add_assistant_message(assistant_response)
 
     def add_tool_message(self, tool_msg: str) -> None:

@@ -127,7 +127,7 @@ class deepseek_model:
                 self.history.clear()
                 return self.current_response, self.finish_reason, token_usage
             except APIError as e:
-                logger.error(f"api错误，将等待一段时间后重试 status code:{e.code}")
+                logger.error(f"api错误，将等待一段时间后重试 occured error content:{e} ; status code:{e.code}")
                 delay = self.retry_delay + random.uniform(0, 5)  # 增加随机延迟
                 time.sleep(delay)
             except Exception as e:

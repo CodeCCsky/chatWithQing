@@ -75,10 +75,10 @@ class topic_check_thread(QThread):
         chat_history = self.history_manager.get_history_list_by_index(-1)
         for item in chat_history:
             if item["role"] == "user":
-                # try:
-                processed_history_list.append(
-                    f"{self.setting_manager.get_user_name()}:{item['content'][self.setting_manager.get_user_name()]}"
-                )
+                if self.setting_manager.get_user_name() in item["content"]:
+                    processed_history_list.append(
+                        f"{self.setting_manager.get_user_name()}:{item['content'][self.setting_manager.get_user_name()]}"
+                    )
             elif item["role"] == "assistant":
                 try:
                     processed_history_list.append(f"晴:{item['content']['role_response']}")

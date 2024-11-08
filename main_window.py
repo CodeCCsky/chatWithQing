@@ -205,7 +205,7 @@ class mainWidget(QWidget):
             int(self.desktop_pet.y() - self.input_label.height() * 1.2),
         )
         self.input_label.closeEvent = self.closeEvent
-        self.input_label.requestSend.connect(self.start_talk)
+        self.input_label.requestSend.connect(self.start_talk_after_add_user_msg)
         self.input_label.requestRetry.connect(self.retry_talk)
         self.fix_json_interface: fixJSONThread = None
         self.prefix_message_interface: PyQt_deepseek_request_prefix_thread = None
@@ -444,7 +444,7 @@ class mainWidget(QWidget):
         # 考虑换个更好的功能？（也许是屏幕识别？）
         # if input_text and random.randint(1, 10) > 3:
         #    sys_text += f"你偷看了{self.setting.get_user_name()}的输入框,已输入的文本如下:{input_text}|"
-        self.start_talk("", sys_text)
+        self.start_talk_after_add_user_msg("", sys_text)
 
     ### 实现对话部分
     def progress_sys_msg(self, sys: str, clear_pet_state: bool = True) -> str:
@@ -459,11 +459,13 @@ class mainWidget(QWidget):
                 self.pet_part = None
         return sys_input
 
-    def start_talk(self, input_text: str, sys: str = ""):
-        # TODO 更多系统提示
+    def start_talk_after_add_user_msg(self, input_text: str, sys: str = ""):
         sys_input = self.progress_sys_msg(sys)
         self.history_manager.add_user_message(user_input=input_text, sys_input=sys_input)
         self.history_manager.save_history()
+        self.start_talk()
+
+    def start_talk(self):
         self.llm_interface.load_history(self.history_manager.get_current_history())
         self.llm_thread = PyQt_deepseek_request_thread(self.llm_interface, self.history_manager)
         self.llm_thread.start()
@@ -520,22 +522,37 @@ class mainWidget(QWidget):
             while last_user_msg.get("role", None) != "user":
                 last_user_msg = self.history_manager.pop_to_wait_to_del_msgs()
             if self.retry_message_dialog:
+                QApplication.setQuitOnLastWindowClosed(False)
                 self.retry_message_dialog.continueRetry.disconnect(self.progress_retry_message_dialog_retruns)
+                self.retry_message_dialog.ignoreRetry.disconnect(self.ignore_retry_message_dialog_returns)
                 self.retry_message_dialog.close()
                 self.retry_message_dialog.deleteLater()
-                self.retry_message_dialog = None  # ???
+                self.retry_message_dialog = None
             QTimer.singleShot(0, self.create_retry_message_dialog)  # TODO test
 
     def create_retry_message_dialog(self):
+        QApplication.setQuitOnLastWindowClosed(True)
         self.retry_message_dialog = RetryMessageDialog(self.history_manager)
         self.retry_message_dialog.continueRetry.connect(self.progress_retry_message_dialog_retruns)
+        self.retry_message_dialog.ignoreRetry.connect(self.ignore_retry_message_dialog_returns)
         self.retry_message_dialog.show()
 
-    def progress_retry_message_dialog_retruns(self, continue_retry: bool):  # TODO   <=== 未完成
-        if continue_retry:
-            pass
-        else:
-            pass
+    def ignore_retry_message_dialog_returns(self):
+        self.history_manager.clear_wait_to_del_msgs()
+        self.finish_this_round_of_talk()
+
+    def progress_retry_message_dialog_retruns(self, continue_retry: list):  # TODO   <=== 未完成
+        for msg_data in continue_retry[::-1]:
+            if msg_data["role"] == "user":
+                self.history_manager.add_user_message(
+                    msg_data["content"][self.setting.get_user_name()], msg_data["content"]["sys"]
+                )
+            elif msg_data["role"] == "assistant":
+                self.history_manager.add_assistant_message(msg_data["content"])
+            elif msg_data["role"] == "tool":
+                self.history_manager.add_assistant_message(msg_data["content"])
+        self.history_manager.clear_wait_to_del_msgs()
+        self.start_talk()
 
     def progress_failed_auto_json_fix(self, is_fixed: bool):
         self.fix_json_interface.isFixed.disconnect()

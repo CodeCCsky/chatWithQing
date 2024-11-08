@@ -45,8 +45,7 @@ class deepseek_summary:
     def get_chat_summary(self, chat_history: list):
         processed_history_list = []
         for item in chat_history:
-            if item["role"] == "user":
-                # try:
+            if item["role"] == "user" and self.user_name in item["content"]:
                 processed_history_list.append(f"{self.user_name}:{item['content'][self.user_name]}")
             elif item["role"] == "assistant":
                 try:
