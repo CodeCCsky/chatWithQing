@@ -493,13 +493,16 @@ class mainWidget(QWidget):
 
         # finish_reason: stop, length, content_filter, tool_calls, insufficient_system_resource
         if finish_state == "stop":
+            logger.info("成功获取回复")
             response = _get_response()
             try:
                 self.response_content = fixJSON.loads(response)
                 self.history_manager.add_assistant_message(self.response_content)
                 self.history_manager.save_history()
+                logger.info("回复解析成功")
                 self.progress_thinking()
             except (ValueError, KeyError):
+                logger.warning("回复解析失败，使用llm解析")
                 self.talk_bubble._setTextLabel("", "返回格式有误，尝试修复中")
                 self.fix_json_interface = fixJSONThread(response, self.setting.get_api_key())
                 self.fix_json_interface.isFixed.connect(self.progress_failed_auto_json_fix)
@@ -508,6 +511,7 @@ class mainWidget(QWidget):
             # TODO
             self.finish_this_round_of_talk()
         elif finish_state == "length":
+            logger.info("回复过长，重启流程获取未完成的回复")
             response = _get_response()
             self.prefix_message_interface = PyQt_deepseek_request_prefix_thread(
                 self.llm_interface, response, self.history_manager
@@ -516,8 +520,10 @@ class mainWidget(QWidget):
             self.prefix_message_interface.start()
         else:
             if finish_state == "content_filter":
+                logger.warning("回复被过滤")
                 self.talk_bubble._setTextLabel("", "**错误：回复被过滤**")
             elif finish_state == "insufficient_system_resource":
+                logger.warning("API推理资源不足，回复被打断")
                 self.talk_bubble._setTextLabel("", "**错误：API推理资源不足，回复被打断**")
             last_user_msg = HistoryItemModel(role="", content="")
             while last_user_msg.role != "user":
@@ -529,7 +535,7 @@ class mainWidget(QWidget):
                 self.retry_message_dialog.close()
                 self.retry_message_dialog.deleteLater()
                 self.retry_message_dialog = None
-            QTimer.singleShot(0, self.create_retry_message_dialog)  # TODO test
+            QTimer.singleShot(0, self.create_retry_message_dialog)
 
     def create_retry_message_dialog(self):
         QApplication.setQuitOnLastWindowClosed(True)
@@ -542,7 +548,7 @@ class mainWidget(QWidget):
         self.history_manager.clear_wait_to_del_msgs()
         self.finish_this_round_of_talk()
 
-    def progress_retry_message_dialog_retruns(self, continue_retry: list):  # TODO   <=== 未完成
+    def progress_retry_message_dialog_retruns(self, continue_retry: list):
         for msg_data in continue_retry[::-1]:
             if msg_data["role"] == "user":
                 self.history_manager.add_user_message(
