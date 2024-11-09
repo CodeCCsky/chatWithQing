@@ -1,0 +1,3 @@
+该功能暂未实现
+
+如果你想更改system prompt请更改system_prompt_main.txt，并将更改前和更改后的文件自行做好备份，更新会覆盖更改的system_prompt_main.txt文件
