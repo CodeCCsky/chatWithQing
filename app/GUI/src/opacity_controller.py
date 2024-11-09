@@ -42,9 +42,7 @@ class opacity_controller(QWidget):
         self.keep_opacity = False
         self.keep_opacity_after_change = False
 
-        self.opacity_change_timer.start(
-            self.opacity_mode_keep_time[self.opacity_current_mode]
-        )
+        self.opacity_change_timer.start(self.opacity_mode_keep_time[self.opacity_current_mode])
 
     def _window_opacity_control(self):
         if not self.keep_opacity:
@@ -54,10 +52,7 @@ class opacity_controller(QWidget):
             elif self.windowOpacity() + self.opacity_update_delta < nxt_opacity:
                 nxt_opacity = self.windowOpacity() + self.opacity_update_delta
             if (
-                abs(
-                    self.windowOpacity()
-                    - self.opacity_modes_list[self.opacity_current_mode]
-                )
+                abs(self.windowOpacity() - self.opacity_modes_list[self.opacity_current_mode])
                 < self.opacity_update_delta
             ):
                 self.opacityModeChange.emit(self.opacity_current_mode)
@@ -71,12 +66,8 @@ class opacity_controller(QWidget):
         if self.opacity_mode_change_lock:
             return None
         self.opacity_change_timer.stop()
-        self.opacity_current_mode = self.opacity_next_mode_list[
-            self.opacity_current_mode
-        ]
-        self.opacity_change_timer.start(
-            self.opacity_mode_keep_time[self.opacity_current_mode]
-        )
+        self.opacity_current_mode = self.opacity_next_mode_list[self.opacity_current_mode]
+        self.opacity_change_timer.start(self.opacity_mode_keep_time[self.opacity_current_mode])
 
     def set_keep_opacity(self, clear_status: bool, keep_opacity: bool) -> None:
         if clear_status:
@@ -115,25 +106,19 @@ class opacity_controller(QWidget):
             if self.opacity_delay_timer.receivers(self.opacity_delay_timer.timeout) > 0:
                 self.opacity_delay_timer.timeout.disconnect()
             self.opacity_delay_timer.timeout.connect(
-                lambda: self._change_opacity(
-                    mode, clear_keep_opacity_status, is_keep_opacity
-                )
+                lambda: self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity)
             )
             self.opacity_delay_timer.start(delay)
         else:
             self._change_opacity(mode, clear_keep_opacity_status, is_keep_opacity)
         return True
 
-    def _change_opacity(
-        self, mode: str, clear_keep_opacity_status: bool, is_keep_opacity: bool
-    ):
+    def _change_opacity(self, mode: str, clear_keep_opacity_status: bool, is_keep_opacity: bool):
         self.opacity_delay_timer.stop()
         self.set_keep_opacity(clear_keep_opacity_status, is_keep_opacity)
         self.opacity_current_mode = mode
         self.opacity_update_timer.start(self.opacity_update_time)
-        self.opacity_change_timer.start(
-            self.opacity_mode_keep_time[self.opacity_current_mode]
-        )
+        self.opacity_change_timer.start(self.opacity_mode_keep_time[self.opacity_current_mode])
 
     def hide_window(self):
         self.set_opacity_mode(
@@ -153,12 +138,8 @@ class opacity_controller(QWidget):
         )
 
     def enterEvent(self, event):
-        self.set_opacity_mode(
-            mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True
-        )
+        self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True, is_keep_opacity=True)
 
     def leaveEvent(self, event):
         if self.opacity_current_mode != "hide":
-            self.set_opacity_mode(
-                mode="await", clear_keep_opacity_status=True, delay=3000
-            )
+            self.set_opacity_mode(mode="await", clear_keep_opacity_status=True, delay=3000)

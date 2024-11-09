@@ -45,16 +45,11 @@ class deepseek_summary:
     def get_chat_summary(self, chat_history: list):
         processed_history_list = []
         for item in chat_history:
-            if item["role"] == "user":
-                # try:
-                processed_history_list.append(
-                    f"{self.user_name}:{item['content'][self.user_name]}"
-                )
+            if item["role"] == "user" and self.user_name in item["content"]:
+                processed_history_list.append(f"{self.user_name}:{item['content'][self.user_name]}")
             elif item["role"] == "assistant":
                 try:
-                    processed_history_list.append(
-                        f"晴:{item['content']['role_response']}"
-                    )
+                    processed_history_list.append(f"晴:{item['content']['role_response']}")
                 except (KeyError, ValueError, TypeError):
                     processed_history_list.append(f"{self.user_name}:{item['content']}")
         if processed_history_list == []:
@@ -69,12 +64,8 @@ class deepseek_summary:
         day_historys = day_data["historys"]
         processed_historys_list = []
         for item in day_historys:
-            crt_time = datetime.datetime.strptime(
-                item["create_time"], "%Y-%m-%d %H:%M:%S"
-            )
-            upd_time = datetime.datetime.strptime(
-                item["update_time"], "%Y-%m-%d %H:%M:%S"
-            )
+            crt_time = datetime.datetime.strptime(item["create_time"], "%Y-%m-%d %H:%M:%S")
+            upd_time = datetime.datetime.strptime(item["update_time"], "%Y-%m-%d %H:%M:%S")
             processed_historys_list.append(
                 f"{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 总结: {item['summary']}"
             )
@@ -125,13 +116,9 @@ def get_summary_prompt() -> tuple[str, str]:
     chat_summary_prompt = CHAT_PROMPT
     day_summary_prompt = DAY_PROMPT
     try:
-        with open(
-            r"system_prompt\summary\chat_summary_prompt.txt", "r", encoding="utf-8"
-        ) as f:
+        with open(r"system_prompt\summary\chat_summary_prompt.txt", "r", encoding="utf-8") as f:
             chat_summary_prompt = f.read()
-        with open(
-            r"system_prompt\summary\day_summary_prompt.txt", "r", encoding="utf-8"
-        ) as f:
+        with open(r"system_prompt\summary\day_summary_prompt.txt", "r", encoding="utf-8") as f:
             day_summary_prompt = f.read()
     except OSError:
         pass

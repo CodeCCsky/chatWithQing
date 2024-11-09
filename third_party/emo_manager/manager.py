@@ -1,6 +1,7 @@
 import yaml
 import re
 import random
+import enum
 
 
 class emo_manager:
@@ -43,14 +44,21 @@ class emo_manager:
             }
             yaml.dump(data=data, stream=f, allow_unicode=True)
 
-    def process_string(self, input_string: str):
+    def process_string(self, input_string: str) -> dict:
         extracted_emotion = {}
-        result_string = input_string
+        normal_result_string = input_string
+        forced_result_string = input_string
         now_unconfirmed = []
         offset = 0
+        offset_forced = 0
 
         pattern = r"[\(（](.*?)[\)）]"
+        # 好恐怖的正则表达式...(ai生成的)
+        force_pattern = re.compile(
+            r"[^\u0020-\u007E\uFF00-\uFFEF\u00A0-\u00FF\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF\u0021-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u3000-\u303F]"
+        )
         matches = re.finditer(pattern, input_string)
+        forced_result_string = re.sub(force_pattern, ",", forced_result_string)
 
         for match in matches:
             start, end = match.span()
@@ -67,13 +75,26 @@ class emo_manager:
             if matching_keys:
                 chosen_key = random.choice(matching_keys)
                 extracted_emotion[start - offset] = chosen_key
-                result_string = (
-                    result_string[: start - offset] + result_string[end - offset :]
+                normal_result_string = (
+                    normal_result_string[: start - offset] + "," + normal_result_string[end - offset :]
                 )
-                offset += end - start
+                forced_result_string = (
+                    forced_result_string[: start - offset_forced] + "," + forced_result_string[end - offset_forced :]
+                )
+                offset += end - start - 1
+                offset_forced += end - start - 1
             else:
                 extracted_emotion[start - offset] = -1
                 if substring not in self.unconfirmed_emoji:
                     self.unconfirmed_emoji.append(substring)
+                forced_result_string = (
+                    forced_result_string[: start - offset_forced] + "," + forced_result_string[end - offset_forced :]
+                )
+                offset_forced += end - start - 1
 
-        return result_string, extracted_emotion, now_unconfirmed
+        return {
+            "normal_result_string": normal_result_string,
+            "forced_result_string": forced_result_string,
+            "extracted_emotion": extracted_emotion,
+            "now_unconfirmed": now_unconfirmed,
+        }

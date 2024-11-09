@@ -72,22 +72,18 @@ class topic_check_thread(QThread):
     def run(self):
         logger.info("判断话题结束线程启动")
         processed_history_list = []
-        chat_history = self.history_manager.get_history_dict_by_index(-1)
+        chat_history = self.history_manager.get_history_list_by_index(-1)
         for item in chat_history:
             if item["role"] == "user":
-                # try:
-                processed_history_list.append(
-                    f"{self.setting_manager.get_user_name()}:{item['content'][self.setting_manager.get_user_name()]}"
-                )
+                if self.setting_manager.get_user_name() in item["content"]:
+                    processed_history_list.append(
+                        f"{self.setting_manager.get_user_name()}:{item['content'][self.setting_manager.get_user_name()]}"
+                    )
             elif item["role"] == "assistant":
                 try:
-                    processed_history_list.append(
-                        f"晴:{item['content']['role_response']}"
-                    )
+                    processed_history_list.append(f"晴:{item['content']['role_response']}")
                 except (KeyError, ValueError, TypeError):
-                    processed_history_list.append(
-                        f"{self.setting_manager.get_user_name()}:{item['content']}"
-                    )
+                    processed_history_list.append(f"{self.setting_manager.get_user_name()}:{item['content']}")
         if processed_history_list == []:
             logger.info("判断话题结束线程 - 无历史记录，默认返回结束")
             self.result.emit(True)
@@ -105,14 +101,10 @@ class topic_check_thread(QThread):
                 logger.info(f"判断话题结束线程 - 返回:话题结束 - 返回值:{response}")
                 self.result.emit(True)
             else:
-                logger.warning(
-                    f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}"
-                )
+                logger.warning(f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}")
                 self.result.emit(True)
         except Exception:
-            logger.warning(
-                f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}"
-            )
+            logger.warning(f"判断话题结束线程 - 返回出错, 格式不正确. 默认为话题结束 - 返回值:{response}")
             self.result.emit(True)
 
 

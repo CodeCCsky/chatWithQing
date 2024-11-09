@@ -27,9 +27,7 @@ class Ui_MainWindow(object):
         self.listWidget = QtWidgets.QListWidget(self.settingMainWidget)
         self.listWidget.setMinimumSize(QtCore.QSize(200, 0))
         self.listWidget.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.listWidget.setStyleSheet(
-            "QListWidget::item {height: 50px; text-align: center;};"
-        )
+        self.listWidget.setStyleSheet("QListWidget::item {height: 50px; text-align: center;};")
         self.listWidget.setProperty("isWrapping", False)
         self.listWidget.setObjectName("listWidget")
         item = QtWidgets.QListWidgetItem()
@@ -59,7 +57,7 @@ class Ui_MainWindow(object):
         self.userScrollArea.setWidgetResizable(True)
         self.userScrollArea.setObjectName("userScrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 531, 467))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 531, 389))
         self.scrollAreaWidgetContents.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.scrollAreaWidgetContents.setStyleSheet("")
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
@@ -77,10 +75,6 @@ class Ui_MainWindow(object):
         self.yourNameEdit = QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
         self.yourNameEdit.setObjectName("yourNameEdit")
         self.verticalLayout_13.addWidget(self.yourNameEdit)
-        spacerItem = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_13.addItem(spacerItem)
         self.line_17 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
         self.line_17.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_17.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -101,10 +95,6 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.scrollAreaWidgetContents)
         self.label.setObjectName("label")
         self.verticalLayout_13.addWidget(self.label)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_13.addItem(spacerItem1)
         self.line_18 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
         self.line_18.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_18.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -116,10 +106,6 @@ class Ui_MainWindow(object):
         self.yourFavouriteFood = QtWidgets.QLineEdit(self.scrollAreaWidgetContents)
         self.yourFavouriteFood.setObjectName("yourFavouriteFood")
         self.verticalLayout_13.addWidget(self.yourFavouriteFood)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_13.addItem(spacerItem2)
         self.line_19 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
         self.line_19.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_19.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -146,21 +132,15 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.birthdayDateEdit = QtWidgets.QDateEdit(self.birthdayWidget)
         self.birthdayDateEdit.setMinimumSize(QtCore.QSize(100, 0))
-        self.birthdayDateEdit.setDateTime(
-            QtCore.QDateTime(QtCore.QDate(2024, 1, 14), QtCore.QTime(0, 0, 0))
-        )
+        self.birthdayDateEdit.setDateTime(QtCore.QDateTime(QtCore.QDate(2024, 1, 14), QtCore.QTime(0, 0, 0)))
         self.birthdayDateEdit.setCalendarPopup(True)
         self.birthdayDateEdit.setObjectName("birthdayDateEdit")
         self.horizontalLayout_3.addWidget(self.birthdayDateEdit)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.horizontalLayout_3.addItem(spacerItem3)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem)
         self.verticalLayout_13.addWidget(self.birthdayWidget)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_13.addItem(spacerItem4)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_13.addItem(spacerItem1)
         self.userScrollArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout_16.addWidget(self.userScrollArea)
         self.stackedWidget.addWidget(self.stackedWidgetUser)
@@ -172,7 +152,7 @@ class Ui_MainWindow(object):
         self.scrollArea_6.setWidgetResizable(True)
         self.scrollArea_6.setObjectName("scrollArea_6")
         self.scrollAreaWidgetAPI = QtWidgets.QWidget()
-        self.scrollAreaWidgetAPI.setGeometry(QtCore.QRect(0, 0, 548, 315))
+        self.scrollAreaWidgetAPI.setGeometry(QtCore.QRect(0, 0, 322, 128))
         self.scrollAreaWidgetAPI.setObjectName("scrollAreaWidgetAPI")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetAPI)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -191,10 +171,8 @@ class Ui_MainWindow(object):
         self.lAPIEdit = QtWidgets.QLineEdit(self.scrollAreaWidgetAPI)
         self.lAPIEdit.setObjectName("lAPIEdit")
         self.verticalLayout_15.addWidget(self.lAPIEdit)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_15.addItem(spacerItem5)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_15.addItem(spacerItem2)
         self.scrollArea_6.setWidget(self.scrollAreaWidgetAPI)
         self.verticalLayout_14.addWidget(self.scrollArea_6)
         self.stackedWidget.addWidget(self.stackedWidgetAPI)
@@ -206,7 +184,7 @@ class Ui_MainWindow(object):
         self.scrollArea_7.setWidgetResizable(True)
         self.scrollArea_7.setObjectName("scrollArea_7")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, -235, 531, 550))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 448, 498))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout_17.setObjectName("verticalLayout_17")
@@ -218,9 +196,7 @@ class Ui_MainWindow(object):
         self.temperatureLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_6)
         self.temperatureLabel.setObjectName("temperatureLabel")
         self.verticalLayout_17.addWidget(self.temperatureLabel)
-        self.temperatureSliderWidget = QtWidgets.QWidget(
-            self.scrollAreaWidgetContents_6
-        )
+        self.temperatureSliderWidget = QtWidgets.QWidget(self.scrollAreaWidgetContents_6)
         self.temperatureSliderWidget.setObjectName("temperatureSliderWidget")
         self.horizontalLayout_17 = QtWidgets.QHBoxLayout(self.temperatureSliderWidget)
         self.horizontalLayout_17.setObjectName("horizontalLayout_17")
@@ -235,10 +211,6 @@ class Ui_MainWindow(object):
         self.temperatureSlider.setObjectName("temperatureSlider")
         self.horizontalLayout_17.addWidget(self.temperatureSlider)
         self.verticalLayout_17.addWidget(self.temperatureSliderWidget)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_17.addItem(spacerItem6)
         self.line_22 = QtWidgets.QFrame(self.scrollAreaWidgetContents_6)
         self.line_22.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_22.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -262,10 +234,6 @@ class Ui_MainWindow(object):
         self.frequencyPenaltySlider.setObjectName("frequencyPenaltySlider")
         self.horizontalLayout_18.addWidget(self.frequencyPenaltySlider)
         self.verticalLayout_17.addWidget(self.frequencyPenaltyWidget)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_17.addItem(spacerItem7)
         self.line_23 = QtWidgets.QFrame(self.scrollAreaWidgetContents_6)
         self.line_23.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_23.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -289,10 +257,8 @@ class Ui_MainWindow(object):
         self.presencePenaltylSlider.setObjectName("presencePenaltylSlider")
         self.horizontalLayout_19.addWidget(self.presencePenaltylSlider)
         self.verticalLayout_17.addWidget(self.presencePenaltyWidget)
-        spacerItem8 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_17.addItem(spacerItem8)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_17.addItem(spacerItem3)
         self.scrollArea_7.setWidget(self.scrollAreaWidgetContents_6)
         self.verticalLayout_16.addWidget(self.scrollArea_7)
         self.stackedWidget.addWidget(self.stackedWidgetParameter)
@@ -304,7 +270,7 @@ class Ui_MainWindow(object):
         self.scrollArea_8.setWidgetResizable(True)
         self.scrollArea_8.setObjectName("scrollArea_8")
         self.scrollAreaWidgetContents_7 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_7.setGeometry(QtCore.QRect(0, 0, 531, 531))
+        self.scrollAreaWidgetContents_7.setGeometry(QtCore.QRect(0, 0, 524, 453))
         self.scrollAreaWidgetContents_7.setObjectName("scrollAreaWidgetContents_7")
         self.verticalLayout_19 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_7)
         self.verticalLayout_19.setObjectName("verticalLayout_19")
@@ -328,10 +294,6 @@ class Ui_MainWindow(object):
         self.checkTTSButton = QtWidgets.QPushButton(self.scrollAreaWidgetContents_7)
         self.checkTTSButton.setObjectName("checkTTSButton")
         self.verticalLayout_19.addWidget(self.checkTTSButton)
-        spacerItem9 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_19.addItem(spacerItem9)
         self.line_26 = QtWidgets.QFrame(self.scrollAreaWidgetContents_7)
         self.line_26.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_26.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -351,10 +313,6 @@ class Ui_MainWindow(object):
         self.TTSUrlEdit.setObjectName("TTSUrlEdit")
         self.horizontalLayout_20.addWidget(self.TTSUrlEdit)
         self.verticalLayout_19.addWidget(self.TTSUrlWidget)
-        spacerItem10 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_19.addItem(spacerItem10)
         self.line_27 = QtWidgets.QFrame(self.scrollAreaWidgetContents_7)
         self.line_27.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_27.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -385,19 +343,13 @@ class Ui_MainWindow(object):
         self.lTTSEmotionEdit.setObjectName("lTTSEmotionEdit")
         self.horizontalLayout_23.addWidget(self.lTTSEmotionEdit)
         self.verticalLayout_19.addWidget(self.TTSEmotionWidget)
-        spacerItem11 = QtWidgets.QSpacerItem(
-            0, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.verticalLayout_19.addItem(spacerItem11)
         self.line_28 = QtWidgets.QFrame(self.scrollAreaWidgetContents_7)
         self.line_28.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_28.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_28.setObjectName("line_28")
         self.verticalLayout_19.addWidget(self.line_28)
-        spacerItem12 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_19.addItem(spacerItem12)
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_19.addItem(spacerItem4)
         self.scrollArea_8.setWidget(self.scrollAreaWidgetContents_7)
         self.verticalLayout_18.addWidget(self.scrollArea_8)
         self.stackedWidget.addWidget(self.stackedWidgetTTS)
@@ -409,7 +361,7 @@ class Ui_MainWindow(object):
         self.scrollArea_9.setWidgetResizable(True)
         self.scrollArea_9.setObjectName("scrollArea_9")
         self.scrollAreaWidgetTextShow = QtWidgets.QWidget()
-        self.scrollAreaWidgetTextShow.setGeometry(QtCore.QRect(0, 0, 548, 315))
+        self.scrollAreaWidgetTextShow.setGeometry(QtCore.QRect(0, 0, 198, 232))
         self.scrollAreaWidgetTextShow.setObjectName("scrollAreaWidgetTextShow")
         self.verticalLayout_21 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetTextShow)
         self.verticalLayout_21.setObjectName("verticalLayout_21")
@@ -432,21 +384,15 @@ class Ui_MainWindow(object):
         self.haomiao.setObjectName("haomiao")
         self.horizontalLayout_24.addWidget(self.haomiao)
         self.verticalLayout_21.addWidget(self.textShowSpeedWidget)
-        self.textShowSpeedExampleWidget = QtWidgets.QWidget(
-            self.scrollAreaWidgetTextShow
-        )
+        self.textShowSpeedExampleWidget = QtWidgets.QWidget(self.scrollAreaWidgetTextShow)
         self.textShowSpeedExampleWidget.setObjectName("textShowSpeedExampleWidget")
-        self.horizontalLayout_25 = QtWidgets.QHBoxLayout(
-            self.textShowSpeedExampleWidget
-        )
+        self.horizontalLayout_25 = QtWidgets.QHBoxLayout(self.textShowSpeedExampleWidget)
         self.horizontalLayout_25.setObjectName("horizontalLayout_25")
         self._exampleL = QtWidgets.QLabel(self.textShowSpeedExampleWidget)
         self._exampleL.setMaximumSize(QtCore.QSize(50, 16777215))
         self._exampleL.setObjectName("_exampleL")
         self.horizontalLayout_25.addWidget(self._exampleL)
-        self.textShowSpeedExampleLabel = QtWidgets.QLabel(
-            self.textShowSpeedExampleWidget
-        )
+        self.textShowSpeedExampleLabel = QtWidgets.QLabel(self.textShowSpeedExampleWidget)
         self.textShowSpeedExampleLabel.setObjectName("textShowSpeedExampleLabel")
         self.horizontalLayout_25.addWidget(self.textShowSpeedExampleLabel)
         self.verticalLayout_21.addWidget(self.textShowSpeedExampleWidget)
@@ -476,15 +422,11 @@ class Ui_MainWindow(object):
         self.imageShowSlider.setObjectName("imageShowSlider")
         self.horizontalLayout_2.addWidget(self.imageShowSlider)
         self.verticalLayout_21.addWidget(self.widget_2)
-        self.imageShowPreviewCheckBox = QtWidgets.QCheckBox(
-            self.scrollAreaWidgetTextShow
-        )
+        self.imageShowPreviewCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetTextShow)
         self.imageShowPreviewCheckBox.setObjectName("imageShowPreviewCheckBox")
         self.verticalLayout_21.addWidget(self.imageShowPreviewCheckBox)
-        spacerItem13 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_21.addItem(spacerItem13)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_21.addItem(spacerItem5)
         self.scrollArea_9.setWidget(self.scrollAreaWidgetTextShow)
         self.verticalLayout_20.addWidget(self.scrollArea_9)
         self.stackedWidget.addWidget(self.stackedWidgetTextShow)
@@ -508,31 +450,25 @@ class Ui_MainWindow(object):
         self.talkSettingTopLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_8)
         self.talkSettingTopLabel.setObjectName("talkSettingTopLabel")
         self.verticalLayout_23.addWidget(self.talkSettingTopLabel)
-        self.line_2 = QtWidgets.QFrame(self.scrollAreaWidgetContents_8)
-        self.line_2.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_2.setObjectName("line_2")
-        self.verticalLayout_23.addWidget(self.line_2)
-        self.addSameDayHisSummaryCheckBox = QtWidgets.QCheckBox(
-            self.scrollAreaWidgetContents_8
-        )
+        self.line_9 = QtWidgets.QFrame(self.scrollAreaWidgetContents_8)
+        self.line_9.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_9.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_9.setObjectName("line_9")
+        self.verticalLayout_23.addWidget(self.line_9)
+        self.talkMemoryLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_8)
+        self.talkMemoryLabel.setObjectName("talkMemoryLabel")
+        self.verticalLayout_23.addWidget(self.talkMemoryLabel)
+        self.addSameDayHisSummaryCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_8)
         self.addSameDayHisSummaryCheckBox.setObjectName("addSameDayHisSummaryCheckBox")
         self.verticalLayout_23.addWidget(self.addSameDayHisSummaryCheckBox)
-        self.line_3 = QtWidgets.QFrame(self.scrollAreaWidgetContents_8)
-        self.line_3.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_3.setObjectName("line_3")
-        self.verticalLayout_23.addWidget(self.line_3)
-        self.addXDayAgoHisSummaryCheckBox = QtWidgets.QCheckBox(
-            self.scrollAreaWidgetContents_8
-        )
+        self.addXDayAgoHisSummaryCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_8)
         self.addXDayAgoHisSummaryCheckBox.setObjectName("addXDayAgoHisSummaryCheckBox")
         self.verticalLayout_23.addWidget(self.addXDayAgoHisSummaryCheckBox)
         self.widget = QtWidgets.QWidget(self.scrollAreaWidgetContents_8)
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 6)
+        self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label_3 = QtWidgets.QLabel(self.widget)
         self.label_3.setMaximumSize(QtCore.QSize(16777215, 16777215))
@@ -543,27 +479,29 @@ class Ui_MainWindow(object):
         self.addXDayAgoHisSummarySpinBox.setMaximum(30)
         self.addXDayAgoHisSummarySpinBox.setObjectName("addXDayAgoHisSummarySpinBox")
         self.horizontalLayout.addWidget(self.addXDayAgoHisSummarySpinBox)
-        spacerItem14 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.horizontalLayout.addItem(spacerItem14)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem6)
         self.verticalLayout_23.addWidget(self.widget)
-        self.line_4 = QtWidgets.QFrame(self.scrollAreaWidgetContents_8)
-        self.line_4.setMaximumSize(QtCore.QSize(100, 16777215))
-        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_4.setObjectName("line_4")
-        self.verticalLayout_23.addWidget(self.line_4)
         self.enableRecallCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_8)
         self.enableRecallCheckBox.setObjectName("enableRecallCheckBox")
         self.verticalLayout_23.addWidget(self.enableRecallCheckBox)
         self.label_4 = QtWidgets.QLabel(self.scrollAreaWidgetContents_8)
         self.label_4.setObjectName("label_4")
         self.verticalLayout_23.addWidget(self.label_4)
-        spacerItem15 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_23.addItem(spacerItem15)
+        self.line_8 = QtWidgets.QFrame(self.scrollAreaWidgetContents_8)
+        self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_8.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_8.setObjectName("line_8")
+        self.verticalLayout_23.addWidget(self.line_8)
+        self.selfActivcationLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_8)
+        self.selfActivcationLabel.setObjectName("selfActivcationLabel")
+        self.verticalLayout_23.addWidget(self.selfActivcationLabel)
+        self.selfActivcationCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents_8)
+        self.selfActivcationCheckBox.setChecked(True)
+        self.selfActivcationCheckBox.setObjectName("selfActivcationCheckBox")
+        self.verticalLayout_23.addWidget(self.selfActivcationCheckBox)
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_23.addItem(spacerItem7)
         self.scrollArea_10.setWidget(self.scrollAreaWidgetContents_8)
         self.verticalLayout_22.addWidget(self.scrollArea_10)
         self.stackedWidget.addWidget(self.stackedWidgetHistory)
@@ -576,41 +514,29 @@ class Ui_MainWindow(object):
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetEmotionManage = QtWidgets.QWidget()
         self.scrollAreaWidgetEmotionManage.setGeometry(QtCore.QRect(0, 0, 548, 315))
-        self.scrollAreaWidgetEmotionManage.setObjectName(
-            "scrollAreaWidgetEmotionManage"
-        )
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(
-            self.scrollAreaWidgetEmotionManage
-        )
+        self.scrollAreaWidgetEmotionManage.setObjectName("scrollAreaWidgetEmotionManage")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetEmotionManage)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.line_6 = QtWidgets.QFrame(self.scrollAreaWidgetEmotionManage)
         self.line_6.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_6.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_6.setObjectName("line_6")
         self.verticalLayout_3.addWidget(self.line_6)
-        self.EmotionManagePushButton = QtWidgets.QPushButton(
-            self.scrollAreaWidgetEmotionManage
-        )
+        self.EmotionManagePushButton = QtWidgets.QPushButton(self.scrollAreaWidgetEmotionManage)
         self.EmotionManagePushButton.setObjectName("EmotionManagePushButton")
         self.verticalLayout_3.addWidget(self.EmotionManagePushButton)
-        self.showEmoInTextCheckBox = QtWidgets.QCheckBox(
-            self.scrollAreaWidgetEmotionManage
-        )
+        self.showEmoInTextCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetEmotionManage)
         self.showEmoInTextCheckBox.setObjectName("showEmoInTextCheckBox")
         self.verticalLayout_3.addWidget(self.showEmoInTextCheckBox)
-        spacerItem16 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_3.addItem(spacerItem16)
+        spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem8)
         self.scrollArea.setWidget(self.scrollAreaWidgetEmotionManage)
         self.verticalLayout_2.addWidget(self.scrollArea)
         self.stackedWidget.addWidget(self.stackedWidgetEmotionManage)
         self.horizontalLayout_15.addWidget(self.stackedWidget)
         self.verticalLayout.addWidget(self.settingMainWidget)
         self.SaveButtonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
-        self.SaveButtonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Save
-        )
+        self.SaveButtonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Save)
         self.SaveButtonBox.setObjectName("SaveButtonBox")
         self.verticalLayout.addWidget(self.SaveButtonBox)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -639,168 +565,51 @@ class Ui_MainWindow(object):
         item = self.listWidget.item(6)
         item.setText(_translate("MainWindow", "表情差分设置"))
         self.listWidget.setSortingEnabled(__sortingEnabled)
-        self.yourNameLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">你的名字</span></p></body></html>',
-            )
-        )
-        self.yourSexLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">你的性别</span></p></body></html>',
-            )
-        )
+        self.yourNameLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的名字</span></p></body></html>"))
+        self.yourSexLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的性别</span></p></body></html>"))
         self.yourSexComboBox.setItemText(0, _translate("MainWindow", "男"))
         self.yourSexComboBox.setItemText(1, _translate("MainWindow", "女"))
         self.yourSexComboBox.setItemText(2, _translate("MainWindow", "其他"))
-        self.label.setText(
-            _translate(
-                "MainWindow",
-                "tips: 当性别选择为‘其他’且不在上方输入框填入任何值的话，默认性别为‘其他’",
-            )
-        )
-        self.yourFavouriteFoodLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">你喜欢的食物</span></p></body></html>',
-            )
-        )
-        self.yourAddressLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">你的地址</span></p><p><span style=" font-size:10pt;">tips: 为了你的信息安全，请不要填写真实地址哦</span></p></body></html>',
-            )
-        )
-        self.label_5.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">你的生日</span></p></body></html>',
-            )
-        )
+        self.label.setText(_translate("MainWindow", "tips: 当性别选择为‘其他’且不在上方输入框填入任何值的话，默认性别为‘其他’"))
+        self.yourFavouriteFoodLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你喜欢的食物</span></p></body></html>"))
+        self.yourAddressLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的地址</span></p><p><span style=\" font-size:10pt;\">tips: 为了你的信息安全，请不要填写真实地址哦</span></p></body></html>"))
+        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">你的生日</span></p></body></html>"))
         self.birthdayDateEdit.setDisplayFormat(_translate("MainWindow", "yyyy/MM/dd"))
-        self.label_2.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">需要自行前往 Deepseek 官网获取 api key</span></p><p><span style=" font-size:10pt;">官网地址：</span><a href="https://www.deepseek.com/zh"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">https://www.deepseek.com/zh</span></a></p></body></html>',
-            )
-        )
-        self.APILabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">API key</span></p></body></html>',
-            )
-        )
-        self.temperatureLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">温度 temperature</span></p><p><span style=" font-size:10pt;">范围：0 ~ 2</span></p><p><span style=" font-size:10pt;">影响大模型输出的随机性</span></p><p><span style=" font-size:10pt;">默认为 1.5</span></p></body></html>',
-            )
-        )
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">需要自行前往 Deepseek 官网获取 api key</span></p><p><span style=\" font-size:10pt;\">官网地址：</span><a href=\"https://www.deepseek.com/zh\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://www.deepseek.com/zh</span></a></p></body></html>"))
+        self.APILabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">API key</span></p></body></html>"))
+        self.temperatureLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">温度 temperature</span></p><p><span style=\" font-size:10pt;\">范围：0 ~ 2</span></p><p><span style=\" font-size:10pt;\">影响大模型输出的随机性</span></p><p><span style=\" font-size:10pt;\">默认为 1.5</span></p></body></html>"))
         self.temperatureShowLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.frequencyPenaltyLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">频率惩罚 frequency penalty</span></p><p><span style=" font-size:10pt;">范围：-2 ~ 2</span></p><p><span style=" font-size:10pt;">0 以上时越高会使模型输出相同内容（复读，说车轱辘话等）的可能性越小</span></p><p><span style=" font-size:10pt;">默认为 0.8</span></p></body></html>',
-            )
-        )
+        self.frequencyPenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">频率惩罚 frequency penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型输出相同内容（复读，说车轱辘话等）的可能性越小</span></p><p><span style=\" font-size:10pt;\">默认为 0.8</span></p></body></html>"))
         self.frequencyPenaltyShowLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.presecePenaltyLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">存在惩罚 presence penalty</span></p><p><span style=" font-size:10pt;">范围：-2 ~ 2</span></p><p><span style=" font-size:10pt;">0 以上时越高会使模型谈论新话题的可能性越大</span></p><p><span style=" font-size:10pt;">默认为 0.8</span></p></body></html>',
-            )
-        )
+        self.presecePenaltyLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">存在惩罚 presence penalty</span></p><p><span style=\" font-size:10pt;\">范围：-2 ~ 2</span></p><p><span style=\" font-size:10pt;\">0 以上时越高会使模型谈论新话题的可能性越大</span></p><p><span style=\" font-size:10pt;\">默认为 0.8</span></p></body></html>"))
         self.presencePenaltyShowLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.TTSIntroducing.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">启用 TTS 需要同时运行 GPT-SoVITS-interface</span></p><p><span style=" font-size:10pt;">若未部署，查看部署教程：</span><a href="https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e</span></a></p><p>在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可</p><p><span style=" font-size:11pt; font-weight:600;">在未启动 GPT-SoVITS-interface 的情况下启用此功能会报错！</span></p><p>(暂时没时间去做检测了..等以后吧)</p><p><span style=" font-size:10pt;">项目地址：</span><a href="https://github.com/X-T-E-R/GPT-SoVITS-interface"><span style=" font-size:10pt; text-decoration: underline; color:#0000ff;">https://github.com/X-T-E-R/GPT-SoVITS-interface</span></a></p></body></html>',
-            )
-        )
+        self.TTSIntroducing.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">启用 TTS 需要同时运行 GPT-SoVITS-interface</span></p><p><span style=\" font-size:10pt;\">若未部署，查看部署教程：</span><a href=\"https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://www.yuque.com/xter/zibxlp/nqi871glgxfy717e</span></a></p><p>在部署完成后运行‘3 启动GSVI.bat’，等待启动完成即可</p><p><span style=\" font-size:11pt; font-weight:600;\">在未启动 GPT-SoVITS-interface 的情况下启用此功能会报错！</span></p><p>(暂时没时间去做检测了..等以后吧)</p><p><span style=\" font-size:10pt;\">项目地址：</span><a href=\"https://github.com/X-T-E-R/GPT-SoVITS-interface\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://github.com/X-T-E-R/GPT-SoVITS-interface</span></a></p></body></html>"))
         self.EnableTTScheckBox.setText(_translate("MainWindow", "启用TTS"))
-        self.checkTTSButton.setText(
-            _translate(
-                "MainWindow",
-                "测试 TTS 是否可用（点击后会发送一个测试文本并自动播放）（这个功能也还没做（瘫））",
-            )
-        )
-        self.APIAddressLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">API 地址设置</span></p></body></html>',
-            )
-        )
+        self.checkTTSButton.setText(_translate("MainWindow", "测试 TTS 是否可用（点击后会发送一个测试文本并自动播放）（这个功能也还没做（瘫））"))
+        self.APIAddressLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">API 地址设置</span></p></body></html>"))
         self.TTSUrlShow.setText(_translate("MainWindow", "地址"))
         self.TTSUrlEdit.setText(_translate("MainWindow", "http://127.0.0.1:5000/tts"))
-        self.TTSSettingLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">TTS 设置</span></p></body></html>',
-            )
-        )
+        self.TTSSettingLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">TTS 设置</span></p></body></html>"))
         self.TTSCharacterLabel.setText(_translate("MainWindow", "TTS 角色名称"))
         self.TTSCharacterEdit.setText(_translate("MainWindow", "晴"))
-        self.TTSemotionLabel.setText(
-            _translate("MainWindow", "TTS emotion (也许以后会出多情绪支持..?)")
-        )
+        self.TTSemotionLabel.setText(_translate("MainWindow", "TTS emotion (也许以后会出多情绪支持..?)"))
         self.lTTSEmotionEdit.setText(_translate("MainWindow", "default"))
-        self.textShowLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">文字显示速度设置</span></p></body></html>',
-            )
-        )
+        self.textShowLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">文字显示速度设置</span></p></body></html>"))
         self.haomiao.setText(_translate("MainWindow", "毫秒"))
         self._exampleL.setText(_translate("MainWindow", "示例"))
-        self.textShowSpeedExampleLabel.setText(
-            _translate("MainWindow", "这个显示速度还可以吗？")
-        )
-        self.imageShowLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">桌宠图片大小设置</span></p></body></html>',
-            )
-        )
+        self.textShowSpeedExampleLabel.setText(_translate("MainWindow", "这个显示速度还可以吗？"))
+        self.imageShowLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">桌宠图片大小设置</span></p></body></html>"))
         self.imageShowLabel_2.setText(_translate("MainWindow", "缩放"))
         self.imageShowZoomPercentLabel.setText(_translate("MainWindow", "100%"))
         self.imageShowPreviewCheckBox.setText(_translate("MainWindow", "预览"))
-        self.talkSettingTopLabel.setText(
-            _translate(
-                "MainWindow",
-                '<html><head/><body><p><span style=" font-size:12pt;">对话设置</span></p><p><span style=" font-weight:600; color:#ff5500;">调整此项设置后需要重启才能生效！</span></p></body></html>',
-            )
-        )
-        self.addSameDayHisSummaryCheckBox.setText(
-            _translate(
-                "MainWindow",
-                "每次对话前都添加当天所有对话的总结（可能会造成 token 大量消耗！）",
-            )
-        )
-        self.addXDayAgoHisSummaryCheckBox.setText(
-            _translate(
-                "MainWindow",
-                "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）(功能未完成）",
-            )
-        )
-        self.label_3.setText(
-            _translate("MainWindow", "<html><head/><body><p>x的值:</p></body></html>")
-        )
-        self.enableRecallCheckBox.setText(
-            _translate(
-                "MainWindow",
-                "启用“回想”（功能还没做，勾选了也不会发生什么，先画个饼（））",
-            )
-        )
-        self.label_4.setText(
-            _translate(
-                "MainWindow",
-                "注：启用后 AI 会按需调用工具来读取某一天、某一周或某个月的对话总结",
-            )
-        )
-        self.EmotionManagePushButton.setText(
-            _translate("MainWindow", "启动表情差分管理界面")
-        )
-        self.showEmoInTextCheckBox.setText(
-            _translate("MainWindow", "出现表情标识符时在对话框中显示")
-        )
+        self.talkSettingTopLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">对话设置</span></p></body></html>"))
+        self.talkMemoryLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">对话记忆设置</span></p><p><span style=\" font-weight:600; color:#ff5500;\">调整此项设置后需要重启才能生效！</span></p></body></html>"))
+        self.addSameDayHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前都添加当天所有对话的总结（可能会造成 token 大量消耗！）"))
+        self.addXDayAgoHisSummaryCheckBox.setText(_translate("MainWindow", "每次对话前添加前 x 天对话的简略总结（可能会造成 token 大量消耗！）"))
+        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>x的值:</p></body></html>"))
+        self.enableRecallCheckBox.setText(_translate("MainWindow", "启用“回想”（功能还没做，勾选了也不会发生什么，先画个饼（））"))
+        self.label_4.setText(_translate("MainWindow", "注：启用后 AI 会按需调用工具来读取某一天、某一周或某个月的对话总结"))
+        self.selfActivcationLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt;\">自激活设置</span></p></body></html>"))
+        self.selfActivcationCheckBox.setText(_translate("MainWindow", "开启自激活"))
+        self.EmotionManagePushButton.setText(_translate("MainWindow", "启动表情差分管理界面"))
+        self.showEmoInTextCheckBox.setText(_translate("MainWindow", "出现表情标识符时在对话框中显示"))

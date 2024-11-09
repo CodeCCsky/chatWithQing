@@ -81,6 +81,9 @@ class deepseek_model:
     def get_api_key(self) -> str:
         return self.api_key
 
+    def get_system_prompt(self) -> str:
+        return self.system_prompt
+
     def load_history(self, history: list[dict]) -> None:
         if not isinstance(history, list):
             raise ValueError("History must be a list of dictionaries")
@@ -90,9 +93,7 @@ class deepseek_model:
             self.history = copy.deepcopy(history)
         self.history.insert(0, {"role": "system", "content": self.system_prompt})
 
-    def send_message(
-        self, history: list[dict] = None, is_prefix: bool = False
-    ) -> tuple[str, str, dict]:
+    def send_message(self, history: list[dict] = None, is_prefix: bool = False) -> tuple[str, str, dict]:
         if history is not None:
             self.load_history(history)
         if is_prefix:
@@ -103,7 +104,7 @@ class deepseek_model:
                     model="deepseek-chat",
                     messages=self.history,
                     # tools=self.tools,  # TODO Implement tools functionality
-                    max_tokens=1024,
+                    # max_tokens=2048,
                     temperature=self.temperature,
                     frequency_penalty=self.frequency_penalty,
                     presence_penalty=self.presence_penalty,
@@ -126,7 +127,7 @@ class deepseek_model:
                 self.history.clear()
                 return self.current_response, self.finish_reason, token_usage
             except APIError as e:
-                logger.error(f"api错误，将等待一段时间后重试 status code:{e.code}")
+                logger.error(f"api错误，将等待一段时间后重试 occured error content:{e} ; status code:{e.code}")
                 delay = self.retry_delay + random.uniform(0, 5)  # 增加随机延迟
                 time.sleep(delay)
             except Exception as e:

@@ -137,16 +137,18 @@ class show_setting:
         return unfilled_list
 
 
-class chat_summary_setting:
+class chatting_setting:
     def __init__(
         self,
         add_same_day_summary: bool = True,
         add_x_day_ago_summary: bool = False,
         value_of_x_day_ago: int = 5,
+        enable_self_activation: bool = True,
     ) -> None:
         self.add_same_day_summary = add_same_day_summary
         self.add_x_day_ago_summary = add_x_day_ago_summary
         self.value_of_x_day_ago = value_of_x_day_ago
+        self.enable_self_activation: bool = enable_self_activation
 
 
 class extension_func_setting:
@@ -165,7 +167,7 @@ class settingManager:
         self.deepseek_model: deepseek_api_setting = None
         self.show_setting: show_setting = None
         self.tts_setting: TTS_setting = None
-        self.chat_summary_setting: chat_summary_setting = None
+        self.chatting_setting: chatting_setting = None
         self.extension_func_setting: extension_func_setting = None
         self.emo_setting: emo_setting = None
         self.history_path = None
@@ -178,7 +180,7 @@ class settingManager:
         Deepseek_setting: deepseek_api_setting,
         Show_setting: show_setting,
         Tts_setting: TTS_setting,
-        Chat_summary_setting: chat_summary_setting,
+        chatting_setting: chatting_setting,
         extension_func_setting_: extension_func_setting,
         emo_setting_: emo_setting,
     ) -> None:
@@ -186,7 +188,7 @@ class settingManager:
         self.deepseek_model = Deepseek_setting
         self.show_setting = Show_setting
         self.tts_setting = Tts_setting
-        self.chat_summary_setting = Chat_summary_setting
+        self.chatting_setting = chatting_setting
         self.extension_func_setting = extension_func_setting_
         self.emo_setting = emo_setting_
         self.load_system_prompt_main()
@@ -247,19 +249,21 @@ class settingManager:
                 img_show_zoom=show_s.get("img_show_zoom", 1.0),
             )
 
-            # Chat summary settings
-            summary: dict = res["summary"]
-            self.chat_summary_setting = chat_summary_setting(
-                add_same_day_summary=summary.get("add_same_day_summary", True),
-                add_x_day_ago_summary=summary.get("add_x_day_ago_summary", False),
-                value_of_x_day_ago=summary.get("value_of_x_day_ago", 5),
+            # Chat settings
+            if isinstance(res.get("chatting", None), dict):
+                chatting: dict = res["chatting"]
+            else:
+                chatting: dict = res["summary"]
+            self.chatting_setting = chatting_setting(
+                add_same_day_summary=chatting.get("add_same_day_summary", True),
+                add_x_day_ago_summary=chatting.get("add_x_day_ago_summary", False),
+                value_of_x_day_ago=chatting.get("value_of_x_day_ago", 5),
+                enable_self_activation=chatting.get("enable_self_activation", True),
             )
 
             # extension_func settings
             func: dict = res.get("extension_func", {})
-            self.extension_func_setting = extension_func_setting(
-                recall=func.get("recall", False)
-            )
+            self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
 
             # emo setting
             emo: dict = res.get("emo", {})
@@ -295,10 +299,11 @@ class settingManager:
                     "text_show_gap": self.show_setting.text_show_gap,
                     "img_show_zoom": self.show_setting.img_show_zoom,
                 },
-                "summary": {
-                    "add_same_day_summary": self.chat_summary_setting.add_same_day_summary,
-                    "add_x_day_ago_summary": self.chat_summary_setting.add_x_day_ago_summary,
-                    "value_of_x_day_ago": self.chat_summary_setting.value_of_x_day_ago,
+                "chatting": {
+                    "add_same_day_summary": self.chatting_setting.add_same_day_summary,
+                    "add_x_day_ago_summary": self.chatting_setting.add_x_day_ago_summary,
+                    "value_of_x_day_ago": self.chatting_setting.value_of_x_day_ago,
+                    "enable_self_activation": self.chatting_setting.enable_self_activation,
                 },
                 "extension_func": {"recall": self.extension_func_setting.recall},
                 "emo": {"show_in_text": self.emo_setting.show_in_text},
@@ -317,9 +322,4 @@ class settingManager:
         return self.deepseek_model.api_key
 
     def check(self) -> bool:
-        return (
-            self.user.check()
-            + self.deepseek_model.check()
-            + self.show_setting.check()
-            + self.tts_setting.check()
-        )
+        return self.user.check() + self.deepseek_model.check() + self.show_setting.check() + self.tts_setting.check()

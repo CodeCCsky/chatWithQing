@@ -4,3 +4,4 @@ from app.GUI.src.talk_bubble import talkBubble
 from app.GUI.src.setting import SettingWidget
 from app.GUI.src.initialzation import initialzationWidget
 from app.GUI.src.load import loadWidget
+from app.GUI.src.retry_message_show_dialog import RetryMessageDialog
