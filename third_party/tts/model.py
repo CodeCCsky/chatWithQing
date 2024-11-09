@@ -24,9 +24,7 @@ class TTSAudio:
         tts_endpoint: str = params.DEFAULT_TTS_ENDPOINT,
         character_endpoint: str = params.DEFAULT_CHARACTER_ENDPOINT,
         character: str = params.DEFAULT_CHARACTER_NAME,
-        text_language: Literal[
-            "中文", "英文", "日文", "中英混合", "日英混合", "多语种混合"
-        ] = "多语种混合",
+        text_language: Literal["中文", "英文", "日文", "中英混合", "日英混合", "多语种混合"] = "多语种混合",
         emotion: str = params.DEFAULT_EMOTION,
     ) -> None:
         # wav file folder
@@ -55,18 +53,14 @@ class TTSAudio:
     def tts_request(
         self,
         text: str,
-        text_language: Literal[
-            "中文", "英文", "日文", "中英混合", "日英混合", "多语种混合"
-        ] = None,
+        text_language: Literal["中文", "英文", "日文", "中英混合", "日英混合", "多语种混合"] = None,
         emotion: str = None,
     ):
         if emotion is None:
             emotion = self.emotion
         if text_language is not None:
             self.text_language = text_language
-        logger.info(
-            f"发送TTS请求. language:{self.text_language} emotion:{emotion} content:{text}"
-        )
+        logger.info(f"发送TTS请求. language:{self.text_language} emotion:{emotion} content:{text}")
 
         # print(text)
         unencode_text = requests.utils.quote(text)
@@ -100,9 +94,7 @@ class TTSAudio:
                     self.audio.play_wav_file(file_path)
                 return file_path
         else:
-            logger.error(
-                f"获取TTS失败. code:{response.status_code} content:{response.content}"
-            )
+            logger.error(f"获取TTS失败. code:{response.status_code} content:{response.content}")
 
     def set_request_url(self, url: str) -> None:
         self.tts_url = url

@@ -43,6 +43,7 @@ from third_party.deepseek_api import (
     historyManager,
     PyQt_deepseek_request_thread,
     PyQt_deepseek_request_prefix_thread,
+    HistoryItemModel,
 )
 from third_party.setting_manager import settingManager
 from third_party.tts import TTSAudio
@@ -518,8 +519,8 @@ class mainWidget(QWidget):
                 self.talk_bubble._setTextLabel("", "**错误：回复被过滤**")
             elif finish_state == "insufficient_system_resource":
                 self.talk_bubble._setTextLabel("", "**错误：API推理资源不足，回复被打断**")
-            last_user_msg = {}
-            while last_user_msg.get("role", None) != "user":
+            last_user_msg = HistoryItemModel(role="", content="")
+            while last_user_msg.role != "user":
                 last_user_msg = self.history_manager.pop_to_wait_to_del_msgs()
             if self.retry_message_dialog:
                 QApplication.setQuitOnLastWindowClosed(False)
@@ -573,7 +574,7 @@ class mainWidget(QWidget):
             )
         self.emo_manager.write_yaml()
         if self.setting.tts_setting.use_tts:
-            self.tts_thread = tts_thread(self.tts_model, self.response_content["role_response"])
+            self.tts_thread = tts_thread(self.tts_model, self.response_content["role_response"]["forced_result_string"])
             self.tts_thread.startSpeak.connect(self.start_typing)
             self.tts_thread.start()
         else:
@@ -591,19 +592,23 @@ class mainWidget(QWidget):
         try:
             if not self.setting.tts_setting.use_tts and re.match(
                 r"[\d\u4e00-\u9fff]",
-                self.response_content["role_response"][0][self.on_read_text],
+                self.response_content["role_response"]["normal_result_string"][self.on_read_text],
             ):
                 self.no_tts_sound_manager.play_audio()
-            vaild_emo_key = [key for key in self.response_content["role_response"][1] if key <= self.on_read_text]
+            vaild_emo_key = [
+                key for key in self.response_content["role_response"]["extracted_emotion"] if key <= self.on_read_text
+            ]
             if not vaild_emo_key:
                 current_emo = 0
             else:
-                current_emo = self.response_content["role_response"][1][max(vaild_emo_key)]
+                current_emo = self.response_content["role_response"]["extracted_emotion"][max(vaild_emo_key)]
                 current_emo = current_emo if current_emo != -1 else 0
             self.desktop_pet.change_emo(current_emo)
             self.on_read_text += 1
-            self.talk_bubble.update_text(self.response_content["role_response"][0][: self.on_read_text])
-            if self.on_read_text > len(self.response_content["role_response"][0]):
+            self.talk_bubble.update_text(
+                self.response_content["role_response"]["normal_result_string"][: self.on_read_text]
+            )
+            if self.on_read_text > len(self.response_content["role_response"]["normal_result_string"]):
                 self.finish_this_round_of_talk()
         except IndexError:
             self.finish_this_round_of_talk()
@@ -612,6 +617,7 @@ class mainWidget(QWidget):
         self.desktop_pet.stop_speak()
         self.text_update_timer.stop()
         self.input_label.enabled_send_text()
+        self.response_content = {}
 
     ### 其他
 

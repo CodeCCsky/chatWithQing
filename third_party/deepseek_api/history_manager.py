@@ -170,7 +170,7 @@ class chatManager:  # TODO test
         now_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
         self.update_time = now_time
 
-    def pop(self) -> dict:
+    def pop(self) -> HistoryItemModel:
         return self.origin_history.pop()  # TODO 同时处理pregressed_history
 
     @staticmethod
@@ -278,7 +278,7 @@ class historyManager:
     def add_tool_message(self, tool_msg: str) -> None:
         self.historys[self.current_history_index].add_tool_message(tool_msg)
 
-    def pop_to_wait_to_del_msgs(self) -> dict:
+    def pop_to_wait_to_del_msgs(self) -> HistoryItemModel:
         self.wait_to_del_msgs.append(self.historys[self.current_history_index].pop())
         return self.wait_to_del_msgs[-1]
 
