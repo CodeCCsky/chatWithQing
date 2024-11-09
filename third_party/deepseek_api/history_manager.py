@@ -36,7 +36,7 @@ class chatManager:  # TODO test
         self.create_time: str = history_data["create_time"]
         self.update_time: str = history_data["update_time"]
         self.summary: str = history_data["summary"]
-        self.origin_history = []
+        self.origin_history: list[HistoryItemModel] = []
         for item in history_data["origin_history"]:
             if isinstance(item["content"], dict) and item["role"] == "assistant":
                 item_content = AssistantContentModel(**item["content"])
@@ -100,22 +100,23 @@ class chatManager:  # TODO test
     def change_name(self, new_name: str):
         origin_history_copy = copy.deepcopy(self.origin_history)
         for index, item in enumerate(self.origin_history):
-            if isinstance(item["content"], dict) and self.user_name in item["content"]:
-                for key, value in item["content"].items():
+
+            if item.role == "user" and isinstance(item.content, dict):
+                for key, value in item.content.items():
                     if key == self.user_name:
-                        origin_history_copy[index]["content"][new_name] = origin_history_copy[index]["content"].pop(
+                        origin_history_copy[index].content[new_name] = origin_history_copy[index].content.pop(
                             self.user_name
                         )
         self.origin_history = origin_history_copy
 
-        progressed_history_copy = copy.deepcopy(self.progressed_history)
-        for index, item in enumerate(self.progressed_history):
-            if isinstance(item["content"], dict) and self.user_name in item["content"]:
-                for key, value in item["content"].items():
-                    if key == self.user_name:
-                        progressed_history_copy[index]["content"][new_name] = progressed_history_copy[index][
-                            "content"
-                        ].pop(self.user_name)
+        # progressed_history_copy = copy.deepcopy(self.progressed_history)
+        # for index, item in enumerate(self.progressed_history):
+        #    if isinstance(item["content"], dict) and self.user_name in item["content"]:
+        #        for key, value in item["content"].items():
+        #            if key == self.user_name:
+        #                progressed_history_copy[index]["content"][new_name] = progressed_history_copy[index][
+        #                    "content"
+        #                ].pop(self.user_name)
 
         self.user_name = new_name
 
