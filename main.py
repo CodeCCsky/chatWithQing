@@ -11,6 +11,7 @@ sys.path.insert(0, now_dir)
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
+# TODO 代理支持
 
 from app.GUI import initialzationWidget
 from third_party.setting_manager import settingManager

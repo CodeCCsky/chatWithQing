@@ -6,14 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>493</width>
-    <height>335</height>
+    <width>480</width>
+    <height>373</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;如果因为网络问题无法发送，请先检查网络连接是否稳定，并&lt;span style=&quot; color:#ff0000;&quot;&gt;关闭代理&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;；若关闭代理后问题未解决请尝试重启程序。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QListWidget" name="listWidget">
      <property name="styleSheet">
