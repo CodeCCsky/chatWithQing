@@ -1,4 +1,4 @@
-chcp 65001
+CHCP 65001
 @echo off
 runtime\python.exe main.py
 pause

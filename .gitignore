@@ -165,6 +165,7 @@ cache/*.wav
 cache/*.mp3
 
 runtime/
+PortableGit/
 history/*
 .VSCodeCounter/
 .vscode/
