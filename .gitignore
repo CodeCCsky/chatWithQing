@@ -163,10 +163,14 @@ cython_debug/
 
 cache/*.wav
 cache/*.mp3
-private_setting.yaml
+
+runtime/
+PortableGit/
 history/*
 .VSCodeCounter/
 .vscode/
-write_system_prompt_private.py
 *.log.*
-package_to_exe.py
+
+private_setting.yaml
+focus_memory.yaml
+emo_manager_setting.yaml
