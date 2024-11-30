@@ -60,7 +60,7 @@ class TTSAudio:
             emotion = self.emotion
         if text_language is not None:
             self.text_language = text_language
-        logger.info(f"发送TTS请求. language:{self.text_language} emotion:{emotion} content:{text}")
+        logger.debug(f"发送TTS请求. language:{self.text_language} emotion:{emotion} content:{text}")
 
         # print(text)
         unencode_text = requests.utils.quote(text)
