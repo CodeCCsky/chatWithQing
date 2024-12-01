@@ -45,6 +45,8 @@ class talkBubble(opacity_controller):
         self.initUI()
         self.init_rand()
 
+        self.set_opacity_mode(mode="hide")
+
     def initUI(self) -> None:
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")

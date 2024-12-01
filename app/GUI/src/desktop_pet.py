@@ -315,11 +315,11 @@ class DesktopPet(QWidget):
             }
         """
         )
-        quit_action = pet_menu.addAction("退出")
+        # quit_action = pet_menu.addAction("退出")
         hide = pet_menu.addAction("隐藏")
         action = pet_menu.exec_(self.mapToGlobal(event.pos()))
-        if action == quit_action:
-            self.closeEvent(QCloseEvent())
+        # if action == quit_action:
+        #    self.closeEvent(QCloseEvent())
         if action == hide:
             self.hide_window()
 

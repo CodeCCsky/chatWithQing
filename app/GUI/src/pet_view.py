@@ -1,5 +1,6 @@
 import random
 import sys
+import logging
 
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap
@@ -13,6 +14,8 @@ from PyQt5.QtWidgets import (
 import app.asset.res_rc
 
 # import res_rc
+
+logger = logging.getLogger(__name__)
 
 blink_time_list = [3000, 100, 200, 100]
 
@@ -231,7 +234,7 @@ class PetGraphicsView(QGraphicsView):
             self.timers["mouth"].start(self.speak_gap)
             self.speak_time.start(keep_time)
         else:
-            print(f"illegal value of 'keep_time': {keep_time}")  # TODO logging
+            logger.error(f"illegal value of 'keep_time': {keep_time}")  # TODO logging
         self.img_items["mouth"].setVisible(True)
         self.restart_image_change_timer()
 

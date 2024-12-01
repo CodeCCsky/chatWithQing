@@ -34,9 +34,9 @@ class inputLabel(opacity_controller, Ui_Form):
         screen = QDesktopWidget().screenGeometry()
 
         self.setupUi(self)
-        self.statusBar = QStatusBar(self)
-        self.verticalLayout.addWidget(self.statusBar)
-        self.input_edit.setFont(self.input_font)
+        # self.statusBar = QStatusBar(self)
+        # self.verticalLayout.addWidget(self.statusBar)
+        # self.input_edit.setFont(self.input_font)
         self.input_edit.textChanged.connect(
             lambda: self.set_opacity_mode(mode="normal", clear_keep_opacity_status=True)
         )
@@ -66,20 +66,20 @@ class inputLabel(opacity_controller, Ui_Form):
         self.sendButton.setEnabled(False)
         self.input_edit.setEnabled(False)
         self.retryButton.setVisible(False)
-        self.statusBar.showMessage("重试中...", 1000)
+        # self.statusBar.showMessage("重试中...", 1000)
         self.requestRetry.emit()
 
     def send_text(self):
         self.sendButton.setEnabled(False)
         self.input_edit.setEnabled(False)
-        self.statusBar.showMessage("发送中...", 1000)
+        # self.statusBar.showMessage("发送中...", 1000)
         self.requestSend.emit(self.input_edit.toPlainText())
         self.clear_text()
 
     def enabled_send_text(self):
         self.sendButton.setEnabled(True)
         self.input_edit.setEnabled(True)
-        self.statusBar.showMessage("")
+        # self.statusBar.showMessage("")
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:
