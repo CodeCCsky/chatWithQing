@@ -431,7 +431,7 @@ class mainWidget(QWidget):
         matching_dict = {0: "头", 1: "胡萝卜发卡", 2: "头发", 3: "头发", 4: "脸"}
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
-            self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+            #self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
 
     ### 处理自激活部分
 
