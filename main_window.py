@@ -431,7 +431,8 @@ class mainWidget(QWidget):
         matching_dict = {0: "头", 1: "胡萝卜发卡", 2: "头发", 3: "头发", 4: "脸"}
         if self.pet_part is None:
             self.pet_part = matching_dict[max_index]
-            #self.input_label.statusBar.showMessage(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+            self.input_label.set_placeholder_text(f"你摸了摸晴的{self.pet_part}. 该状态会在下一次发送信息时携带.")
+            # TODO 更好的摸摸部分实现（考虑判断input_label是否输入文字？）
 
     ### 处理自激活部分
 
