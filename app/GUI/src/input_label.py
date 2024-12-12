@@ -22,7 +22,7 @@ class inputLabel(opacity_controller, Ui_Form):
         self.initUI()
 
     def initUI(self):
-        self.radius = 20
+        self.radius = 10
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
 
         self.setupUi(self)

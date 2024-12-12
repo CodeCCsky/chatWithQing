@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>165</height>
+    <width>230</width>
+    <height>122</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -17,23 +17,23 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#Form {background-color: #d0d0d0;border-radius: 20px;border: 2px solid gray;}</string>
+   <string notr="true">#Form {background-color: #d0d0d0;border-radius: 10px;}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="leftMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
    <property name="topMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
    <property name="rightMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
    <property name="bottomMargin">
-    <number>8</number>
+    <number>6</number>
    </property>
    <item>
     <widget class="QWidget" name="widget_2" native="true">
@@ -42,16 +42,16 @@
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item>
        <spacer name="horizontalSpacer_3">
@@ -102,11 +102,17 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>16</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">#input_edit{background-color:transparent;border:none;}</string>
+      <string notr="true">#input_edit{background-color:transparent;border:none;}
+QScrollBar:vertical{border:none;background: rgba(0, 0, 0, 0);width: 10px;margin: 0px;border-radius: 5px;}
+QScrollBar::handle:vertical {background: rgba(128, 128, 128, 0.8);min-height: 15px;border-radius: 5px;}
+QScrollBar::handle:vertical:hover{background: rgba(80, 80, 80, 0.8);}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none;height: 0px;width: 0px;}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {background: none;}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}</string>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -121,21 +127,21 @@
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>6</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
-       <number>3</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>6</number>
+       <number>4</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>0</number>
       </property>
       <item>
        <spacer name="horizontalSpacer">
@@ -160,14 +166,14 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>32</width>
-          <height>32</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="baseSize">
@@ -191,7 +197,6 @@
  </widget>
  <tabstops>
   <tabstop>input_edit</tabstop>
-  <tabstop>sendButton</tabstop>
   <tabstop>pushButton</tabstop>
  </tabstops>
  <resources/>

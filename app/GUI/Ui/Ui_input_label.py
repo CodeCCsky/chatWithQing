@@ -14,17 +14,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(360, 165)
+        Form.resize(230, 122)
         Form.setAcceptDrops(False)
-        Form.setStyleSheet("#Form {background-color: #d0d0d0;border-radius: 20px;border: 2px solid gray;}")
+        Form.setStyleSheet("#Form {background-color: #d0d0d0;border-radius: 10px;}")
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
-        self.verticalLayout.setContentsMargins(8, 8, 8, 8)
-        self.verticalLayout.setSpacing(3)
+        self.verticalLayout.setContentsMargins(6, 6, 6, 6)
+        self.verticalLayout.setSpacing(2)
         self.verticalLayout.setObjectName("verticalLayout")
         self.widget_2 = QtWidgets.QWidget(Form)
         self.widget_2.setObjectName("widget_2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget_2)
-        self.horizontalLayout_2.setContentsMargins(5, 5, 5, 5)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(753, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -45,9 +45,15 @@ class Ui_Form(object):
         self.input_edit = QtWidgets.QPlainTextEdit(Form)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
-        font.setPointSize(16)
+        font.setPointSize(12)
         self.input_edit.setFont(font)
-        self.input_edit.setStyleSheet("#input_edit{background-color:transparent;border:none;}")
+        self.input_edit.setStyleSheet("#input_edit{background-color:transparent;border:none;}\n"
+"QScrollBar:vertical{border:none;background: rgba(0, 0, 0, 0);width: 10px;margin: 0px;border-radius: 5px;}\n"
+"QScrollBar::handle:vertical {background: rgba(128, 128, 128, 0.8);min-height: 15px;border-radius: 5px;}\n"
+"QScrollBar::handle:vertical:hover{background: rgba(80, 80, 80, 0.8);}\n"
+"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none;height: 0px;width: 0px;}\n"
+"QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {background: none;}\n"
+"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}")
         self.input_edit.setFrameShadow(QtWidgets.QFrame.Plain)
         self.input_edit.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustIgnored)
         self.input_edit.setPlainText("")
@@ -56,7 +62,7 @@ class Ui_Form(object):
         self.widget = QtWidgets.QWidget(Form)
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout.setContentsMargins(6, 3, 6, 3)
+        self.horizontalLayout.setContentsMargins(0, 0, 4, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem1 = QtWidgets.QSpacerItem(557, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -67,20 +73,18 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sendButton.sizePolicy().hasHeightForWidth())
         self.sendButton.setSizePolicy(sizePolicy)
-        self.sendButton.setMinimumSize(QtCore.QSize(28, 28))
-        self.sendButton.setMaximumSize(QtCore.QSize(32, 32))
+        self.sendButton.setMinimumSize(QtCore.QSize(24, 24))
+        self.sendButton.setMaximumSize(QtCore.QSize(24, 24))
         self.sendButton.setBaseSize(QtCore.QSize(32, 32))
         self.sendButton.setStyleSheet("background: none; border: none;")
         self.sendButton.setText("")
         self.sendButton.setObjectName("sendButton")
         self.horizontalLayout.addWidget(self.sendButton)
-        self.horizontalLayout.setStretch(0, 10)
         self.verticalLayout.addWidget(self.widget)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        Form.setTabOrder(self.input_edit, self.sendButton)
-        Form.setTabOrder(self.sendButton, self.pushButton)
+        Form.setTabOrder(self.input_edit, self.pushButton)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
