@@ -1,5 +1,5 @@
-from third_party.deepseek_api.model import deepseek_model
-from third_party.tts import TTSAudio
+from app.third_party.deepseek_api.model import deepseek_model
+from app.third_party.tts import TTSAudio
 import yaml
 
 SYS_PROMPT_MAIN_PATH = r"system_prompt\main\system_prompt_main.txt"

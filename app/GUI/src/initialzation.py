@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 from app.GUI.Ui.Ui_setting import Ui_MainWindow
 from app.GUI.src.image_preview import image_preview
-from third_party.setting_manager import *
+from app.third_party.setting_manager import *
 
 
 # from Ui_initialization import Ui_MainWindow

@@ -38,19 +38,19 @@ from app.Threads import (
     tts_thread,
     fixJSONThread,
 )
-from third_party.deepseek_api import (
+from app.third_party.deepseek_api import (
     deepseek_model,
     historyManager,
     PyQt_deepseek_request_thread,
     PyQt_deepseek_request_prefix_thread,
     HistoryItemModel,
 )
-from third_party.setting_manager import settingManager
-from third_party.tts import TTSAudio
-from third_party.FixJSON import fixJSON
-from third_party.chat_activity_manager import chat_activity_manager
-from third_party.emo_manager import emo_manager
-from third_party.memory_focus_manager import MemoryFocusManager
+from app.third_party.setting_manager import settingManager
+from app.third_party.tts import TTSAudio
+from app.third_party.FixJSON import fixJSON
+from app.third_party.chat_activity_manager import chat_activity_manager
+from app.third_party.emo_manager import emo_manager
+from app.third_party.memory_focus_manager import MemoryFocusManager
 
 # setting = settingManager()
 tts_cache_path = r"cache/"

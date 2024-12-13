@@ -11,8 +11,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from app.GUI.Ui.Ui_setting import Ui_MainWindow
 from app.GUI.src.image_preview import image_preview
 from app.GUI.src.emotion_manager import emotionManagerWidget
-from third_party.setting_manager import settingManager
-from third_party.emo_manager import emo_manager
+from app.third_party.setting_manager import settingManager
+from app.third_party.emo_manager import emo_manager
 
 # from Ui_setting import Ui_MainWindow
 

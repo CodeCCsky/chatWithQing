@@ -6,7 +6,7 @@ from typing import Union
 
 from openai import OpenAI, APIError
 
-from third_party.deepseek_api.deepseek_tools import ds_tool
+from app.third_party.deepseek_api.deepseek_tools import ds_tool
 
 logger = logging.getLogger(__name__)
 

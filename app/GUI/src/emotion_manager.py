@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QCloseEvent
 
 from app.GUI.Ui.Ui_emotion_setting import Ui_MainWindow
-from third_party.emo_manager import emo_manager
+from app.third_party.emo_manager import emo_manager
 import copy
 
 

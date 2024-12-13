@@ -1,7 +1,7 @@
 import logging
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from third_party.tts import TTSAudio
+from app.third_party.tts import TTSAudio
 from requests.exceptions import ConnectionError
 
 

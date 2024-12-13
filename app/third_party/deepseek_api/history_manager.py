@@ -1,7 +1,7 @@
 import copy
 import datetime
 import json
-from third_party.FixJSON import fixJSON
+from app.third_party.FixJSON import fixJSON
 from pydantic import BaseModel, model_validator
 import logging
 import os

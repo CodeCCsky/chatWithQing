@@ -2,7 +2,7 @@ from typing import Union
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from third_party.FixJSON import fixJSONwithLLM, fixJSON
+from app.third_party.FixJSON import fixJSONwithLLM, fixJSON
 
 
 class fixJSONThread(QThread):

@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5.QtWidgets import QApplication, QWidget
 
@@ -13,6 +13,7 @@ from app.GUI.Ui.Ui_load import Ui_Form
 class loadWidget(QWidget, Ui_Form):
     def __init__(self, all_task_num: int, text: str = "少女祈祷中") -> None:
         super().__init__()
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.SubWindow)
         fontDb = QFontDatabase()
         fontID = fontDb.addApplicationFont(":/font/荆南波波黑.ttf")
         self.setFont(QFont("荆南波波黑", 14, QFont.Bold))

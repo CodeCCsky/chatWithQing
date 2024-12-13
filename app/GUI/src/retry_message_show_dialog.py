@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import pyqtSignal, QSize
 
 from app.GUI.Ui.Ui_retry_message_show_dialog import Ui_Dialog
-from third_party.deepseek_api import historyManager
+from app.third_party.deepseek_api import historyManager
 
 
 class SubWidget(QWidget):

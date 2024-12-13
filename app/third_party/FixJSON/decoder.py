@@ -36,7 +36,7 @@ prompt = """请接受一个格式错误的JSON输入，并输出一个格式正�
 """
 
 
-# from third_party.deepseek_api import deepseek_model
+# from app.third_party.deepseek_api import deepseek_model
 from openai import OpenAI
 
 

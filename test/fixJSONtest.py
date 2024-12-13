@@ -7,7 +7,7 @@ grandparent_dir = os.path.dirname(parent_dir)
 os.chdir(grandparent_dir)
 sys.path.insert(0, grandparent_dir)
 
-from third_party.FixJSON import fixJSONwithLLM
+from app.third_party.FixJSON import fixJSONwithLLM
 
 err_json = '{"role_thoughts": "这是测试哦"}\n{"role_response": "测试1213123"}'
 

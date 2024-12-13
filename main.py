@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 # TODO 代理支持
 
 from app.GUI import initialzationWidget
-from third_party.setting_manager import settingManager
+from app.third_party.setting_manager import settingManager
 
 file_handler = logging.handlers.TimedRotatingFileHandler("log/app.log", when="midnight", backupCount=3, encoding="utf8")
 stream_hanlder = logging.StreamHandler()

@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-from third_party.deepseek_api import historyManager, deepseek_model
-from third_party.setting_manager import settingManager
+from app.third_party.deepseek_api import historyManager, deepseek_model
+from app.third_party.setting_manager import settingManager
 import logging
 
 PROMPT = """# 任务:判断当前对话话题是否结束

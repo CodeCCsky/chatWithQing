@@ -1,4 +1,4 @@
-from third_party.setting_manager.setting_colletions import (
+from app.third_party.setting_manager.setting_colletions import (
     settingManager,
     user_setting,
     deepseek_api_setting,
