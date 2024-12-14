@@ -77,15 +77,21 @@ class mainWidget(QWidget):
 
     def __init__(self, history_path: str, parent: QWidget = None) -> None:
         super().__init__(parent)
+        self.load_widget = loadWidget()
+        self.load_widget.show()
         self.init_timer = QTimer()
+        self.load_widget.set_detailLabel_text("加载资源")
         self.init_resource()
 
         self.is_speaking = False
         self.facial_expr_state = self.S_NORMAL
+        self.load_widget.set_detailLabel_text("加载设置")
         self.init_setting(history_path)
+        self.load_widget.set_detailLabel_text("加载LLM模块")
         self.init_llm()
 
     def init_2(self):
+        self.load_widget.set_detailLabel_text("加载GUI组件")
         self.init_tray()
         self.init_desktop_pet()
         self.init_talk()
@@ -93,6 +99,8 @@ class mainWidget(QWidget):
         self.init_chat_activity_manager()
         self.setting.tts_setting.use_setting(self.tts_model)
         self.setting.deepseek_model.use_setting(self.llm_interface, self.setting.get_system_prompt())
+        self.load_widget.close()
+        self.load_widget = None
 
     ### 初始化部分
     def init_resource(self):
@@ -258,15 +266,10 @@ class mainWidget(QWidget):
                     )
                     total_task_num += current_date_worker.get_task_num()
                     list_of_worker.append(current_date_worker)
-
-            self.load_widget = loadWidget(total_task_num)
-            today_summary_worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
             self.summary_threadpool.start(today_summary_worker)
             if self.setting.chatting_setting.add_x_day_ago_summary:
                 for worker in list_of_worker:
-                    worker.signals.finish_a_task.connect(self.load_widget.finish_a_task)
                     self.summary_threadpool.start(worker)
-            self.load_widget.show()
         self.init_timer.timeout.connect(self.check_summary_thread_pool)
         self.init_timer.start(100)
 
@@ -343,8 +346,6 @@ class mainWidget(QWidget):
                         full_summary_str += f"\n{crt_time.hour}:{crt_time.minute}到{upd_time.hour}:{upd_time.minute} 你与{self.setting.get_user_name()}对话历史总结:{self.history_manager.get_summary_by_index(i)}"
                     full_summary_str += "|"
                 self.history_manager.set_current_summaried_history(full_summary_str)
-            self.load_widget.close()
-            self.load_widget = None
             self.llm_interface = deepseek_model(self.setting.get_api_key(), self.setting.get_system_prompt())
             self.response_content = {}
             self.llm_thread = None
