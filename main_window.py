@@ -188,7 +188,7 @@ class mainWidget(QWidget):
             reply = QMessageBox.critical(
                 None,
                 "设置加载错误",
-                "设置加载失败，请尝试重新启动本程序或尝试手动修改位于setting文件夹的private_setting.yaml。\n若问题不能解决，欢迎向作者反馈。(联系方式在'README.md'或'请先读我.pdf'中)",
+                "设置加载失败，请尝试重新启动本程序或尝试手动修改位于setting文件夹的private_setting.yaml或尝试删除private_setting.yaml后重新设置\n若问题不能解决，欢迎向作者反馈。(联系方式在'README.md'或'请先读我.pdf'中)",
             )
             sys.exit(-1)
         self.setting.history_path = history_path
