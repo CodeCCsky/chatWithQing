@@ -57,6 +57,16 @@ class user_setting:
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(
+            user_name=data_dict["name"],
+            user_sex=data_dict["sex"],
+            favourite_food=data_dict["favourite_food"],
+            user_location=data_dict["location"],
+            user_birthday=data_dict["birthday"],
+        )
+
     def get_dict(self) -> dict:
         return {
             "name": self.user_name,
@@ -93,6 +103,23 @@ class deepseek_api_setting:
             unfilled_list.append("api key")
         return unfilled_list
 
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(
+            api_key=data_dict["api_key"],
+            temperature=data_dict.get("temperature", 1.5),
+            frequency_penalty=data_dict.get("frequency_penalty", 0.8),
+            presence_penalty=data_dict.get("presence_penalty", 0.8),
+        )
+
+    def get_dict(self) -> dict:
+        return {
+            "api_key": self.api_key,
+            "temperature": self.temperature,
+            "frequency_penalty": self.frequency_penalty,
+            "presence_penalty": self.presence_penalty,
+        }
+
 
 class TTS_setting:
     def __init__(
@@ -122,6 +149,23 @@ class TTS_setting:
             unfilled_list.append("角色情感")
         return unfilled_list
 
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(
+            use_tts=data_dict.get("use_tts", False),
+            url=data_dict.get("url", "http://127.0.0.1:5000/tts"),
+            character_name=data_dict.get("character", "晴"),
+            emotion=data_dict.get("emotion", "default"),
+        )
+
+    def get_dict(self) -> dict:
+        return {
+            "use_tts": self.use_tts,
+            "url": self.url,
+            "character": self.character_name,
+            "emotion": self.emotion,
+        }
+
 
 class show_setting:
     def __init__(self, text_show_gap: int = 200, img_show_zoom: bool = 1) -> None:
@@ -135,6 +179,16 @@ class show_setting:
         if not self.img_show_zoom:
             unfilled_list.append("图片大小缩放")
         return unfilled_list
+
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(text_show_gap=data_dict.get("text_show_gap", 200), img_show_zoom=data_dict.get("img_show_zoom", 1.0))
+
+    def get_dict(self) -> dict:
+        return {
+            "text_show_gap": self.text_show_gap,
+            "img_show_zoom": self.img_show_zoom,
+        }
 
 
 class chatting_setting:
@@ -150,15 +204,46 @@ class chatting_setting:
         self.value_of_x_day_ago = value_of_x_day_ago
         self.enable_self_activation: bool = enable_self_activation
 
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(
+            add_same_day_summary=data_dict.get("add_same_day_summary", True),
+            add_x_day_ago_summary=data_dict.get("add_x_day_ago_summary", False),
+            value_of_x_day_ago=data_dict.get("value_of_x_day_ago", 5),
+            enable_self_activation=data_dict.get("enable_self_activation", True),
+        )
+
+    def get_dict(self) -> dict:
+        return {
+            "add_same_day_summary": self.add_same_day_summary,
+            "add_x_day_ago_summary": self.add_x_day_ago_summary,
+            "value_of_x_day_ago": self.value_of_x_day_ago,
+            "enable_self_activation": self.enable_self_activation,
+        }
+
 
 class extension_func_setting:
     def __init__(self, recall: bool = False) -> None:
         self.recall = recall
 
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(recall=data_dict.get("recall", False))
+
+    def get_dict(self) -> dict:
+        return {"recall": self.recall}
+
 
 class emo_setting:
     def __init__(self, show_in_text: bool = False) -> None:
         self.show_in_text = show_in_text
+
+    @classmethod
+    def from_dict(cls, data_dict: dict):
+        return cls(show_in_text=data_dict.get("show_in_text", False))
+
+    def get_dict(self) -> dict:
+        return {"show_in_text": self.show_in_text}
 
 
 class settingManager:
@@ -214,60 +299,17 @@ class settingManager:
         with open(self.load_path, "r", encoding="utf-8") as f:
             res: dict = yaml.load(f.read(), Loader=yaml.FullLoader)
 
-            # User settings
-            user: dict = res["user"]
-            self.user = user_setting(
-                user_name=user["name"],
-                user_sex=user["sex"],
-                favourite_food=user["favourite_food"],
-                user_location=user["location"],
-                user_birthday=user["birthday"],
-            )
-
-            # Deepseek settings
-            deepseek: dict = res["deepseek"]
-            self.deepseek_model = deepseek_api_setting(
-                api_key=deepseek["api_key"],
-                temperature=deepseek.get("temperature", 1.5),
-                frequency_penalty=deepseek.get("frequency_penalty", 0.8),
-                presence_penalty=deepseek.get("presence_penalty", 0.8),
-            )
-
-            # TTS settings
-            tts: dict = res["TTS"]
-            self.tts_setting = TTS_setting(
-                use_tts=tts.get("use_tts", False),
-                url=tts.get("url", "http://127.0.0.1:5000/tts"),
-                character_name=tts.get("character", "晴"),
-                emotion=tts.get("emotion", "default"),
-            )
-
-            # Show settings
-            show_s: dict = res["show"]
-            self.show_setting = show_setting(
-                text_show_gap=show_s.get("text_show_gap", 200),
-                img_show_zoom=show_s.get("img_show_zoom", 1.0),
-            )
-
-            # Chat settings
+            self.user = user_setting.from_dict(res["user"])
+            self.deepseek_model = deepseek_api_setting.from_dict(res["deepseek"])
+            self.tts_setting = TTS_setting.from_dict(res["TTS"])
+            self.show_setting = show_setting.from_dict(res["show"])
             if isinstance(res.get("chatting", None), dict):
                 chatting: dict = res["chatting"]
             else:
                 chatting: dict = res["summary"]
-            self.chatting_setting = chatting_setting(
-                add_same_day_summary=chatting.get("add_same_day_summary", True),
-                add_x_day_ago_summary=chatting.get("add_x_day_ago_summary", False),
-                value_of_x_day_ago=chatting.get("value_of_x_day_ago", 5),
-                enable_self_activation=chatting.get("enable_self_activation", True),
-            )
-
-            # extension_func settings
-            func: dict = res.get("extension_func", {})
-            self.extension_func_setting = extension_func_setting(recall=func.get("recall", False))
-
-            # emo setting
-            emo: dict = res.get("emo", {})
-            self.emo_setting = emo_setting(show_in_text=emo.get("show_in_text", False))
+            self.chatting_setting = chatting_setting.from_dict(chatting)
+            self.extension_func_setting = extension_func_setting.from_dict(res.get("extension_func", {}))
+            self.emo_setting = emo_setting.from_dict(res.get("emo", {}))
 
             self.load_system_prompt_main()
 
@@ -276,37 +318,13 @@ class settingManager:
             return False
         with open(self.load_path, "w", encoding="utf-8") as f:
             write_dict = {
-                "user": {
-                    "name": self.user.user_name,
-                    "sex": self.user.user_sex,
-                    "favourite_food": self.user.favourite_food,
-                    "location": self.user.user_location,
-                    "birthday": self.user.user_birthday,
-                },
-                "deepseek": {
-                    "api_key": self.deepseek_model.api_key,
-                    "temperature": self.deepseek_model.temperature,
-                    "frequency_penalty": self.deepseek_model.frequency_penalty,
-                    "presence_penalty": self.deepseek_model.presence_penalty,
-                },
-                "TTS": {
-                    "use_tts": self.tts_setting.use_tts,
-                    "url": self.tts_setting.url,
-                    "character": self.tts_setting.character_name,
-                    "emotion": self.tts_setting.emotion,
-                },
-                "show": {
-                    "text_show_gap": self.show_setting.text_show_gap,
-                    "img_show_zoom": self.show_setting.img_show_zoom,
-                },
-                "chatting": {
-                    "add_same_day_summary": self.chatting_setting.add_same_day_summary,
-                    "add_x_day_ago_summary": self.chatting_setting.add_x_day_ago_summary,
-                    "value_of_x_day_ago": self.chatting_setting.value_of_x_day_ago,
-                    "enable_self_activation": self.chatting_setting.enable_self_activation,
-                },
-                "extension_func": {"recall": self.extension_func_setting.recall},
-                "emo": {"show_in_text": self.emo_setting.show_in_text},
+                "user": self.user.get_dict(),
+                "deepseek": self.deepseek_model.get_dict(),
+                "TTS": self.tts_setting.get_dict(),
+                "show": self.show_setting.get_dict(),
+                "chatting": self.chatting_setting.get_dict(),
+                "extension_func": self.extension_func_setting.get_dict(),
+                "emo": self.emo_setting.get_dict(),
                 "system_prompt_main": self.system_prompt_main,
             }
             yaml.dump(data=write_dict, stream=f, allow_unicode=True)
@@ -323,3 +341,25 @@ class settingManager:
 
     def check(self) -> bool:
         return self.user.check() + self.deepseek_model.check() + self.show_setting.check() + self.tts_setting.check()
+
+
+import threading
+
+
+class Singleton:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super(Singleton, cls).__new__(cls)
+        return cls._instance
+
+
+class globalSettingManager(Singleton, settingManager):
+    def __init__(self):
+        if not hasattr(self, "_initialized"):
+            self._initialized = True
+            super().__init__()
