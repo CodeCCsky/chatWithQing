@@ -3,7 +3,7 @@
 This repository contains various types of content, each governed by its own license terms:
 
 1. Software:
-   All software (including Python code and XML files) in this repository is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+   All software (including Python code and XML files) in this repository is licensed under the GNU General Public License v3.0 (GPL-3.0).
    License file: `SOFTWARE_LICENSE`
    Full text: https://www.gnu.org/licenses/agpl-3.0.en.html
 
